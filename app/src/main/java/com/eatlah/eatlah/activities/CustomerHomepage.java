@@ -1,0 +1,205 @@
+package com.eatlah.eatlah;
+
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+
+import com.eatlah.eatlah.models.HawkerCentre;
+import com.eatlah.eatlah.models.HawkerStall;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerHomepage extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, HawkerCentreFragment.OnListFragmentInteractionListener {
+
+    // database and authentication instances
+    private FirebaseDatabase mDb;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+
+    // typefaces
+    private AssetManager assetManager;
+    private Typeface typefaceRaleway;
+
+    private RecyclerView mContentView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_customer_homepage);
+
+        mDb = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        // Initialize fonts
+        typefaceRaleway = Typeface.createFromAsset(getAssets(), "Raleway-Medium.ttf");
+
+        initializeComponents();
+    }
+
+    private void initializeComponents() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        // set the display name
+        EditText mUserName_editText = (EditText) headerView.findViewById(R.id.userName_editText);
+        mUserName_editText.setTypeface(typefaceRaleway);
+        mUserName_editText.setText(user.getEmail());
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.customer_homepage, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        Fragment fragment = null;
+
+        if (id == R.id.receipts_view) {
+            // todo view to display past orders ( receipts )
+
+        } else if (id == R.id.settings_view) {
+            // todo view for user settings
+            // includes password reset
+
+        } else if (id == R.id.nav_send) {
+            // todo cloud messaging
+        } else {
+            // todo browse hawker centres fragment
+            System.out.println("order view selected");
+            fragment = HawkerCentreFragment.newInstance(1);
+        }
+
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frag_container, fragment);
+            ft.addToBackStack(getTitle().toString());
+            ft.commit();
+            System.out.println("replaced fragment and committed");
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    /**
+     * onclick callback when viewholder containing hawkerCentre is clicked.
+     * Display all hawker stalls at this hawker centre.
+     * @param hawkerCentre hawkerCentre object associated with viewholder clicked.
+     */
+    @Override
+    public void onListFragmentInteraction(HawkerCentre hawkerCentre) {
+        // set database ref to hawkerStalls/:hawkerCentre_id
+        DatabaseReference dbRef = mDb.getReference(getResources().getString(R.string.hawker_stall_ref))
+                .child(hawkerCentre.get_id());
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            /**
+             * Retrieve the children nodes of this path.
+             * This will give us the hawkerStalls associated with this hawkerCentre obj
+             */
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<HawkerStall> hawkerStallList = new ArrayList<>();
+                for (DataSnapshot hsSnapshot : dataSnapshot.getChildren()) {
+                    hawkerStallList.add(hsSnapshot.getValue(HawkerStall.class));
+                }
+
+                // retrieve the fragment containing a recyclerview of hawkerStalls
+                HawkerStallFragment hsFragment = HawkerStallFragment.newInstance(1);
+                hsFragment.notifyAdapter(CustomerHomepage.this, hawkerStallList);
+
+                // display fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frag_container, hsFragment);
+                ft.commit();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    // onclick callback when hawkerStall item is clicked.
+    // Display menu items associated with hawkerStall.
+    public void onListFragmentInteraction(HawkerStall hawkerStall) {
+        //todo popuplistmenu
+    }
+}
