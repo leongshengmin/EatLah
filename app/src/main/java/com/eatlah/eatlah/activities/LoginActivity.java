@@ -1,4 +1,4 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,7 +29,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -39,12 +38,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eatlah.eatlah.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

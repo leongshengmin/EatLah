@@ -1,7 +1,6 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -12,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.eatlah.eatlah.HawkerCentreFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.GlideApp;
+import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.HawkerCentreFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -72,7 +74,7 @@ public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<Hawker
         final HawkerCentre hc = mHClist.get(position);
 
         // set the contents of viewholder
-        glideImageInto(hc.getImage_path(), holder.mHCImageView);
+        if (hc.getImage_path() != null && !hc.getImage_path().isEmpty()) glideImageInto(hc.getImage_path(), holder.mHCImageView);
         System.out.println("done gliding image");
 
         holder.mHCAddressView.setText(hc.get_id());
@@ -128,8 +130,8 @@ public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<Hawker
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView mHCImageView;
-        private EditText mHCNameView;
-        private EditText mHCAddressView;
+        private TextView mHCNameView;
+        private TextView mHCAddressView;
 
         public ViewHolder(View view) {
             super(view);

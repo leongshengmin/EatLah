@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "625824662543",
+    "firebase_url": "https://eatlah-fe598.firebaseio.com",
+    "project_id": "eatlah-fe598",
+    "storage_bucket": "eatlah-fe598.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625824662543:android:92c47d46e8e39541",
+        "android_client_info": {
+          "package_name": "com.eatlah.eatlah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625824662543-di6bnd501mg04k010t09dnbnl9mithkj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eatlah.eatlah",
+            "certificate_hash": "d71ecc8030f54b90ff178174c3e8c544dc23b87d"
+          }
+        },
+        {
+          "client_id": "625824662543-jg99cq9ft99hmit6rpkm795onr9h50lj.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "625824662543-jg99cq9ft99hmit6rpkm795onr9h50lj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvo5MLjRzJfz8StPlJBD4vZIIEWwkyZkk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625824662543-jg99cq9ft99hmit6rpkm795onr9h50lj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

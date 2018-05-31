@@ -11,9 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.dummy.DummyContent;
-import com.eatlah.eatlah.fragments.dummy.DummyContent.DummyItem;
+import com.eatlah.eatlah.adapters.MyFoodItemRecyclerViewAdapter;
+import com.eatlah.eatlah.models.FoodItem;
+import com.eatlah.eatlah.models.HawkerStall;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,11 +32,13 @@ import java.util.List;
  */
 public class FoodItemFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private List<FoodItem> foodItemList;
+    private MyFoodItemRecyclerViewAdapter mAdapter;
+    private static HawkerStall hawkerStall;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -37,9 +47,9 @@ public class FoodItemFragment extends Fragment {
     public FoodItemFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static FoodItemFragment newInstance(int columnCount) {
+    public static FoodItemFragment newInstance(int columnCount, HawkerStall stall) {
+        hawkerStall = stall;
         FoodItemFragment fragment = new FoodItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
@@ -50,7 +60,6 @@ public class FoodItemFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -60,7 +69,7 @@ public class FoodItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooditem_list, container, false);
-
+        System.out.println("fooditem list now contains: " + foodItemList.size());
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -70,17 +79,52 @@ public class FoodItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyFoodItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mAdapter = new MyFoodItemRecyclerViewAdapter(foodItemList, mListener);
+
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    private void retrieveFoodItems() {
+        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+        // set the db reference
+        DatabaseReference mDbRef = mDb.getReference(getResources().getString(R.string.food_item_ref));
+
+        foodItemList.clear();
+
+        // loop through the list of food_ids and add the foodItem object to foodItems
+        for (String foodId : hawkerStall.getMenu()) {
+            mDbRef.child(foodId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    System.out.println("data snapshot of fooditem: " + dataSnapshot);
+                    FoodItem foodItem = dataSnapshot.getValue(FoodItem.class);
+                    System.out.println("food item: " + foodItem);
+                    foodItemList.add(foodItem);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
+
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
+            foodItemList = new ArrayList<>();
+            retrieveFoodItems();
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -104,7 +148,6 @@ public class FoodItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(FoodItem item);
     }
 }

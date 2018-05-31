@@ -1,0 +1,142 @@
+{
+  "HawkerCentres": {
+    "168898": {
+      "_id": "168898",
+      "name": "Tiong Bahru Food Centre",
+      "image_path": "tiong_bahru_hc.jpg"
+    },
+    "210665": {
+      "_id": "210665",
+      "name": "Tekka Centre",
+      "image_path": "tekka_centre.jpg"
+    },
+    "557269": {
+      "_id": "557269",
+      "name": "Chomp Chomp",
+      "image_path": "chomp_chomp.jpg"
+    },
+    "588172": {
+      "_id": "588172",
+      "name": "Bukit Timah Food Centre",
+      "image_path": "bukit_timah_hc.jpg"
+    },
+    "069184": {
+      "_id": "069184",
+      "name": "Maxwell Road Hawker Centre",
+      "image_path": "maxwell_hawker_centre.jpg"
+    }
+  },
+  "HawkerStalls": {
+    "168898": {
+      "0234": {
+        "hc_id": "168898",
+        "_id": "0234",
+        "stall_name": "Tiong Bahru Mian Jian Kueh",
+        "stall_owner": "00000000",
+        "menu": ["16889802341"],
+        "image_path": "tiong_bahru_meejiangkueh.jpg"
+      },
+      "0258": {
+        "hc_id": "168898",
+        "_id": "0258",
+        "stall_name": "178 Lor Mee",
+        "stall_owner": "00000001",
+        "menu": ["16889802581"],
+        "image_path": "tiong_bahru_lor_mee.jpg"
+      }
+    },
+    "210665": {
+      "01232": {
+        "hc_id": "210665",
+        "_id": "01232",
+        "stall_name": "Allauddin’s Biryani",
+        "stall_owner": "00000002",
+        "menu": [],
+        "image_path": "biryani.jpg"
+      },
+      "01335": {
+        "hc_id": "210665",
+        "_id": "01335",
+        "stall_name": "Heng Gi Goose and Duck Rice",
+        "stall_owner": "99999999",
+        "menu": [],
+        "image_path": "goose_duck_rice.jpg"
+      }
+    },
+    "557269": {
+      "1": {
+        "hc_id": "557269",
+        "_id": "1",
+        "stall_name": "Chomp Chomp Hai Wei Yuan Seafood BBQ",
+        "stall_owner": "99999802",
+        "menu": ["55726911", "55726912"],
+        "image_path": "seafood.jpg"
+      }
+    },
+    "588172": {
+      "02185": {
+        "hc_id": "588172",
+        "_id": "02185",
+        "stall_name": "He Zhong Fried Carrot cake",
+        "stall_owner": "90008002",
+        "menu": [],
+        "image_path": "carrot_cake.jpg"
+      },
+      "02162": {
+        "hc_id": "588172",
+        "_id": "02162",
+        "stall_name": "Sin Chew Satay Bee Hoon",
+        "stall_owner": "90027001",
+        "menu":[],
+        "image_path": "satay_beehoon.jpg"
+    },
+    "069184": {
+      "10": {
+        "hc_id": "069184",
+        "_id": "10",
+        "stall_name": "Tian Tian Chicken Rice",
+        "stall_owner": "98021023",
+        "menu":[],
+        "image_path": "tian_tian_stall.jpg"
+      },
+      "35": {
+        "hc_id": "069184",
+        "_id": "35",
+        "stall_name": "Marina South Delicious Food",
+        "stall_owner": "90238888",
+        "menu":[],
+        "image_path": "marina_south_df.jpg"
+      }
+    }
+  },
+  "FoodItems": {
+    "55726911": {
+      "_id": "55726911",
+      "name": "Sambal Stingray",
+      "price": "8.50",
+      "image_path": "",
+      "description": "spicy"
+    },
+    "55726912": {
+      "_id": "55726912",
+      "name": "Chili Crab",
+      "price": "24.20",
+      "image_path": "",
+      "description": ""
+    },
+    "16889802341": {
+      "_id": "16889802341",
+      "name": "Peanut Pancake",
+      "price": "0.90",
+      "image_path": "",
+      "description": "description"
+    },
+    "16889802581": {
+      "_id": "16889802581",
+      "name": "Lor Mee",
+      "price": "4.50",
+      "image_path": "",
+      "description": "description"
+    }
+  }
+}

@@ -1,9 +1,10 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.setup;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.eatlah.eatlah.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;

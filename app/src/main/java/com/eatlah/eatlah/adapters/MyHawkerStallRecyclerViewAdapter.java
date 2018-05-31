@@ -1,4 +1,4 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.adapters;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -8,10 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.eatlah.eatlah.HawkerStallFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.GlideApp;
+import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.HawkerStallFragment;
+import com.eatlah.eatlah.fragments.HawkerStallFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -67,12 +70,12 @@ public class MyHawkerStallRecyclerViewAdapter extends RecyclerView.Adapter<MyHaw
         HawkerStall hs = mValues.get(position);
         holder.mHSAddressView.setTypeface(typefaceRaleway);
         String stallNumberPlaceholder = ((Activity) mListener).getResources().getString(R.string.stall_number);
-        holder.mHSAddressView.setText(String.format(stallNumberPlaceholder, hs.getStallNumber()));
+        holder.mHSAddressView.setText(String.format(stallNumberPlaceholder, hs.get_id()));
 
         holder.mHSNameView.setTypeface(typefaceRaleway);
-        holder.mHSNameView.setText(hs.getName());
+        holder.mHSNameView.setText(hs.getStall_name());
 
-        glideImageInto(hs.getImagePath(), holder.mHSImageView);
+        if (hs.getImage_path() != null && !hs.getImage_path().isEmpty()) glideImageInto(hs.getImage_path(), holder.mHSImageView);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,14 +126,14 @@ public class MyHawkerStallRecyclerViewAdapter extends RecyclerView.Adapter<MyHaw
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView mHSImageView;
-        public EditText mHSNameView;
-        public EditText mHSAddressView;
+        public TextView mHSNameView;
+        public TextView mHSAddressView;
 
         public ViewHolder(View view) {
             super(view);
-            mHSImageView = (ImageView) view.findViewById(R.id.hsImage);
-            mHSNameView = (EditText) view.findViewById(R.id.hsName_editText);
-            mHSAddressView = (EditText) view.findViewById(R.id.hsAddress_editText);
+            mHSImageView = (ImageView) view.findViewById(R.id.foodItem_image);
+            mHSNameView = (TextView) view.findViewById(R.id.foodItemName_textView);
+            mHSAddressView = (TextView) view.findViewById(R.id.foodItemDesc_textView);
         }
     }
 }

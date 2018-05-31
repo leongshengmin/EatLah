@@ -1,6 +1,7 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.activities;
 
 import android.content.res.AssetManager;
+import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +18,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListPopupWindow;
 
+import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.adapters.FoodItemArrayAdapter;
+import com.eatlah.eatlah.adapters.MyFoodItemRecyclerViewAdapter;
+import com.eatlah.eatlah.fragments.FoodItemFragment;
+import com.eatlah.eatlah.fragments.HawkerCentreFragment;
+import com.eatlah.eatlah.fragments.HawkerStallFragment;
+import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +45,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerHomepage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HawkerCentreFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HawkerCentreFragment.OnListFragmentInteractionListener,
+        HawkerStallFragment.OnListFragmentInteractionListener,
+        FoodItemFragment.OnListFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -166,40 +181,28 @@ public class CustomerHomepage extends AppCompatActivity
      */
     @Override
     public void onListFragmentInteraction(HawkerCentre hawkerCentre) {
-        // set database ref to hawkerStalls/:hawkerCentre_id
-        DatabaseReference dbRef = mDb.getReference(getResources().getString(R.string.hawker_stall_ref))
-                .child(hawkerCentre.get_id());
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // retrieve the fragment containing a recyclerview of hawkerStalls
+        HawkerStallFragment hsFragment = HawkerStallFragment.newInstance(1, hawkerCentre);
 
-            /**
-             * Retrieve the children nodes of this path.
-             * This will give us the hawkerStalls associated with this hawkerCentre obj
-             */
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<HawkerStall> hawkerStallList = new ArrayList<>();
-                for (DataSnapshot hsSnapshot : dataSnapshot.getChildren()) {
-                    hawkerStallList.add(hsSnapshot.getValue(HawkerStall.class));
-                }
-
-                // retrieve the fragment containing a recyclerview of hawkerStalls
-                HawkerStallFragment hsFragment = HawkerStallFragment.newInstance(1);
-                hsFragment.notifyAdapter(CustomerHomepage.this, hawkerStallList);
-
-                // display fragment
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frag_container, hsFragment);
-                ft.commit();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
+        // display fragment
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.frag_container, hsFragment);
+        ft.commit();
     }
 
     // onclick callback when hawkerStall item is clicked.
     // Display menu items associated with hawkerStall.
     public void onListFragmentInteraction(HawkerStall hawkerStall) {
-        //todo popuplistmenu
+        FoodItemFragment fragment = FoodItemFragment.newInstance(1, hawkerStall);
+
+        // display fragment
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.frag_container, fragment);
+        ft.commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(FoodItem item) {
+
     }
 }

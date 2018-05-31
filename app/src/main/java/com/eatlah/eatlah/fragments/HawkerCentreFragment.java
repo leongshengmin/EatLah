@@ -1,4 +1,4 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eatlah.eatlah.adapters.HawkerCentreRecyclerViewAdapter;
+import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.HawkerCentre;
+import com.eatlah.eatlah.models.HawkerStall;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -85,11 +88,11 @@ public class HawkerCentreFragment extends Fragment {
                 // add all hawker centres in db to hawkerCentreList
                 for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
                     HawkerCentre hc = fcSnapshot.getValue(HawkerCentre.class);
-                    System.out.println("Hawker centre: " + hc);
+                    System.out.println("Hawker centre: " + hc.get_id());
                     mHCList.add(hc);
                 }
 
-                mAdapter.notifyDataSetChanged();
+                notifyAdapter((Activity) mListener, mHCList);
                 System.out.println("done!");
             }
 
@@ -99,6 +102,21 @@ public class HawkerCentreFragment extends Fragment {
             }
         });
 
+    }
+
+    /**
+     * Notifies adapter to update recycler view due to change in dataset.
+     * @param context context to update view.
+     */
+    public void notifyAdapter(Activity context, List<HawkerCentre> hawkerCentreList) {
+        mHCList = hawkerCentreList;
+
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 
