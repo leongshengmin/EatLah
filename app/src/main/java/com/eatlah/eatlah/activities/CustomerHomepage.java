@@ -1,65 +1,65 @@
 package com.eatlah.eatlah.activities;
 
 import android.content.res.AssetManager;
-import android.database.DataSetObserver;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListPopupWindow;
+import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.FoodItemArrayAdapter;
-import com.eatlah.eatlah.adapters.MyFoodItemRecyclerViewAdapter;
 import com.eatlah.eatlah.fragments.FoodItemFragment;
 import com.eatlah.eatlah.fragments.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.HawkerStallFragment;
+import com.eatlah.eatlah.fragments.OrderFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
+import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HawkerCentreFragment.OnListFragmentInteractionListener,
         HawkerStallFragment.OnListFragmentInteractionListener,
-        FoodItemFragment.OnListFragmentInteractionListener {
+        FoodItemFragment.OnListFragmentInteractionListener,
+        OrderFragment.OnListFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private DatabaseReference dbRef;
 
     // typefaces
     private AssetManager assetManager;
     private Typeface typefaceRaleway;
 
-    private RecyclerView mContentView;
+    // current user's order
+    private Order order;
+
+    // floating action button
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +80,7 @@ public class CustomerHomepage extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -162,16 +155,20 @@ public class CustomerHomepage extends AppCompatActivity
         }
 
         if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frag_container, fragment);
-            ft.addToBackStack(getTitle().toString());
-            ft.commit();
-            System.out.println("replaced fragment and committed");
+            displayFragment(fragment, getResources().getString(R.string.hawkerCentreFrag));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void displayFragment(Fragment fragment, String tag) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.frag_container, fragment, tag);
+        ft.addToBackStack(getTitle().toString());
+        ft.commit();
+        System.out.println("replaced fragment and committed");
     }
 
     /**
@@ -185,9 +182,7 @@ public class CustomerHomepage extends AppCompatActivity
         HawkerStallFragment hsFragment = HawkerStallFragment.newInstance(1, hawkerCentre);
 
         // display fragment
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frag_container, hsFragment);
-        ft.commit();
+        displayFragment(hsFragment, getResources().getString(R.string.hawkerStallFrag));
     }
 
     // onclick callback when hawkerStall item is clicked.
@@ -196,13 +191,53 @@ public class CustomerHomepage extends AppCompatActivity
         FoodItemFragment fragment = FoodItemFragment.newInstance(1, hawkerStall);
 
         // display fragment
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frag_container, fragment);
-        ft.commit();
+        displayFragment(fragment, getResources().getString(R.string.foodItemFrag));
     }
 
     @Override
-    public void onListFragmentInteraction(FoodItem item) {
+    public void onListFragmentInteraction(FoodItem item, int qty) {
+        if (order == null) {    // if no orders in cart yet
+           initializeCart();
+        }
+        order.addOrder(new OrderItem(item, qty));
+        Toast.makeText(this, "added order to cart!", Toast.LENGTH_SHORT)
+                .show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            fab.setTooltipText(getResources().getString(R.string.fab_tooltip));
+        }
+        fab.show();
+    }
+
+    private void initializeCart() {
+        HawkerStall hs = FoodItemFragment.getHawkerStall();
+        dbRef = mDb.getReference(getResources().getString(R.string.order_ref));
+        String timestamp = dbRef.push().getKey();
+        order = new Order(timestamp, user.getProviderId(), hs.getHc_id());
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // save order to db
+                dbRef.setValue(order)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("db", "successfully saved order");
+                                    OrderFragment orderFragment = OrderFragment.newInstance(1, order);
+
+                                    // display fragment
+                                    displayFragment(orderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
+                                } else {
+                                    Log.e("db", task.getException().getMessage());
+                                }
+                            }
+                        });
+            }
+        });
+    }
+
+    @Override
+    public void onListFragmentInteraction(OrderItem item) {
 
     }
 }
