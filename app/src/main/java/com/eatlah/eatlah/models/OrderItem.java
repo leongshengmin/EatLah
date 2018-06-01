@@ -17,4 +17,9 @@ public class OrderItem extends FoodItem {
     public void setQty(int qty) {
         this.qty = qty;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof OrderItem && ((OrderItem) object).get_id().equals(this.get_id());
+    }
 }

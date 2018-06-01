@@ -1,13 +1,17 @@
 package com.eatlah.eatlah.adapters;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.OrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.listeners.OnSwipeTouchListener;
 import com.eatlah.eatlah.models.OrderItem;
 
 import java.util.List;
@@ -43,21 +47,20 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         // calculate price and set text
         calculatePrice(orderItem, holder.mPrice);
 
-        holder.mQty.setText(orderItem.getQty());
+        holder.mQty.setText(Integer.toString(orderItem.getQty()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(orderItem);
-                }
+                mListener.onListFragmentInteraction(orderItem);
             }
         });
+
+        holder.itemView.setOnTouchListener(new OnSwipeTouchListener((Activity) mListener, this, orderItem));
     }
 
     private void calculatePrice(OrderItem orderItem, TextView priceView) {
+        System.out.println("ordered item: " + orderItem);
         double price = orderItem.getQty() * Double.parseDouble(orderItem.getPrice());
         priceView.setText(Double.toString(price));
     }

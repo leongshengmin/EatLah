@@ -15,6 +15,19 @@
             android:layout_width="match_parent"
             android:layout_height="230dp">
 
+            <Button
+                android:id="@+id/cart_button"
+                android:layout_width="113dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/add_to_cart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/price_textView"
+                app:layout_constraintVertical_bias="1.0" />
+
             <ImageView
                 android:id="@+id/foodItem_image"
                 android:layout_width="205dp"
@@ -74,13 +87,13 @@
 
             <EditText
                 android:id="@+id/orderqty_editText"
-                android:layout_width="0dp"
+                android:layout_width="92dp"
                 android:layout_height="0dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="39dp"
-                android:layout_marginLeft="174dp"
+                android:layout_marginLeft="120dp"
                 android:layout_marginRight="39dp"
-                android:layout_marginStart="174dp"
+                android:layout_marginStart="120dp"
                 android:ems="10"
                 android:hint="@string/food_item_ref"
                 android:inputType="textCapSentences|numberDecimal"

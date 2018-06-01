@@ -1,14 +1,19 @@
 package com.eatlah.eatlah.models;
 
+import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class Order {
     private String timestamp;
     private String user_id; // mobile number of customer
     private String courier_id;  // mobile number of courier
     private String hawkerCentre_id; // postal code of hc
+    private HashMap<String, Integer> orderDict;  // stores the orderitem as key and index in orders as value
     private List<OrderItem> orders;
     private String misc;
     private boolean self_collection;
@@ -17,6 +22,7 @@ public class Order {
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id, List<OrderItem> orders,
                  String misc, boolean self_collection, boolean ready) {
+        this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
         this.courier_id = courier_id;
@@ -38,12 +44,57 @@ public class Order {
      * adds an order to orders.
      * @param item
      */
-    public void addOrder(OrderItem item) {
-        if (!orders.contains(item)) {
+    public void addOrder(OrderItem item, MyOrderRecyclerViewAdapter adapter) {
+        if (!orderDict.containsKey(item.get_id())) {
+            System.out.println("adding new item: " + item.getName());
+            orderDict.put(item.get_id(), orders.size());
             orders.add(item);
         } else {
-            orders.remove(item);
-            orders.add(item);
+            System.out.println("item already added, updating quantity of " + item.getName());
+            int idx = orderDict.get(item.get_id());
+            OrderItem prev = orders.get(idx);   // get the previous order
+            item.setQty(prev.getQty() + item.getQty()); // update quantity
+            orders.set(idx, item);
+
+            // notify adapter
+            adapter.notifyItemChanged(idx);
+        }
+        System.out.println(orders.size() + " orders currently");
+    }
+
+    /**
+     * removes an order from orders.
+     * @param orderItem
+     */
+    public void removeOrder(OrderItem orderItem, MyOrderRecyclerViewAdapter adapter) {
+        int idx = orderDict.get(orderItem.get_id());
+        if (orderItem.getQty() == 1) {  // swiping will remove this item from view
+            System.out.println("removing this item from orders " + orderItem.getName());
+            shiftItemsOnRight(idx);
+
+            // notify adapter
+            adapter.notifyItemRangeChanged(idx, orders.size() - idx);
+        } else {    // update quantity
+            System.out.println("updating quantity of this item " + orderItem.getName());
+            orderItem.setQty(orderItem.getQty() - 1);
+            orders.set(idx, orderItem);
+
+            // notify adapter
+            adapter.notifyItemChanged(idx);
+        }
+    }
+
+    /**
+     * shifts items to the right of orderItem with index idx to the left
+     * then removes the last item in the list.
+     */
+    private void shiftItemsOnRight(int idx) {
+        orders.remove(idx);
+        for (Map.Entry<String, Integer> entry : orderDict.entrySet()) {
+            if (entry.getValue() == idx) orderDict.remove(entry.getKey());
+            if (entry.getValue() > idx) {
+                orderDict.put(entry.getKey(), entry.getValue() - 1);
+            }
         }
     }
 

@@ -240,4 +240,8 @@ public class CustomerHomepage extends AppCompatActivity
     public void onListFragmentInteraction(OrderItem item) {
 
     }
+
+    public Order getOrder() {
+        return this.order;
+    }
 }
