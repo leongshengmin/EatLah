@@ -91,6 +91,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setTitle(getResources().getString(R.string.login_page_title));
 
         mAuth = FirebaseAuth.getInstance();
+        // Currently as there is no logout, this is necessary to clear
+        mAuth.signOut(); // Prevent future wrong passwords from successfully authenticating
 
         // Login page animation
         LinearLayout container = (LinearLayout) findViewById(R.id.container);
