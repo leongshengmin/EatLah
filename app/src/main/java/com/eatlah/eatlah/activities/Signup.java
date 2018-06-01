@@ -376,6 +376,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                                 Log.e("signup", task.getException().getMessage());
                                 Toast.makeText(Signup.this, "Unsuccessful signup attempt.", Toast.LENGTH_SHORT)
                                         .show();
+                                showProgress(false);
                                 mEmailView.requestFocus();
                             }
                         }
