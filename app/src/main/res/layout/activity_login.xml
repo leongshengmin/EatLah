@@ -27,7 +27,8 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="352dp"
-        android:layout_height="461dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
         tools:layout_editor_absoluteX="24dp"
         tools:layout_editor_absoluteY="275dp">
 
@@ -75,7 +76,7 @@
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/edittext"
                     android:hint="@string/prompt_password"
                     android:imeActionId="6"
@@ -92,8 +93,7 @@
             <Spinner
                 android:id="@+id/profile_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="56dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/edittext"
@@ -106,48 +106,50 @@
                 android:id="@+id/email_sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/button"
                 android:ellipsize="end"
                 android:text="@string/action_sign_in"
                 android:textColor="@color/login_btn_textColor" />
 
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="80dp"
+                android:baselineAligned="true">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/signup_fab"
+                    android:layout_width="74dp"
+                    android:layout_height="62dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:clickable="true"
+                    android:foregroundGravity="bottom|right"
+                    android:tint="@android:color/transparent"
+                    app:backgroundTint="@android:color/transparent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:rippleColor="@android:color/transparent"
+                    app:srcCompat="@drawable/signup" />
+
+                <TextView
+                    android:id="@+id/signup_textView"
+                    android:layout_width="243dp"
+                    android:layout_height="28dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/prompt_sign_up"
+                    android:textColor="@color/textColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/signup_fab" />
+            </android.support.constraint.ConstraintLayout>
+
+
         </LinearLayout>
     </ScrollView>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:baselineAligned="true">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/signup_fab"
-            android:layout_width="74dp"
-            android:layout_height="62dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:clickable="true"
-            android:foregroundGravity="bottom|right"
-            android:tint="@android:color/transparent"
-            app:backgroundTint="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:rippleColor="@android:color/transparent"
-            app:srcCompat="@drawable/signup" />
-
-        <TextView
-            android:id="@+id/signup_textView"
-            android:layout_width="243dp"
-            android:layout_height="28dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/prompt_sign_up"
-            android:textColor="@color/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/signup_fab" />
-    </android.support.constraint.ConstraintLayout>
 
 
 </LinearLayout>
