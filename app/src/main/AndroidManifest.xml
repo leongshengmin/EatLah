@@ -31,8 +31,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.Signup"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/title_activity_signup"></activity>
+            android:label="@string/title_activity_signup"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.HawkerHomepage"
+            android:label="@string/title_activity_hawker_homepage"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -37,6 +37,9 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="fab_tooltip">Done ordering? Click on me to checkout!</string>
 
+    <!-- Strings related to hawker homepage -->
+    <string name="hawker_nav_header_subtitle">Stall Owner View</string>
+
     <!-- Strings related to database references -->
     <string name="user_ref">users</string>
     <string name="hawker_centre_ref">HawkerCentres</string>
@@ -59,5 +62,6 @@
     <string name="hawkerStallFrag">HawkerStallFragment</string>
     <string name="hawkerCentreFrag">HawkerCentreFragment</string>
     <string name="orderFrag">OrderFragment</string>
+    <string name="title_activity_hawker_homepage">HawkerHomepage</string>
 
 </resources>
