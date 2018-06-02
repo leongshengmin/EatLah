@@ -59,4 +59,5 @@
     <string name="hawkerStallFrag">HawkerStallFragment</string>
     <string name="hawkerCentreFrag">HawkerCentreFragment</string>
     <string name="orderFrag">OrderFragment</string>
+
 </resources>

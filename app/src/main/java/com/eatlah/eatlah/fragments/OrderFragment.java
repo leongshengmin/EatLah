@@ -106,4 +106,8 @@ public class OrderFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(OrderItem item);
     }
+
+    public MyOrderRecyclerViewAdapter getmAdapter() {
+        return mAdapter;
+    }
 }

@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.fragments.FoodItemFragment;
 import com.eatlah.eatlah.fragments.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.HawkerStallFragment;
@@ -199,9 +200,12 @@ public class CustomerHomepage extends AppCompatActivity
         if (order == null) {    // if no orders in cart yet
            initializeCart();
         }
+
+        // add order to fragment and notify adapter of the update
         order.addOrder(new OrderItem(item, qty));
         Toast.makeText(this, "added order to cart!", Toast.LENGTH_SHORT)
                 .show();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             fab.setTooltipText(getResources().getString(R.string.fab_tooltip));
         }

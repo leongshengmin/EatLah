@@ -10,6 +10,7 @@ import android.view.View.OnTouchListener;
 
 import com.eatlah.eatlah.activities.CustomerHomepage;
 import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
 import java.util.Observer;
@@ -33,11 +34,16 @@ public class OnSwipeTouchListener implements OnTouchListener {
 
     // remove item from cart
     public void onSwipeLeft() {
-        ((CustomerHomepage) mContext).getOrder().removeOrder(orderItem, mAdapter);
+        System.out.println("Left swipe detected");
+        System.out.println("context: " + mContext);
+        Order order = ((CustomerHomepage) mContext).getOrder();
+        System.out.println("order from customer homepage contains : " + order.getOrders());
+        order.removeOrder(orderItem, mAdapter);
     }
 
     // add a single foodItem of orderItem to cart
     public void onSwipeRight() {
+        System.out.println("right swipe detected");
         ((CustomerHomepage) mContext).getOrder().addOrder(orderItem, mAdapter);
     }
 

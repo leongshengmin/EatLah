@@ -63,6 +63,25 @@ public class Order {
     }
 
     /**
+     * overloaded method which adds item to order without notifying adapter.
+     * @param item
+     */
+    public void addOrder(OrderItem item) {
+        if (!orderDict.containsKey(item.get_id())) {
+            System.out.println("adding new item: " + item.getName());
+            orderDict.put(item.get_id(), orders.size());
+            orders.add(item);
+        } else {
+            System.out.println("item already added, updating quantity of " + item.getName());
+            int idx = orderDict.get(item.get_id());
+            OrderItem prev = orders.get(idx);   // get the previous order
+            item.setQty(prev.getQty() + item.getQty()); // update quantity
+            orders.set(idx, item);
+        }
+        System.out.println(orders.size() + " orders currently");
+    }
+
+    /**
      * removes an order from orders.
      * @param orderItem
      */
