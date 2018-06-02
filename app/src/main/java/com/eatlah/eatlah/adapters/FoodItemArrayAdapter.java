@@ -46,9 +46,9 @@ public class FoodItemArrayAdapter extends ArrayAdapter<FoodItem> {
         }
 
         FoodItem foodItem = foodItemList.get(position);
-        ((TextView) viewHolder.findViewById(R.id.hcName_editText))
+        ((TextView) viewHolder.findViewById(R.id.orderName_textView))
                 .setText(foodItem.getName());
-        ((TextView) viewHolder.findViewById(R.id.hcAddress_editText))
+        ((TextView) viewHolder.findViewById(R.id.orderTime_textView))
                 .setText(foodItem.getDescription());
         ((TextView) viewHolder.findViewById(R.id.price_textView))
                 .setText(context.getResources().getString(R.string.food_item_price));

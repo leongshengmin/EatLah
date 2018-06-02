@@ -11,19 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MyFoodItemRecyclerViewAdapter;
-import com.eatlah.eatlah.models.FoodItem;
-import com.eatlah.eatlah.models.HawkerCentre;
-import com.eatlah.eatlah.models.HawkerStall;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
 
 /**
  * A fragment representing a list of Items.
@@ -31,27 +21,27 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class FoodItemFragment extends Fragment {
+public class OrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<FoodItem> foodItemList;
-    private MyFoodItemRecyclerViewAdapter mAdapter;
-    private static HawkerStall hawkerStall;
+    private MyOrderRecyclerViewAdapter mAdapter;
+    private static Order mOrder;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FoodItemFragment() {
+    public OrderFragment() {
     }
 
+    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static FoodItemFragment newInstance(int columnCount, HawkerStall stall) {
-        hawkerStall = stall;
-        FoodItemFragment fragment = new FoodItemFragment();
+    public static OrderFragment newInstance(int columnCount, Order order) {
+        mOrder = order;
+        OrderFragment fragment = new OrderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -61,6 +51,7 @@ public class FoodItemFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -69,8 +60,8 @@ public class FoodItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fooditem_list, container, false);
-        System.out.println("fooditem list now contains: " + foodItemList.size());
+        View view = inflater.inflate(R.layout.fragment_order_list, container, false);
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -80,43 +71,9 @@ public class FoodItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new MyFoodItemRecyclerViewAdapter(foodItemList, mListener);
-
-            recyclerView.setAdapter(mAdapter);
+            recyclerView.setAdapter(new MyOrderRecyclerViewAdapter(mOrder.getOrders(), mListener));
         }
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
-
-    private void retrieveFoodItems() {
-        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-        // set the db reference
-        DatabaseReference mDbRef = mDb.getReference(getResources().getString(R.string.food_item_ref));
-
-        foodItemList.clear();
-
-        // loop through the list of food_ids and add the foodItem object to foodItems
-        for (String foodId : hawkerStall.getMenu()) {
-            mDbRef.child(foodId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    System.out.println("data snapshot of fooditem: " + dataSnapshot);
-                    FoodItem foodItem = dataSnapshot.getValue(FoodItem.class);
-                    System.out.println("food item: " + foodItem);
-                    foodItemList.add(foodItem);
-                    mAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {}
-            });
-        }
-
     }
 
     @Override
@@ -124,8 +81,6 @@ public class FoodItemFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
-            foodItemList = new ArrayList<>();
-            retrieveFoodItems();
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -136,10 +91,6 @@ public class FoodItemFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public static HawkerStall getHawkerStall() {
-        return hawkerStall;
     }
 
     /**
@@ -153,6 +104,10 @@ public class FoodItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(FoodItem item, int qty);
+        void onListFragmentInteraction(OrderItem item);
+    }
+
+    public MyOrderRecyclerViewAdapter getmAdapter() {
+        return mAdapter;
     }
 }

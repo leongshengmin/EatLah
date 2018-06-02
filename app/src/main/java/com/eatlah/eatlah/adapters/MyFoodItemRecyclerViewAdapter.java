@@ -7,8 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
@@ -59,13 +62,22 @@ public class MyFoodItemRecyclerViewAdapter extends RecyclerView.Adapter<MyFoodIt
         holder.mDescView.setText(foodItem.getDescription());
         System.out.println("done binding " + foodItem.getName() + " to view holder");
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.mAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(foodItem);
+
+                    String qty = holder.mQtyView.getText().toString();
+
+                    if (qty != null && !qty.isEmpty()) {
+                        int quantity = Integer.parseInt(qty);
+                        mListener.onListFragmentInteraction(foodItem, quantity);
+                    } else {
+                        Toast.makeText((Activity)mListener, "invalid quantity!", Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
             }
         });
@@ -111,14 +123,19 @@ public class MyFoodItemRecyclerViewAdapter extends RecyclerView.Adapter<MyFoodIt
         private TextView mNameView;
         private TextView mDescView;
         private TextView mPriceView;
+        private EditText mQtyView;
         private ImageView mImageView;
+        private Button mAddToCart;
+
 
         public ViewHolder(View view) {
             super(view);
             mNameView = (TextView) view.findViewById(R.id.foodItemName_textView);
             mDescView = (TextView) view.findViewById(R.id.foodItemDesc_textView);
             mPriceView = (TextView) view.findViewById(R.id.price_textView);
+            mQtyView = view.findViewById(R.id.orderqty_editText);
             mImageView = (ImageView) view.findViewById(R.id.foodItem_image);
+            mAddToCart = view.findViewById(R.id.cart_button);
         }
 
     }

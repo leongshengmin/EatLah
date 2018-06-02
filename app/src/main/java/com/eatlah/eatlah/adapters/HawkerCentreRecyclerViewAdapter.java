@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -136,8 +135,8 @@ public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<Hawker
         public ViewHolder(View view) {
             super(view);
             mHCImageView = view.findViewById(R.id.hcImage);
-            mHCNameView = view.findViewById(R.id.hcName_editText);
-            mHCAddressView = view.findViewById(R.id.hcAddress_editText);
+            mHCNameView = view.findViewById(R.id.orderName_textView);
+            mHCAddressView = view.findViewById(R.id.orderTime_textView);
         }
     }
 }
