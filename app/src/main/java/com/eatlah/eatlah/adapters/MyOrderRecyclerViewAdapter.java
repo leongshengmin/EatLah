@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.CustomerHomepage;
 import com.eatlah.eatlah.fragments.OrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.listeners.OnSwipeTouchListener;
 import com.eatlah.eatlah.models.OrderItem;
@@ -56,7 +57,20 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
             }
         });
 
+        // left swipe decrements the quantity of order item by 1
+        // right swipe increments qty of order item by 1
         holder.itemView.setOnTouchListener(new OnSwipeTouchListener((Activity) mListener, this, orderItem));
+
+        // long press removes the order item from order
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                System.out.println("long press detected");
+                ((CustomerHomepage) mListener).getOrder()
+                        .removeAll(orderItem, MyOrderRecyclerViewAdapter.this);
+                return true;
+            }
+        });
     }
 
     private void calculatePrice(OrderItem orderItem, TextView priceView) {

@@ -104,6 +104,20 @@ public class Order {
     }
 
     /**
+     * removes the order item entirely from cart.
+     * @param orderItem
+     * @param adapter
+     */
+    public void removeAll(OrderItem orderItem, MyOrderRecyclerViewAdapter adapter) {
+        int idx = orderDict.get(orderItem.get_id());
+        System.out.println("removing this item from orders " + orderItem.getName());
+        shiftItemsOnRight(idx);
+
+        // notify adapter
+        adapter.notifyItemRangeChanged(idx, orders.size() - idx);
+    }
+
+    /**
      * shifts items to the right of orderItem with index idx to the left
      * then removes the last item in the list.
      */
