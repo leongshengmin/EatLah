@@ -436,7 +436,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // todo courier homepage and routes
 
                 } else {    // hawker
-                    // todo hawker homepage and routes
+                    intent = new Intent(LoginActivity.this, HawkerHomepage.class);
+                    startActivity(intent);
                 }
 
             } else {    // unsuccessful login

@@ -1,8 +1,10 @@
 package com.eatlah.eatlah.activities;
 
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,20 +14,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.HawkerCentreFragment;
+import com.eatlah.eatlah.models.HawkerCentre;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class HawkerHomepage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HawkerCentreFragment.OnListFragmentInteractionListener {
+
+    // database and authentication instances
+    private FirebaseDatabase mDb;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private DatabaseReference dbRef;
+
+    // floating action button
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hawker_homepage);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        mDb = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        initializeComponents();
+    }
+
+    private void initializeComponents() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.hawker_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.hawker_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -34,19 +63,24 @@ public class HawkerHomepage extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.hawker_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.hawker_nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        // set the display name
+        TextView mHawkerName_editText = (TextView) headerView.findViewById(R.id.hawkerName_textView);
+        mHawkerName_editText.setText(user.getEmail());
+
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.hawker_drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -82,8 +116,10 @@ public class HawkerHomepage extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_accepted_orders) {
+        Fragment fragment = null;
 
+        if (id == R.id.nav_accepted_orders) {
+            fragment = HawkerCentreFragment.newInstance(1);
         } else if (id == R.id.nav_completed_orders) {
 
         } else if (id == R.id.nav_admin_page) {
@@ -92,8 +128,26 @@ public class HawkerHomepage extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (fragment != null) {
+            displayFragment(fragment, "HawkerCentreFragment");
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.hawker_drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void displayFragment(Fragment fragment, String tag) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.hawker_frag_container, fragment, tag);
+        ft.addToBackStack(getTitle().toString());
+        ft.commit();
+        System.out.println("replaced fragment and committed");
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(HawkerCentre hawkerCentre) {
+
     }
 }
