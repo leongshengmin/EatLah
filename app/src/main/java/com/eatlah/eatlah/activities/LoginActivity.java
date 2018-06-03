@@ -418,8 +418,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         private void handleUnsuccessfulLogin() {
+            cancel(true);
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             mPasswordView.requestFocus();
+            onCancelled();
         }
 
         private void handleSuccessfulLogin() {
