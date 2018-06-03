@@ -110,9 +110,9 @@ public class Order {
      */
     public void removeAll(OrderItem orderItem, MyOrderRecyclerViewAdapter adapter) {
         int idx = orderDict.get(orderItem.get_id());
+        orderDict.remove(orderItem.get_id());
         System.out.println("removing this item from orders " + orderItem.getName());
         shiftItemsOnRight(idx);
-
         // notify adapter
         adapter.notifyItemRangeChanged(idx, orders.size() - idx);
     }
@@ -129,6 +129,10 @@ public class Order {
                 orderDict.put(entry.getKey(), entry.getValue() - 1);
             }
         }
+    }
+
+    public boolean hasOrders() {
+        return !orderDict.isEmpty();
     }
 
     /**

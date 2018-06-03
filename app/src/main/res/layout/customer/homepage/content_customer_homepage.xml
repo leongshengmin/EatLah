@@ -9,15 +9,4 @@
     tools:context=".activities.CustomerHomepage"
     tools:showIn="@layout/app_bar_customer_homepage">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/submit_or_cancel_button"
-        android:layout_width="70dp"
-        android:layout_height="96dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_save" />
 </android.support.constraint.ConstraintLayout>

@@ -240,7 +240,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -394,52 +394,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
+
             // attempt to sign user in
-            mAuth.signInWithEmailAndPassword(mEmail, mPassword)
+            return mAuth.signInWithEmailAndPassword(mEmail, mPassword)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            mAuthTask = null;
+                            showProgress(false);
+
                             if (task.isSuccessful()) {
                                 Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT)
                                         .show();
+                                handleSuccessfulLogin();
                             } else {
-                                Log.e("login", "error signing user in");
+                                Log.e("login", task.getException().getMessage());
                                 Toast.makeText(LoginActivity.this, "Unsuccessful login", Toast.LENGTH_SHORT)
                                         .show();
+                                handleUnsuccessfulLogin();
                             }
                         }
-                    });
-            return (mAuth.getCurrentUser() != null);    // true if user is successfully signed in, false otherwise
+                    }).isSuccessful();   // true if user is successfully signed in, false otherwise
         }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
+        private void handleUnsuccessfulLogin() {
+            mPasswordView.setError(getString(R.string.error_incorrect_password));
+            mPasswordView.requestFocus();
+        }
 
-            // redirect user to corresponding profile page
-            //todo
-            if (success) {
-                finish();
+        private void handleSuccessfulLogin() {
+            // get profile selected by user
+            String selectedProfile = mProfileView.getSelectedItem().toString();
+            String[] profiles = getResources().getStringArray(R.array.profiles);
 
-                // get profile selected by user
-                String selectedProfile = mProfileView.getSelectedItem().toString();
-                String[] profiles = getResources().getStringArray(R.array.profiles);
+            Intent intent;
+            if (selectedProfile.equals(profiles[0])) {  // customer
+                intent = new Intent(LoginActivity.this, CustomerHomepage.class);
+                startActivity(intent);
+            } else if (selectedProfile.equals(profiles[1])) {   // courier
+                // todo courier homepage and routes
 
-                Intent intent;
-                if (selectedProfile.equals(profiles[0])) {  // customer
-                    intent = new Intent(LoginActivity.this, CustomerHomepage.class);
-                    startActivity(intent);
-                } else if (selectedProfile.equals(profiles[1])) {   // courier
-                    // todo courier homepage and routes
-
-                } else {    // hawker
-                    // todo hawker homepage and routes
-                }
-
-            } else {    // unsuccessful login
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            } else {    // hawker
+                // todo hawker homepage and routes
             }
         }
 

@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.fragments.FoodItemFragment;
 import com.eatlah.eatlah.fragments.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.HawkerStallFragment;
@@ -82,6 +81,10 @@ public class CustomerHomepage extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.hide();
+
+        FloatingActionButton orderButton = findViewById(R.id.submit_or_cancel_button);
+        orderButton.hide();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -214,9 +217,11 @@ public class CustomerHomepage extends AppCompatActivity
 
     private void initializeCart() {
         HawkerStall hs = FoodItemFragment.getHawkerStall();
-        dbRef = mDb.getReference(getResources().getString(R.string.order_ref));
-        String timestamp = dbRef.push().getKey();
-        order = new Order(timestamp, user.getProviderId(), hs.getHc_id());
+        dbRef = mDb
+                .getReference(getResources().getString(R.string.order_ref))
+                .push();
+        String timestamp = dbRef.getKey();
+        order = new Order(timestamp, user.getUid(), hs.getHc_id());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,6 +243,7 @@ public class CustomerHomepage extends AppCompatActivity
                         });
             }
         });
+        fab.show();
     }
 
     @Override

@@ -370,6 +370,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {  // successfully signed up valid user
                                 saveUserToDb(mPhoneView.getText().toString(), mEmail);  // add user to db
+                                System.out.println("password: " + mPassword);
                                 Log.d("signup", "created new user signup successfully");
                                 redirectToLogin();  // redirect newly created user to login page
                             } else {

@@ -54,6 +54,10 @@
     <string name="food_item_price">$ %1$s</string>
     <string name="add_to_cart">Add to cart</string>
 
+    <!-- Strings related to orderView -->
+    <string name="order_submit_button">Submit Order</string>
+    <string name="order_cancel_button">Cancel Order</string>
+
     <!-- Strings related to fragment tags -->
     <string name="foodItemFrag">FoodItemFragment</string>
     <string name="hawkerStallFrag">HawkerStallFragment</string>
