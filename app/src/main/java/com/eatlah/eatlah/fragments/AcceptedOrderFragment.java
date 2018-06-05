@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MyAcceptedOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.AcceptedOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,7 +37,7 @@ public class AcceptedOrderFragment extends Fragment {
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private MyAcceptedOrderRecyclerViewAdapter mAdapter;
+    private AcceptedOrderRecyclerViewAdapter mAdapter;
     List<Order> mOrderList;
 
     /**
@@ -110,7 +110,7 @@ public class AcceptedOrderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_acceptedorder_list, container, false);
+        View view = inflater.inflate(R.layout.hawker_fragment_acceptedorder_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -121,7 +121,7 @@ public class AcceptedOrderFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new MyAcceptedOrderRecyclerViewAdapter(mOrderList, mListener);
+            mAdapter = new AcceptedOrderRecyclerViewAdapter(mOrderList, mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -165,7 +165,7 @@ public class AcceptedOrderFragment extends Fragment {
         void onListFragmentInteraction(Order item);
     }
 
-    public MyAcceptedOrderRecyclerViewAdapter getmAdapter() {
+    public AcceptedOrderRecyclerViewAdapter getmAdapter() {
         return mAdapter;
     }
 }

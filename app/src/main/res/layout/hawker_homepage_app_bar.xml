@@ -20,7 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_hawker_homepage" />
+    <include layout="@layout/hawker_homepage_content" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/hawker_fab"

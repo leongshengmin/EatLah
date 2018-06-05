@@ -11,16 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MyFoodItemRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.FoodItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.FoodItem;
-import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,7 @@ public class FoodItemFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private List<FoodItem> foodItemList;
-    private MyFoodItemRecyclerViewAdapter mAdapter;
+    private FoodItemRecyclerViewAdapter mAdapter;
     private static HawkerStall hawkerStall;
 
     /**
@@ -69,7 +67,7 @@ public class FoodItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fooditem_list, container, false);
+        View view = inflater.inflate(R.layout.customer_fragment_fooditem_list, container, false);
         System.out.println("fooditem list now contains: " + foodItemList.size());
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -80,7 +78,7 @@ public class FoodItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new MyFoodItemRecyclerViewAdapter(foodItemList, mListener);
+            mAdapter = new FoodItemRecyclerViewAdapter(foodItemList, mListener);
 
             recyclerView.setAdapter(mAdapter);
         }

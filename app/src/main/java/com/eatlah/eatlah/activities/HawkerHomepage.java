@@ -14,13 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
-import com.eatlah.eatlah.fragments.HawkerCentreFragment;
-import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.Order;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,7 +40,7 @@ public class HawkerHomepage extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hawker_homepage);
+        setContentView(R.layout.hawker_activity_homepage);
 
         mDb = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();

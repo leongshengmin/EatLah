@@ -1,6 +1,5 @@
 package com.eatlah.eatlah.adapters;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +18,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyAcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyAcceptedOrderRecyclerViewAdapter.ViewHolder> {
+public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<AcceptedOrderRecyclerViewAdapter.ViewHolder> {
 
     private final List<Order> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyAcceptedOrderRecyclerViewAdapter(List<Order> items, OnListFragmentInteractionListener listener) {
+    public AcceptedOrderRecyclerViewAdapter(List<Order> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -32,7 +31,7 @@ public class MyAcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyA
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.acceptedorder_view_holder, parent, false);
+                .inflate(R.layout.hawker_view_holder_acceptedorder, parent, false);
         return new ViewHolder(view);
     }
 

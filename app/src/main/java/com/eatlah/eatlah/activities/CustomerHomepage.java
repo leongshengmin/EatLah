@@ -64,7 +64,7 @@ public class CustomerHomepage extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_homepage);
+        setContentView(R.layout.customer_activity_homepage);
 
         mDb = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();

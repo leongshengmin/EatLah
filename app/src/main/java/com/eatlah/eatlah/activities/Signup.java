@@ -5,7 +5,6 @@ import com.eatlah.eatlah.models.User;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -95,7 +94,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.main_activity_signup);
 
         setTitle(getResources().getString(R.string.title_activity_signup));
 

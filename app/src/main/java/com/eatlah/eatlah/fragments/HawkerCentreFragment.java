@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.eatlah.eatlah.adapters.HawkerCentreRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.HawkerCentre;
-import com.eatlah.eatlah.models.HawkerStall;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -123,7 +122,7 @@ public class HawkerCentreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hawkercentre_list, container, false);
+        View view = inflater.inflate(R.layout.customer_fragment_hawkercentre_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {

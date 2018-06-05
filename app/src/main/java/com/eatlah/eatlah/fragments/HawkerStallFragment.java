@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.MyHawkerStallRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.HawkerStallRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
@@ -38,7 +37,7 @@ public class HawkerStallFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private List<HawkerStall> mHSList;
-    private MyHawkerStallRecyclerViewAdapter mAdapter;
+    private HawkerStallRecyclerViewAdapter mAdapter;
     private static HawkerCentre hawkerCentre;
 
     private FirebaseDatabase mDb;
@@ -74,7 +73,7 @@ public class HawkerStallFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hawkerstall_list, container, false);
+        View view = inflater.inflate(R.layout.customer_fragment_hawkerstall_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -85,7 +84,7 @@ public class HawkerStallFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new MyHawkerStallRecyclerViewAdapter(mHSList, mListener);
+            mAdapter = new HawkerStallRecyclerViewAdapter(mHSList, mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;

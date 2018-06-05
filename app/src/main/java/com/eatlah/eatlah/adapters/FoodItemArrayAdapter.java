@@ -42,7 +42,7 @@ public class FoodItemArrayAdapter extends ArrayAdapter<FoodItem> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View viewHolder = convertView;
         if (convertView == null) {
-            viewHolder = context.getLayoutInflater().inflate(R.layout.hawker_stall_view_holder, parent, false);
+            viewHolder = context.getLayoutInflater().inflate(R.layout.customer_view_holder_hawker_stall, parent, false);
         }
 
         FoodItem foodItem = foodItemList.get(position);

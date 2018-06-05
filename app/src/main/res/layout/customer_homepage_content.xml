@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.CustomerHomepage"
-    tools:showIn="@layout/app_bar_customer_homepage">
+    tools:showIn="@layout/customer_homepage_app_bar">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/submit_or_cancel_button"

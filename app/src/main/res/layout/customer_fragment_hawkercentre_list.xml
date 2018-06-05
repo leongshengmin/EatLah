@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.HawkerCentreFragment"
-    tools:listitem="@layout/hawker_centre_view_holder" />
+    tools:listitem="@layout/customer_view_holder_hawker_centre" />

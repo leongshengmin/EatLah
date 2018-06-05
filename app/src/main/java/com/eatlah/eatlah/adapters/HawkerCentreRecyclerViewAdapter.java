@@ -62,7 +62,7 @@ public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<Hawker
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         System.out.println("Creating view holder");
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.hawker_centre_view_holder, parent, false);
+                .inflate(R.layout.customer_view_holder_hawker_centre, parent, false);
         System.out.println("inflated view holder");
         return new ViewHolder(view);
     }

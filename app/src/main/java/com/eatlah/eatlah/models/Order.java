@@ -1,10 +1,9 @@
 package com.eatlah.eatlah.models;
 
-import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class Order {
      * adds an order to orders.
      * @param item
      */
-    public void addOrder(OrderItem item, MyOrderRecyclerViewAdapter adapter) {
+    public void addOrder(OrderItem item, OrderRecyclerViewAdapter adapter) {
         if (!orderDict.containsKey(item.get_id())) {
             System.out.println("adding new item: " + item.getName());
             orderDict.put(item.get_id(), orders.size());
@@ -87,7 +86,7 @@ public class Order {
      * removes an order from orders.
      * @param orderItem
      */
-    public void removeOrder(OrderItem orderItem, MyOrderRecyclerViewAdapter adapter) {
+    public void removeOrder(OrderItem orderItem, OrderRecyclerViewAdapter adapter) {
         int idx = orderDict.get(orderItem.get_id());
         if (orderItem.getQty() == 1) {  // swiping will remove this item from view
             System.out.println("removing this item from orders " + orderItem.getName());
@@ -110,7 +109,7 @@ public class Order {
      * @param orderItem
      * @param adapter
      */
-    public void removeAll(OrderItem orderItem, MyOrderRecyclerViewAdapter adapter) {
+    public void removeAll(OrderItem orderItem, OrderRecyclerViewAdapter adapter) {
         int idx = orderDict.get(orderItem.get_id());
         orderDict.remove(orderItem.get_id());
         System.out.println("removing this item from orders " + orderItem.getName());

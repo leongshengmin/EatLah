@@ -2,12 +2,14 @@
 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/acceptedorder_list"
-    android:name="com.eatlah.eatlah.fragments.AcceptedOrderFragment"
+    android:id="@+id/list"
+    android:name="com.eatlah.eatlah.fragments.FoodItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.AcceptedOrderFragment"
-    tools:listitem="@layout/acceptedorder_view_holder" />
+    tools:context=".fragments.FoodItemFragment"
+    tools:listitem="@layout/customer_view_holder_food_item" >
+
+</android.support.v7.widget.RecyclerView>

@@ -9,11 +9,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.eatlah.eatlah.activities.CustomerHomepage;
-import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
-
-import java.util.Observer;
 
 /**
  * Detects left and right swipes across a view.
@@ -22,10 +20,10 @@ public class OnSwipeTouchListener implements OnTouchListener {
 
     private final Activity mContext;
     private final OrderItem orderItem;
-    private final MyOrderRecyclerViewAdapter mAdapter;
+    private final OrderRecyclerViewAdapter mAdapter;
     private final GestureDetector gestureDetector;
 
-    public OnSwipeTouchListener(Context context, MyOrderRecyclerViewAdapter mAdapter, OrderItem orderItem) {
+    public OnSwipeTouchListener(Context context, OrderRecyclerViewAdapter mAdapter, OrderItem orderItem) {
         this.orderItem = orderItem;
         this.mAdapter = mAdapter;
         this.mContext = (Activity) context;

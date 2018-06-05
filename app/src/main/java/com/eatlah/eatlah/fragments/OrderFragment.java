@@ -12,15 +12,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MyOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +37,7 @@ public class OrderFragment extends Fragment {
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private MyOrderRecyclerViewAdapter mAdapter;
+    private OrderRecyclerViewAdapter mAdapter;
     private FloatingActionButton submit_btn;
     private static Order mOrder;
 
@@ -85,7 +83,7 @@ public class OrderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_list, container, false);
+        View view = inflater.inflate(R.layout.customer_fragment_order_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -98,7 +96,7 @@ public class OrderFragment extends Fragment {
             }
             displayButton();
 
-            mAdapter = new MyOrderRecyclerViewAdapter(mOrder.getOrders(), mListener);
+            mAdapter = new OrderRecyclerViewAdapter(mOrder.getOrders(), mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -190,7 +188,7 @@ public class OrderFragment extends Fragment {
         void onListFragmentInteraction(OrderItem item);
     }
 
-    public MyOrderRecyclerViewAdapter getmAdapter() {
+    public OrderRecyclerViewAdapter getmAdapter() {
         return mAdapter;
     }
 }
