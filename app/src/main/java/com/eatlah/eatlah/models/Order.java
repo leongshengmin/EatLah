@@ -177,6 +177,10 @@ public class Order {
         return user_id;
     }
 
+    public String getHawkerAddress() {
+        return String.format("Hawker Centre Address: \nPostal Code: %s\n", hawkerCentre_id);
+    }
+
     public void setHawkerCentre_id(String hawkerCentre_id) {
         this.hawkerCentre_id = hawkerCentre_id;
     }

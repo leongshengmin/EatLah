@@ -90,11 +90,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
         public ViewHolder(View view) {
             super(view);
-            mName = (TextView) view.findViewById(R.id.orderName_textView);
+            mName = (TextView) view.findViewById(R.id.orderTimestamp_testView);
             mQty = (TextView) view.findViewById(R.id.orderQty_textView);
             mPrice = view.findViewById(R.id.price_textView);
-            mDesc = view.findViewById(R.id.orderDesc_textView);
-            mCancelButton = view.findViewById(R.id.cancel_button);
+            mDesc = view.findViewById(R.id.orderAddress_textView);
+            mCancelButton = view.findViewById(R.id.viewOrders_button);
         }
 
     }

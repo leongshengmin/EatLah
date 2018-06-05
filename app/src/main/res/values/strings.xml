@@ -25,6 +25,7 @@
     <string name="action_sign_up">Sign up</string>
     <string name="mobile_number">Mobile Number</string>
 
+    <!-- CUSTOMER -->
     <!-- Strings related to customer homepage -->
     <string name="title_activity_customer_homepage">Customer Homepage</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -61,11 +62,21 @@
     <string name="order_submit_button">Submit Order</string>
     <string name="order_cancel_button">Cancel Order</string>
 
+
+    <!-- COURIER -->
+    <!-- Strings related to CourierHomepage -->
+    <!-- tags -->
+    <string name="courierPendingOrderFrag">CourierPendingOrderFragment</string>
+
+    <!-- Strings related to pendingOrderView -->
+    <string name="viewOrders">View Orders</string>
+
     <!-- Strings related to fragment tags -->
     <string name="foodItemFrag">FoodItemFragment</string>
     <string name="hawkerStallFrag">HawkerStallFragment</string>
     <string name="hawkerCentreFrag">HawkerCentreFragment</string>
     <string name="orderFrag">OrderFragment</string>
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
+    <string name="title_activity_courier_homepage">CourierHomepage</string>
 
 </resources>

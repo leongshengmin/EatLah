@@ -153,7 +153,6 @@ public class CustomerHomepage extends AppCompatActivity
         } else if (id == R.id.nav_send) {
             // todo cloud messaging
         } else {
-            // todo browse hawker centres fragment
             System.out.println("order view selected");
             fragment = HawkerCentreFragment.newInstance(1);
         }

@@ -20,9 +20,7 @@
                 android:layout_width="165dp"
                 android:layout_height="37dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginEnd="73dp"
                 android:layout_marginLeft="35dp"
-                android:layout_marginRight="73dp"
                 android:layout_marginStart="35dp"
                 android:layout_marginTop="26dp"
                 android:editable="false"
@@ -30,50 +28,20 @@
                 android:inputType="textPersonName"
                 android:text="Name"
                 app:layout_constraintBottom_toTopOf="@+id/orderAddress_textView"
-                app:layout_constraintEnd_toStartOf="@+id/orderQty_textView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/orderQty_textView"
-                android:layout_width="71dp"
-                android:layout_height="33dp"
-                android:layout_marginBottom="28dp"
-                android:layout_marginEnd="31dp"
-                android:layout_marginRight="31dp"
-                android:layout_marginTop="26dp"
-                android:inputType="numberDecimal"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/price_textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/orderTimestamp_testView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/price_textView"
-                android:layout_width="84dp"
-                android:layout_height="32dp"
-                android:layout_marginBottom="80dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginLeft="60dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginStart="60dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/orderAddress_textView"
-                app:layout_constraintTop_toBottomOf="@+id/orderQty_textView" />
-
-            <TextView
                 android:id="@+id/orderAddress_textView"
-                android:layout_width="0dp"
+                android:layout_width="177dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginEnd="54dp"
-                android:layout_marginLeft="41dp"
-                android:layout_marginRight="54dp"
-                android:layout_marginStart="41dp"
+                android:layout_marginEnd="31dp"
+                android:layout_marginLeft="31dp"
+                android:layout_marginRight="31dp"
+                android:layout_marginStart="31dp"
                 android:layout_marginTop="10dp"
+                android:inputType="textMultiLine"
                 android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/viewOrders_button"
@@ -82,17 +50,20 @@
 
             <Button
                 android:id="@+id/viewOrders_button"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="10dp"
+                android:layout_width="97dp"
+                android:layout_height="57dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginEnd="34dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="34dp"
                 android:layout_marginStart="30dp"
-                android:text="Button"
+                android:layout_marginTop="8dp"
+                android:text="@string/viewOrders"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/orderAddress_textView" />
+                app:layout_constraintStart_toEndOf="@+id/orderAddress_textView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.882" />
 
         </android.support.constraint.ConstraintLayout>
 

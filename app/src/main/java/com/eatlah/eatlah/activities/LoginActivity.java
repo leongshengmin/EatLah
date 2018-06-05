@@ -425,6 +425,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             onCancelled();
         }
 
+        // todo check profile registered during signup with login profile
         private void handleSuccessfulLogin() {
             // get profile selected by user
             String selectedProfile = mProfileView.getSelectedItem().toString();

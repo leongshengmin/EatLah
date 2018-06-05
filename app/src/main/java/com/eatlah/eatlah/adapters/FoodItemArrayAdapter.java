@@ -46,7 +46,7 @@ public class FoodItemArrayAdapter extends ArrayAdapter<FoodItem> {
         }
 
         FoodItem foodItem = foodItemList.get(position);
-        ((TextView) viewHolder.findViewById(R.id.orderName_textView))
+        ((TextView) viewHolder.findViewById(R.id.orderTimestamp_testView))
                 .setText(foodItem.getName());
         ((TextView) viewHolder.findViewById(R.id.orderTime_textView))
                 .setText(foodItem.getDescription());
