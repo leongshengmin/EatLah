@@ -11,12 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.MyAcceptedOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.dummy.DummyContent;
-import com.eatlah.eatlah.dummy.DummyContent.DummyItem;
+import com.eatlah.eatlah.adapters.MyAcceptedOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
-import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

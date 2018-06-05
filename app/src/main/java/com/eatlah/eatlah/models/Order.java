@@ -13,6 +13,7 @@ public class Order {
     private String user_id; // mobile number of customer
     private String courier_id;  // mobile number of courier
     private String hawkerCentre_id; // postal code of hc
+    private String stall_id;
     private HashMap<String, Integer> orderDict;  // stores the orderitem as key and index in orders as value
     private List<OrderItem> orders;
     private String misc;
@@ -20,21 +21,22 @@ public class Order {
     private boolean ready;
 
     public Order(String timestamp, String user_id,
-                 String courier_id, String hawkerCentre_id, List<OrderItem> orders,
-                 String misc, boolean self_collection, boolean ready) {
+                 String courier_id, String hawkerCentre_id, String stall_id,
+                 List<OrderItem> orders, String misc, boolean self_collection, boolean ready) {
         this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
         this.courier_id = courier_id;
         this.hawkerCentre_id = hawkerCentre_id;
+        this.stall_id = stall_id;
         this.orders = orders;
         this.misc = misc;
         this.self_collection = self_collection;
         this.ready = ready;
     }
 
-    public Order(String timestamp, String user_id, String hawkerCentre_id) {
-        this(timestamp, user_id, null, hawkerCentre_id, new ArrayList<OrderItem>(),
+    public Order(String timestamp, String user_id, String hawkerCentre_id, String stall_id) {
+        this(timestamp, user_id, null, hawkerCentre_id, stall_id, new ArrayList<OrderItem>(),
                 null, true, false);
     }
 
