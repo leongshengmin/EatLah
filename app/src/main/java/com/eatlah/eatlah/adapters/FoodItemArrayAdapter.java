@@ -46,7 +46,7 @@ public class FoodItemArrayAdapter extends ArrayAdapter<FoodItem> {
         }
 
         FoodItem foodItem = foodItemList.get(position);
-        ((TextView) viewHolder.findViewById(R.id.orderTimestamp_testView))
+        ((TextView) viewHolder.findViewById(R.id.orderName_textView))
                 .setText(foodItem.getName());
         ((TextView) viewHolder.findViewById(R.id.orderTime_textView))
                 .setText(foodItem.getDescription());
@@ -56,6 +56,7 @@ public class FoodItemArrayAdapter extends ArrayAdapter<FoodItem> {
         if (foodItem.getImage_path() != null && !foodItem.getImage_path().isEmpty()) {
             glideImageInto(foodItem.getImage_path(), imageView);
         }
+        System.out.println("food item stall id: " + foodItem.getStall_id());
 
         return viewHolder;
     }

@@ -67,6 +67,7 @@
     <!-- Strings related to CourierHomepage -->
     <!-- tags -->
     <string name="courierPendingOrderFrag">CourierPendingOrderFragment</string>
+    <string name="courierFoodItemsFrag">CourierOrderItemsFragment</string>
 
     <!-- Strings related to pendingOrderView -->
     <string name="viewOrders">View Orders</string>

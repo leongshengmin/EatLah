@@ -90,7 +90,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
         public ViewHolder(View view) {
             super(view);
-            mName = (TextView) view.findViewById(R.id.orderTimestamp_testView);
+            mName = (TextView) view.findViewById(R.id.orderName_textView);
             mQty = (TextView) view.findViewById(R.id.orderQty_textView);
             mPrice = view.findViewById(R.id.price_textView);
             mDesc = view.findViewById(R.id.orderAddress_textView);

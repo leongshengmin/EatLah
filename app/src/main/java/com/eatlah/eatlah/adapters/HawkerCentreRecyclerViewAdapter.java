@@ -135,7 +135,7 @@ public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<Hawker
         public ViewHolder(View view) {
             super(view);
             mHCImageView = view.findViewById(R.id.hcImage);
-            mHCNameView = view.findViewById(R.id.orderTimestamp_testView);
+            mHCNameView = view.findViewById(R.id.orderName_textView);
             mHCAddressView = view.findViewById(R.id.orderTime_textView);
         }
     }

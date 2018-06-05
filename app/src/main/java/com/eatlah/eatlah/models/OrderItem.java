@@ -4,7 +4,7 @@ public class OrderItem extends FoodItem {
     private int qty;
 
     public OrderItem(FoodItem foodItem, int qty) {
-        super(foodItem.get_id(), foodItem.getName(), foodItem.getPrice(), foodItem.getImage_path(), foodItem.getDescription());
+        super(foodItem.get_id(), foodItem.getStall_id(), foodItem.getName(), foodItem.getPrice(), foodItem.getImage_path(), foodItem.getDescription());
         this.qty = qty;
     }
 

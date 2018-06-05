@@ -435,8 +435,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (selectedProfile.equals(profiles[0])) {  // customer
                 intent = new Intent(LoginActivity.this, CustomerHomepage.class);
             } else if (selectedProfile.equals(profiles[1])) {   // courier
-                // todo courier homepage and routes
-                intent = null;
+                intent = new Intent(LoginActivity.this, CourierHomepage.class);
             } else {    // hawker
                 intent = new Intent(LoginActivity.this, HawkerHomepage.class);
             }

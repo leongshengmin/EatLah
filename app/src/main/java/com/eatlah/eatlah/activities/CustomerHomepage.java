@@ -220,7 +220,7 @@ public class CustomerHomepage extends AppCompatActivity
                 .getReference(getResources().getString(R.string.order_ref))
                 .push();
         String timestamp = dbRef.getKey();
-        order = new Order(timestamp, user.getUid(), hs.getHc_id(), hs.get_id());
+        order = new Order(timestamp, user.getUid(), hs.getHc_id());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

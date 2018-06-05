@@ -3,13 +3,15 @@ package com.eatlah.eatlah.models;
 public class FoodItem {
 
     private String _id;
+    private String stall_id;
     private String name;
     private String price;
     private String image_path;
     private String description;
 
-    FoodItem(String _id, String name, String price, String image_path, String description) {
+    FoodItem(String _id, String stall_id, String name, String price, String image_path, String description) {
         this.image_path = image_path;
+        this.stall_id = stall_id;
         this._id = _id;
         this.price = price;
         this.description = description;
@@ -17,6 +19,10 @@ public class FoodItem {
     }
 
     FoodItem() {}
+
+    public String getStall_id() {
+        return stall_id;
+    }
 
     public String getImage_path() {
         return image_path;
@@ -56,5 +62,9 @@ public class FoodItem {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public void setStall_id(String stall_id) {
+        this.stall_id = stall_id;
     }
 }

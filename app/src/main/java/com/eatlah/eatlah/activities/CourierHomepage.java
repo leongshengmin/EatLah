@@ -16,11 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
 import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
 
 public class CourierHomepage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, CourierPendingOrderFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        CourierPendingOrderFragment.OnListFragmentInteractionListener,
+        CourierOrderItemsFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +121,19 @@ public class CourierHomepage extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Order item) {
-        // display ordered foodItems
-        //todo orderItems fragment
+        // create foodItems fragment and pass in Order containing list of foodItems as arg
+        Bundle bd = new Bundle();
+        bd.putSerializable(getResources().getString(R.string.order_ref), item);
+        Fragment fragment = CourierOrderItemsFragment
+                .newInstance(1);
+        fragment.setArguments(bd);
+
+        // display the fragment
+        displayFragment(fragment, getResources().getString(R.string.courierFoodItemsFrag));
+    }
+
+    @Override
+    public void onListFragmentInteraction(OrderItem item) {
+        // null
     }
 }

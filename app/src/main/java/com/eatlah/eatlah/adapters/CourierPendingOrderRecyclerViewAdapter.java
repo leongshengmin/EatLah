@@ -9,14 +9,12 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment.OnListFragmentInteractionListener;
-import com.eatlah.eatlah.fragments.dummy.DummyContent.DummyItem;
 import com.eatlah.eatlah.models.Order;
-import com.eatlah.eatlah.models.OrderItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Order} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
@@ -74,7 +72,7 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
 
         public ViewHolder(View view) {
             super(view);
-            mTimeStampView = view.findViewById(R.id.orderTimestamp_testView);
+            mTimeStampView = view.findViewById(R.id.orderName_textView);
             mAddressView = view.findViewById(R.id.orderAddress_textView);
             mViewOrdersView = view.findViewById(R.id.viewOrders_button);
         }
