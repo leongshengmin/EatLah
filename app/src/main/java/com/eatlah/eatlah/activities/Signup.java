@@ -5,6 +5,7 @@ import com.eatlah.eatlah.models.User;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -370,6 +371,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {  // successfully signed up valid user
                                 saveUserToDb(mPhoneView.getText().toString(), mEmail);  // add user to db
+                                System.out.println("password: " + mPassword);
                                 Log.d("signup", "created new user signup successfully");
                                 redirectToLogin();  // redirect newly created user to login page
                             } else {
@@ -378,6 +380,8 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                                         .show();
                                 showProgress(false);
                                 mEmailView.requestFocus();
+                                cancel(true);
+                                onCancelled();
                             }
                         }
                     }).isSuccessful();
@@ -403,6 +407,8 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                         } else {
                             Log.e("signup", task.getException().getMessage());
                             mEmailView.requestFocus();
+                            cancel(true);
+                            onCancelled();
                         }
                     }
                 });

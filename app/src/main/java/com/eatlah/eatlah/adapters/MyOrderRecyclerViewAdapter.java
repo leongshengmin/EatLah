@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.CustomerHomepage;
@@ -61,14 +62,12 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         // right swipe increments qty of order item by 1
         holder.itemView.setOnTouchListener(new OnSwipeTouchListener((Activity) mListener, this, orderItem));
 
-        // long press removes the order item from order
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
+        holder.mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                System.out.println("long press detected");
+            public void onClick(View v) {
                 ((CustomerHomepage) mListener).getOrder()
                         .removeAll(orderItem, MyOrderRecyclerViewAdapter.this);
-                return true;
             }
         });
     }
@@ -89,6 +88,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
         private TextView mQty;
         private TextView mPrice;
         private TextView mDesc;
+        private Button mCancelButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -96,6 +96,7 @@ public class MyOrderRecyclerViewAdapter extends RecyclerView.Adapter<MyOrderRecy
             mQty = (TextView) view.findViewById(R.id.orderQty_textView);
             mPrice = view.findViewById(R.id.price_textView);
             mDesc = view.findViewById(R.id.orderDesc_textView);
+            mCancelButton = view.findViewById(R.id.cancel_button);
         }
 
     }
