@@ -18,8 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.HawkerCentreFragment;
 import com.eatlah.eatlah.models.HawkerCentre;
+import com.eatlah.eatlah.models.Order;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class HawkerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        HawkerCentreFragment.OnListFragmentInteractionListener {
+        AcceptedOrderFragment.OnListFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -119,7 +121,7 @@ public class HawkerHomepage extends AppCompatActivity
         Fragment fragment = null;
 
         if (id == R.id.nav_accepted_orders) {
-            fragment = HawkerCentreFragment.newInstance(1);
+            fragment = AcceptedOrderFragment.newInstance(1);
         } else if (id == R.id.nav_completed_orders) {
 
         } else if (id == R.id.nav_admin_page) {
@@ -147,7 +149,7 @@ public class HawkerHomepage extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(HawkerCentre hawkerCentre) {
+    public void onListFragmentInteraction(Order item) {
 
     }
 }
