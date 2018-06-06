@@ -28,54 +28,60 @@
                 android:editable="false"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Name"
+                android:text="Timestamp"
                 app:layout_constraintBottom_toTopOf="@+id/acceptedorder_orderDesc_textView"
                 app:layout_constraintEnd_toStartOf="@+id/acceptedorder_orderQty_textView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/acceptedorder_orderQty_textView"
+                android:id="@+id/acceptedorder_price_textView"
+
                 android:layout_width="71dp"
                 android:layout_height="33dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="31dp"
                 android:layout_marginRight="31dp"
-                android:layout_marginTop="26dp"
-                android:inputType="numberDecimal"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/acceptedorder_price_textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/acceptedorder_orderName_textView"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginTop="8dp"
 
-            <TextView
-                android:id="@+id/acceptedorder_price_textView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="29dp"
-                android:layout_marginEnd="35dp"
-                android:layout_marginRight="35dp"
-                android:text="TextView"
+                android:text="Price"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/acceptedorder_orderDesc_textView"
-                app:layout_constraintTop_toBottomOf="@+id/acceptedorder_orderQty_textView" />
+                app:layout_constraintHorizontal_bias="0.865"
+                app:layout_constraintStart_toEndOf="@+id/acceptedorder_orderName_textView"
+                app:layout_constraintTop_toBottomOf="@+id/hawker_viewOrder_button"
+                app:layout_constraintVertical_bias="0.375" />
+
             <TextView
                 android:id="@+id/acceptedorder_orderDesc_textView"
                 android:layout_width="168dp"
-                android:layout_height="55dp"
+                android:layout_height="70dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="70dp"
                 android:layout_marginLeft="35dp"
                 android:layout_marginRight="70dp"
                 android:layout_marginStart="35dp"
                 android:layout_marginTop="10dp"
-                android:text="TextView"
+                android:text="Description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/acceptedorder_price_textView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/acceptedorder_orderName_textView" />
+
+            <Button
+                android:id="@+id/hawker_viewOrder_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="26dp"
+                android:text="@string/viewOrders"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/acceptedorder_orderName_textView"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 

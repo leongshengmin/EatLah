@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
@@ -44,8 +45,6 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
         // Calculate price and set text
         calculatePrice(order, holder.mPrice);
 
-        holder.mQty.setText(Integer.toString(order.getOrders().size()));
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,17 +69,16 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mName;
-        private TextView mQty;
         private TextView mPrice;
         private TextView mDesc;
+        private Button mButton;
 
         public ViewHolder(View view) {
             super(view);
             mName = (TextView) view.findViewById(R.id.acceptedorder_orderName_textView);
-            mQty = (TextView) view.findViewById(R.id.acceptedorder_orderQty_textView);
             mPrice = view.findViewById(R.id.acceptedorder_price_textView);
             mDesc = view.findViewById(R.id.acceptedorder_orderDesc_textView);
-
+            mButton = view.findViewById(R.id.hawker_viewOrder_button);
         }
     }
 }
