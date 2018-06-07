@@ -2,7 +2,10 @@ package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.CourierMapsActivity;
 import com.eatlah.eatlah.adapters.CourierPendingOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -35,7 +38,7 @@ public class CourierPendingOrderFragment extends Fragment {
     private int mColumnCount = 1;
 
     private FirebaseDatabase mDb;
-    private List<Order> mOrders;
+    private ArrayList<Order> mOrders;
     private CourierPendingOrderRecyclerViewAdapter mAdapter;
     private OnListFragmentInteractionListener mListener;
 
@@ -48,7 +51,6 @@ public class CourierPendingOrderFragment extends Fragment {
         mDb = FirebaseDatabase.getInstance();
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static CourierPendingOrderFragment newInstance(int columnCount) {
         CourierPendingOrderFragment fragment = new CourierPendingOrderFragment();
@@ -71,6 +73,7 @@ public class CourierPendingOrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.courier_fragment_pending_order_list, container, false);
+        initMapViewButton((Activity) mListener);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -85,6 +88,38 @@ public class CourierPendingOrderFragment extends Fragment {
             recyclerView.setAdapter(mAdapter);
         }
         return view;
+    }
+
+    private void initMapViewButton(Activity activity) {
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
+        fab.show();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Switching to map view", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                // start map view
+                displayMap();
+            }
+        });
+    }
+
+    /**
+     * displays map activity with pins marking pending orders
+     */
+    private void displayMap() {
+        Intent intent = new Intent(getActivity(), CourierMapsActivity.class);
+        Bundle bd = new Bundle();
+
+        //todo bug fixing
+        ArrayList<String> ls = new ArrayList<>();
+        for (Order o : mOrders) {
+            ls.add(o.getHawkerCentre_id());
+        }
+        bd.putSerializable(getResources().getString(R.string.pendingOrders), ls);
+        intent.putExtra(getResources().getString(R.string.pendingOrders), ls);
+
+        startActivity(intent);
     }
 
     @Override
@@ -108,8 +143,15 @@ public class CourierPendingOrderFragment extends Fragment {
                         mOrders.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Order order = snapshot.getValue(Order.class);
-                            System.out.println("order from db: " + order.getTimestamp());
-                            mOrders.add(order);
+                            System.out.println("order self collect?:  " + order.isSelf_collection());
+                            System.out.println("order courier id: " + order.getCourier_id());
+                            System.out.println("order courier? : " + order.isCourierAttending());
+
+                            // only add order if order is for delivery and no courier has attended yet
+                            if (!order.isSelf_collection() && !order.isCourierAttending()) {
+                                System.out.println("order from db: " + order.getTimestamp());
+                                mOrders.add(order);
+                            }
                         }
 
                         updateOrderView();

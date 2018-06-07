@@ -17,7 +17,7 @@ public class Order implements Serializable {
     private List<OrderItem> orders;
     private String misc;
     private boolean self_collection;
-    private boolean ready;
+    private boolean ready;  // is the order ready for collection
 
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id,
@@ -176,6 +176,14 @@ public class Order implements Serializable {
         return user_id;
     }
 
+    public boolean isReady() {
+        return ready;
+    }
+
+    public boolean isSelf_collection() {
+        return self_collection;
+    }
+
     public String getHawkerAddress() {
         return String.format("Hawker Centre Address: \nPostal Code: %s\n", hawkerCentre_id);
     }
@@ -206,5 +214,13 @@ public class Order implements Serializable {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    /**
+     * checks if a courier is already attending to this order
+     * @return true if a courier is already attending to this order, false otherwise.
+     */
+    public boolean isCourierAttending() {
+        return !(courier_id == null || courier_id.isEmpty());
     }
 }

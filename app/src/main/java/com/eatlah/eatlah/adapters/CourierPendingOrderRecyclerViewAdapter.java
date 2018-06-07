@@ -41,13 +41,6 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
         holder.mTimeStampView.setText(order.getTimestamp());
         holder.mAddressView.setText(order.getHawkerAddress());
 
-        holder.mViewOrdersView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo view orders
-            }
-        });
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,13 +61,11 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTimeStampView;
         private TextView mAddressView;
-        private Button mViewOrdersView;
 
         public ViewHolder(View view) {
             super(view);
             mTimeStampView = view.findViewById(R.id.orderName_textView);
             mAddressView = view.findViewById(R.id.orderAddress_textView);
-            mViewOrdersView = view.findViewById(R.id.viewOrders_button);
         }
     }
 }

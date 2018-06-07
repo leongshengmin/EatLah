@@ -71,6 +71,13 @@
 
     <!-- Strings related to pendingOrderView -->
     <string name="viewOrders">View Orders</string>
+    <string name="attendToOrder">Attend to Order</string>
+    <string name="pendingOrders">Pending Orders</string>
+
+    <!-- Strings related to mapView -->
+    <string name="requestingLocationServices">is_requesting_updates</string>
+    <string name="lastKnownLocation">last_known_location</string>
+    <string name="currentLocation">Current Location</string>
 
     <!-- Strings related to fragment tags -->
     <string name="foodItemFrag">FoodItemFragment</string>
@@ -79,5 +86,6 @@
     <string name="orderFrag">OrderFragment</string>
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
     <string name="title_activity_courier_homepage">CourierHomepage</string>
+    <string name="title_activity_courier_maps">Map</string>
 
 </resources>
