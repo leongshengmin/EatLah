@@ -1,5 +1,7 @@
 package com.eatlah.eatlah.adapters;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -49,6 +53,12 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
             @Override
             public void onClick(View v) {
                 mListener.onListFragmentInteraction(order);
+            }
+        });
+        holder.mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

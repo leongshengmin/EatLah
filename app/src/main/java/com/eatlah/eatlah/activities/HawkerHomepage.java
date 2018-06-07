@@ -17,8 +17,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.dummy.DummyContent;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
+import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
 import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class HawkerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        AcceptedOrderFragment.OnListFragmentInteractionListener {
+        AcceptedOrderFragment.OnListFragmentInteractionListener,
+        AcceptedOrderItemFragment.OnListFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -145,8 +149,17 @@ public class HawkerHomepage extends AppCompatActivity
 
     }
 
+    // When order is clicked
     @Override
-    public void onListFragmentInteraction(Order item) {
+    public void onListFragmentInteraction(Order order) {
+        AcceptedOrderItemFragment fragment = AcceptedOrderItemFragment.newInstance(1, order);
+        displayFragment(fragment, getResources().getString(R.string.acceptedOrderItemFrag));
+
+    }
+
+
+    @Override
+    public void onListFragmentInteraction(OrderItem item) {
 
     }
 }
