@@ -14,14 +14,14 @@ public class Order implements Serializable {
     private String courier_id;  // mobile number of courier
     private String hawkerCentre_id; // postal code of hc
     private HashMap<String, Integer> orderDict;  // stores the orderitem as key and index in orders as value
-    private List<OrderItem> orders;
+    private ArrayList<OrderItem> orders;
     private String misc;
     private boolean self_collection;
     private boolean ready;  // is the order ready for collection
 
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id,
-                 List<OrderItem> orders, String misc, boolean self_collection, boolean ready) {
+                 ArrayList<OrderItem> orders, String misc, boolean self_collection, boolean ready) {
         this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
@@ -196,7 +196,7 @@ public class Order implements Serializable {
         this.misc = misc;
     }
 
-    public void setOrders(List<OrderItem> orders) {
+    public void setOrders(ArrayList<OrderItem> orders) {
         this.orders = orders;
     }
 

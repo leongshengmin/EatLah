@@ -3,7 +3,6 @@ package com.eatlah.eatlah.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -13,37 +12,30 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
 import com.eatlah.eatlah.models.Order;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -59,43 +51,45 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class CourierMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class CourierMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     // bunch of location related apis
-    private FusedLocationProviderClient mFusedLocationClient;
-    private SettingsClient mSettingsClient;
+    private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest mLocationRequest;
-    private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
     private Location mCurrentLocation;
 
-    // boolean flag to toggle the ui
-    private Boolean mRequestingLocationUpdates;
+    private GoogleMap mMap;
+    private CameraUpdate cu;
 
     // permissions
-    private static final int REQUEST_CHECK_SETTINGS = 100;
+    private long UPDATE_INTERVAL = 1200000; // 2 mins
+    private long FASTEST_INTERVAL = 30000;  // 30 s
 
-    private GoogleMap mMap;
-    private FirebaseDatabase mDb;
+    private HashMap<String, Order> orderDict;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.courier_maps_activity);
-        mDb = FirebaseDatabase.getInstance();
+        orderDict = new HashMap<>();
+
+        startLocationUpdates();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         loadMap();
+    }
 
-        // initialize the necessary libraries
-        init();
-
-        // restore values from previous state
-        restoreValuesFromBundle(savedInstanceState);
-
-        checkPermissions();
+    /**
+     * sets bounding box around sg
+     */
+    private LatLngBounds getBoundingBox() {
+        LatLng ne = new LatLng(1.478400, 104.094500);
+        LatLng sw = new LatLng(1.149600, 103.594000);
+        return new LatLngBounds(sw, ne);
     }
 
     private void loadMap() {
@@ -110,13 +104,13 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
     private void mapOrders() {
         System.out.println("mapping orders");
         // retrieve the pending orders
-        ArrayList<String> pendingOrders = (ArrayList<String>) getIntent()
+        ArrayList<Order> pendingOrders = (ArrayList<Order>) getIntent()
                 .getSerializableExtra(getResources().getString(R.string.pendingOrders));
 
         // display the orders
-        for (String order : pendingOrders) {
-          //  String postalCode = order.getHawkerCentre_id();
-            getLatLongFromPlace(order);
+        for (Order order : pendingOrders) {
+            orderDict.put(order.getHawkerCentre_id(), order);
+            getLatLongFromPlace(order.getHawkerCentre_id());
             System.out.println("retrieved pending order: " + order);
         }
     }
@@ -156,74 +150,19 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
      */
     private void pinOnToMap(LatLng latLng, String markerTag) {
         System.out.println("pinning " + markerTag + " onto map");
-        System.out.println("map: " + mMap);
-        mMap.addMarker(new MarkerOptions().position(latLng).title(markerTag));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
-
-    /**
-     * initialize the necessary libraries.
-     */
-    private void init() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mSettingsClient = LocationServices.getSettingsClient(this);
-
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                // location is received
-                mCurrentLocation = locationResult.getLastLocation();
-                updateLocationUI();
-            }
-        };
-
-        mRequestingLocationUpdates = false;
-
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
-    }
-
-    /**
-     * Restoring values from saved instance state
-     */
-    private void restoreValuesFromBundle(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(getResources().getString(R.string.requestingLocationServices))) {
-                mRequestingLocationUpdates = savedInstanceState.getBoolean(getResources().getString(R.string.requestingLocationServices));
-            }
-
-            if (savedInstanceState.containsKey(getResources().getString(R.string.lastKnownLocation))) {
-                mCurrentLocation = savedInstanceState.getParcelable(getResources().getString(R.string.lastKnownLocation));
-            }
-        }
-
-        updateLocationUI();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // save current state of map
-        outState.putBoolean(getResources().getString(R.string.requestingLocationServices), mRequestingLocationUpdates);
-        outState.putParcelable(getResources().getString(R.string.lastKnownLocation), mCurrentLocation);
+        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(markerTag));
+        marker.setTag(markerTag);
     }
 
     /**
      * Update the UI displaying the location data
      */
     private void updateLocationUI() {
-        if (mCurrentLocation != null) {
+        if (mCurrentLocation != null && mMap != null) {
             System.out.println("current location found!");
+
             // add pin at current location
             LatLng currentLoc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            System.out.println(currentLoc.toString());
             pinOnToMap(currentLoc, getResources().getString(R.string.currentLocation));
         }
     }
@@ -233,68 +172,49 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
      * Check whether location settings are satisfied and then
      * location updates will be requested
      */
+    @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
-        System.out.println("starting location updates");
-        mSettingsClient
-                .checkLocationSettings(mLocationSettingsRequest)
-                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-                    @SuppressLint("MissingPermission")
-                    @Override
-                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        Log.i("location services", "All location settings are satisfied.");
+        // create location request
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
-                        Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
+        // create LocationSettingsRequest obj using location request
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
 
-                        //noinspection MissingPermission
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                                mLocationCallback, Looper.myLooper());
+        // check if location settings are satisfied
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        settingsClient.checkLocationSettings(locationSettingsRequest);
 
-                        updateLocationUI();
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        int statusCode = ((ApiException) e).getStatusCode();
-                        switch (statusCode) {
-                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                Log.i("location services", "Location settings are not satisfied. Attempting to upgrade " +
-                                        "location settings ");
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult(CourierMapsActivity.this, REQUEST_CHECK_SETTINGS);
-                                } catch (IntentSender.SendIntentException sie) {
-                                    Log.i("location services", "PendingIntent unable to execute request.");
-                                }
-                                break;
-                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                String errorMessage = "Location settings are inadequate, and cannot be " +
-                                        "fixed here. Fix in Settings.";
-                                Log.e("location services", errorMessage);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                System.out.println("current location: " + locationResult.getLastLocation().toString());
+                onLocationChanged(locationResult.getLastLocation());
+            }
+        };
+        fusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
 
-                                Toast.makeText(CourierMapsActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                        }
-
-                        updateLocationUI();
-                    }
-                });
+    public void onLocationChanged(Location location) {
+        // new location has been determined
+        String msg = "Updated Location: " +
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        mCurrentLocation = location;
+        updateLocationUI();
     }
 
     /**
      * stops updating location
      */
     public void stopLocationUpdates() {
-        // Removing location updates
-        mFusedLocationClient
-                .removeLocationUpdates(mLocationCallback)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        fusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
     }
 
     /**
@@ -307,10 +227,11 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 .withListener(new PermissionListener() {
+                    @SuppressLint("MissingPermission")
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
-                        mRequestingLocationUpdates = true;
-                        startLocationUpdates();
+                        mMap.setMyLocationEnabled(true);
+                        updateLocationUI();
                     }
 
                     @Override
@@ -348,11 +269,10 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
         super.onResume();
 
         // Resume location updates if permission granted
-        if (mRequestingLocationUpdates && checkPermissions()) {
+        if (checkPermissions()) {
             startLocationUpdates();
         }
 
-        updateLocationUI();
     }
 
     /**
@@ -368,11 +288,7 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (mRequestingLocationUpdates) {
-            // pausing location updates
-            stopLocationUpdates();
-        }
+        stopLocationUpdates();
     }
 
     /**
@@ -384,18 +300,37 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        cu = CameraUpdateFactory.newLatLngBounds(getBoundingBox(), 2000, 50000, 5);
 
-        // request connection to update UI
         requestConnectionToLocationServices();
 
         // retrieve list of pending orders to update mapview
         mapOrders();
+        mMap.animateCamera(cu);
     }
 
-    //Sometimes happens that device gives location = null
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String postalCode = (String) marker.getTag();
+        Order order = orderDict.get(postalCode);
+        setActivityResult(order);
+        System.out.println("marker clicked!");
+        finish();
+        return true;
+    }
+
+    private void setActivityResult(Order order) {
+        Intent intent = new Intent();
+        Bundle bd = new Bundle();
+        bd.putSerializable(getResources().getString(R.string.order_ref), order);
+
+        intent.putExtra(getResources().getString(R.string.order_ref), bd);
+        setResult(CourierPendingOrderFragment.MARKER_CLICKED_CODE, intent);
+    }
 
     public class fetchLatLongFromService extends
             AsyncTask<Void, Void, StringBuilder> {
@@ -410,14 +345,12 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
         @Override
         protected void onCancelled() {
-            // TODO Auto-generated method stub
             super.onCancelled();
             this.cancel(true);
         }
 
         @Override
         protected StringBuilder doInBackground(Void... params) {
-            // TODO Auto-generated method stub
             try {
                 HttpURLConnection conn = null;
                 StringBuilder jsonResults = new StringBuilder();
@@ -444,7 +377,6 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
         @Override
         protected void onPostExecute(StringBuilder result) {
-            // TODO Auto-generated method stub
             super.onPostExecute(result);
             try {
                 JSONObject jsonObj = new JSONObject(result.toString());
@@ -474,7 +406,6 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
 
             }

@@ -26,6 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 public class CourierPendingOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
+    public static final int MARKER_CLICKED_CODE = 1;
     private int mColumnCount = 1;
 
     private FirebaseDatabase mDb;
@@ -111,15 +114,22 @@ public class CourierPendingOrderFragment extends Fragment {
         Intent intent = new Intent(getActivity(), CourierMapsActivity.class);
         Bundle bd = new Bundle();
 
-        //todo bug fixing
-        ArrayList<String> ls = new ArrayList<>();
-        for (Order o : mOrders) {
-            ls.add(o.getHawkerCentre_id());
-        }
-        bd.putSerializable(getResources().getString(R.string.pendingOrders), ls);
-        intent.putExtra(getResources().getString(R.string.pendingOrders), ls);
+        bd.putSerializable(getResources().getString(R.string.pendingOrders), mOrders);
+        intent.putExtra(getResources().getString(R.string.pendingOrders), mOrders);
 
-        startActivity(intent);
+        startActivityForResult(intent, MARKER_CLICKED_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == CourierPendingOrderFragment.MARKER_CLICKED_CODE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Order order = (Order) data.getSerializableExtra(getResources().getString(R.string.order_ref));
+                mListener.onListFragmentInteraction(order);
+            }
+        }
     }
 
     @Override

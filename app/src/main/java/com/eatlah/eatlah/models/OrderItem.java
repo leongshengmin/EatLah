@@ -1,6 +1,8 @@
 package com.eatlah.eatlah.models;
 
-public class OrderItem extends FoodItem {
+import java.io.Serializable;
+
+public class OrderItem extends FoodItem implements Serializable {
     private int qty;
 
     public OrderItem(FoodItem foodItem, int qty) {

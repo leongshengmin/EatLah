@@ -1,6 +1,8 @@
 package com.eatlah.eatlah.models;
 
-public class FoodItem {
+import java.io.Serializable;
+
+public class FoodItem implements Serializable {
 
     private String _id;
     private String stall_id;
