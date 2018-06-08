@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -18,13 +19,16 @@ import android.view.ViewGroup;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.CourierMapsActivity;
 import com.eatlah.eatlah.adapters.CourierPendingOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -112,11 +116,7 @@ public class CourierPendingOrderFragment extends Fragment {
      */
     private void displayMap() {
         Intent intent = new Intent(getActivity(), CourierMapsActivity.class);
-        Bundle bd = new Bundle();
-
-        bd.putSerializable(getResources().getString(R.string.pendingOrders), mOrders);
         intent.putExtra(getResources().getString(R.string.pendingOrders), mOrders);
-
         startActivityForResult(intent, MARKER_CLICKED_CODE);
     }
 
@@ -143,6 +143,7 @@ public class CourierPendingOrderFragment extends Fragment {
      * retrieves the updated orders from db
      */
     private void retrieveOrders() {
+        final DatabaseReference hcRef = mDb.getReference(getResources().getString(R.string.hawker_centre_ref));
         mDb.getReference(getResources().getString(R.string.order_ref))
                 .orderByKey()   // order by timestamp
                 .addValueEventListener(new ValueEventListener() {
@@ -171,6 +172,7 @@ public class CourierPendingOrderFragment extends Fragment {
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e("courier", databaseError.getMessage());
                     }
+
                 });
     }
 

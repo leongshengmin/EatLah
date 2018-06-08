@@ -39,7 +39,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final OrderItem orderItem = mValues.get(position);
         holder.mName.setText(orderItem.getName());
         holder.mDesc.setText(orderItem.getDescription());
@@ -61,11 +61,13 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         holder.itemView.setOnTouchListener(new OnSwipeTouchListener((Activity) mListener, this, orderItem));
 
 
+        holder.mCancelButton.setText("Remove All");
         holder.mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((CustomerHomepage) mListener).getOrder()
                         .removeAll(orderItem, OrderRecyclerViewAdapter.this);
+                notifyItemRemoved(position);
             }
         });
     }

@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,12 +12,21 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.CourierOrderItemsDialogFragment;
+import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
 import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -36,6 +43,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -43,7 +51,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,9 +59,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class CourierMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class CourierMapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener, CourierOrderItemsFragment.OnListFragmentInteractionListener {
 
     // bunch of location related apis
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -63,11 +70,12 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
     private Location mCurrentLocation;
 
     private GoogleMap mMap;
+    private final FirebaseDatabase mDb = FirebaseDatabase.getInstance();
     private CameraUpdate cu;
 
     // permissions
-    private long UPDATE_INTERVAL = 1200000; // 2 mins
-    private long FASTEST_INTERVAL = 30000;  // 30 s
+    private long UPDATE_INTERVAL = 60000; // 30s
+    private long FASTEST_INTERVAL = 30000;  // 60s
 
     private HashMap<String, Order> orderDict;
 
@@ -119,38 +127,16 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
      * retrieves lat lng from queried place and pins latlng object onto map.
      */
     private void getLatLongFromPlace(String postalCode) {
-        try {
-            Geocoder selected_place_geocoder = new Geocoder(this);
-            List<Address> address;
-
-            address = selected_place_geocoder.getFromLocationName(postalCode, 1);
-
-            if (address == null) {
-                Toast.makeText(this, "unable to find address", Toast.LENGTH_LONG)
-                        .show();
-
-            } else {
-                Address location = address.get(0);
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                pinOnToMap(latLng, postalCode); // pin lat lng of queried location onto map
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            fetchLatLongFromService fetch_latlng = new fetchLatLongFromService(
-                    postalCode.replaceAll("\\s+", ""));
-            fetch_latlng.execute();
-
-        }
-
+        new fetchLatLongFromService(postalCode)
+                .execute();
     }
 
     /**
      * pins the given latlng object onto map
      */
-    private void pinOnToMap(LatLng latLng, String markerTag) {
+    private void pinOnToMap(LatLng latLng, String markerTag, String title) {
         System.out.println("pinning " + markerTag + " onto map");
-        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(markerTag));
+        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(title));
         marker.setTag(markerTag);
     }
 
@@ -163,7 +149,7 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
             // add pin at current location
             LatLng currentLoc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            pinOnToMap(currentLoc, getResources().getString(R.string.currentLocation));
+            pinOnToMap(currentLoc, getResources().getString(R.string.currentLocation), getResources().getString(R.string.currentLocation));
         }
     }
 
@@ -304,6 +290,7 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
         cu = CameraUpdateFactory.newLatLngBounds(getBoundingBox(), 2000, 50000, 5);
 
         requestConnectionToLocationServices();
@@ -315,12 +302,82 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (marker.getTag().equals(getResources().getString(R.string.currentLocation))) return false;
         String postalCode = (String) marker.getTag();
         Order order = orderDict.get(postalCode);
-        setActivityResult(order);
-        System.out.println("marker clicked!");
-        finish();
-        return true;
+        float dist = getDistanceFrom(marker);
+        displayPopup(order, marker.getTitle(), dist);
+
+//        setActivityResult(order);
+//        System.out.println("marker clicked!");
+//        finish();
+        return false;
+    }
+
+    /**
+     * given 2 markers, a and b, returns the distance between the 2 markers in floating point precision.
+     * @param a
+     * @param b
+     * @return
+     */
+    private float getDistanceBetween(Marker a, Marker b) {
+        LatLng latLng_a = a.getPosition();
+        Location loc_a = new Location("a");
+        loc_a.setLatitude(latLng_a.latitude);
+        loc_a.setLongitude(latLng_a.longitude);
+
+        LatLng latLng_b = b.getPosition();
+        Location loc_b = new Location("b");
+        loc_b.setLatitude(latLng_b.latitude);
+        loc_b.setLongitude(latLng_b.longitude);
+
+        return loc_a.distanceTo(loc_b) / 1000;
+    }
+
+    private float getDistanceFrom(Marker other) {
+        if(mCurrentLocation == null) return 0;
+
+        LatLng latLng_a = other.getPosition();
+        Location loc_a = new Location("a");
+        loc_a.setLatitude(latLng_a.latitude);
+        loc_a.setLongitude(latLng_a.longitude);
+
+        return loc_a.distanceTo(mCurrentLocation) / 1000;
+    }
+
+    /**
+     * popup showing more info about order
+     * @param order
+     */
+    private void displayPopup(final Order order, String label, float dist) {
+        final View popUpView = getLayoutInflater().inflate(R.layout.courier_order_markeronclick_layout, null, false);
+        final PopupWindow mPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true); // Creation of popup
+
+        // bind item with popupView
+        ((TextView) popUpView.findViewById(R.id.address_textView)).setText(label);
+        ((TextView) popUpView.findViewById(R.id.deliveryTime_textView)).setText(order.getCollectionTime());
+        ((TextView) popUpView.findViewById(R.id.distance_textView)).setText(Float.toString(dist)+" km");
+        ((Button) popUpView.findViewById(R.id.viewOrders_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // create foodItems fragment and pass in Order containing list of foodItems as arg
+                Bundle bd = new Bundle();
+                bd.putSerializable(getResources().getString(R.string.order_ref), order);
+                CourierOrderItemsDialogFragment fragment = new CourierOrderItemsDialogFragment();
+                fragment.setArguments(bd);
+
+                // display the fragment
+                displayFragment(fragment, "dialogFrag");
+            }
+
+            private void displayFragment(CourierOrderItemsDialogFragment fragment, String tag) {
+                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                fragment.show(ft, "dialog");
+            }
+        });
+
+        mPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0); // Displaying popup
     }
 
     private void setActivityResult(Order order) {
@@ -330,6 +387,11 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
         intent.putExtra(getResources().getString(R.string.order_ref), bd);
         setResult(CourierPendingOrderFragment.MARKER_CLICKED_CODE, intent);
+    }
+
+    @Override
+    public void onListFragmentInteraction(OrderItem item) {
+
     }
 
     public class fetchLatLongFromService extends
@@ -354,10 +416,10 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
             try {
                 HttpURLConnection conn = null;
                 StringBuilder jsonResults = new StringBuilder();
-                String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?address="
-                        + this.place + "&sensor=false";
 
-                URL url = new URL(googleMapUrl);
+                String mapUrl = "https://geocode.xyz/locate=" + this.place + "?geoit=JSON" + "&region=SG";
+
+                URL url = new URL(mapUrl);
                 conn = (HttpURLConnection) url.openConnection();
                 InputStreamReader in = new InputStreamReader(
                         conn.getInputStream());
@@ -380,35 +442,33 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
             super.onPostExecute(result);
             try {
                 JSONObject jsonObj = new JSONObject(result.toString());
-                JSONArray resultJsonArray = jsonObj.getJSONArray("results");
+                JSONObject std_jsonObj = jsonObj.getJSONObject("standard");
 
-                // Extract the Place descriptions from the results
-                // resultList = new ArrayList<String>(resultJsonArray.length());
+                String addresst = std_jsonObj
+                        .getString("addresst");
+                String city = std_jsonObj.getString("city");
+                String postal = std_jsonObj
+                        .getString("postal").split("=")[1];
 
-                JSONObject before_geometry_jsonObj = resultJsonArray
-                        .getJSONObject(0);
-
-                JSONObject geometry_jsonObj = before_geometry_jsonObj
-                        .getJSONObject("geometry");
-
-                JSONObject location_jsonObj = geometry_jsonObj
-                        .getJSONObject("location");
-
-                String lat_helper = location_jsonObj.getString("lat");
+                String lat_helper = jsonObj.getString("latt");
                 double lat = Double.valueOf(lat_helper);
 
 
-                String lng_helper = location_jsonObj.getString("lng");
+                String lng_helper = jsonObj.getString("longt");
                 double lng = Double.valueOf(lng_helper);
 
-
                 LatLng point = new LatLng(lat, lng);
-
+                String address = buildAddress(addresst, city, postal);
+                pinOnToMap(point, place, address);
 
             } catch (JSONException e) {
                 e.printStackTrace();
 
             }
+        }
+
+        private String buildAddress(String addresst, String city, String postal) {
+            return String.format("%s, %s %s", addresst, city, postal);
         }
     }
 

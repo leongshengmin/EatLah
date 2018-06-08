@@ -61,6 +61,11 @@
     <!-- Strings related to orderView -->
     <string name="order_submit_button">Submit Order</string>
     <string name="order_cancel_button">Cancel Order</string>
+    <string-array name="deliveryOptions">
+        <item>Self-collection</item>
+        <item>Delivery</item>
+    </string-array>
+    <string name="collectionTime">Collection / Delivery Time</string>
 
 
     <!-- COURIER -->

@@ -3,6 +3,7 @@ package com.eatlah.eatlah.models;
 import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +17,13 @@ public class Order implements Serializable {
     private HashMap<String, Integer> orderDict;  // stores the orderitem as key and index in orders as value
     private ArrayList<OrderItem> orders;
     private String misc;
+    private String collectionTime;
     private boolean self_collection;
     private boolean ready;  // is the order ready for collection
 
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id,
-                 ArrayList<OrderItem> orders, String misc, boolean self_collection, boolean ready) {
+                 ArrayList<OrderItem> orders, String misc, String collectionTime, boolean self_collection, boolean ready) {
         this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
@@ -29,13 +31,14 @@ public class Order implements Serializable {
         this.hawkerCentre_id = hawkerCentre_id;
         this.orders = orders;
         this.misc = misc;
+        this.collectionTime = collectionTime;
         this.self_collection = self_collection;
         this.ready = ready;
     }
 
     public Order(String timestamp, String user_id, String hawkerCentre_id) {
         this(timestamp, user_id, null, hawkerCentre_id, new ArrayList<OrderItem>(),
-                null, true, false);
+                null, null, true, false);
     }
 
     public Order() {}
@@ -184,8 +187,12 @@ public class Order implements Serializable {
         return self_collection;
     }
 
-    public String getHawkerAddress() {
-        return String.format("Hawker Centre Address: \nPostal Code: %s\n", hawkerCentre_id);
+    public String getCollectionTime() {
+        return collectionTime;
+    }
+
+    public void setCollectionTime(String collectionTime) {
+        this.collectionTime = collectionTime;
     }
 
     public void setHawkerCentre_id(String hawkerCentre_id) {

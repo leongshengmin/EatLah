@@ -39,7 +39,7 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Order order = mValues.get(position);
         holder.mTimeStampView.setText(order.getTimestamp());
-        holder.mAddressView.setText(order.getHawkerAddress());
+        holder.mAddressView.setText(order.getHawkerCentre_id());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

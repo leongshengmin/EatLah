@@ -20,7 +20,7 @@
             <TextView
                 android:id="@+id/orderName_textView"
                 android:layout_width="164dp"
-                android:layout_height="39dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="78dp"
                 android:layout_marginLeft="35dp"
@@ -38,8 +38,8 @@
 
             <TextView
                 android:id="@+id/orderQty_textView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="25dp"
                 android:layout_marginEnd="35dp"
                 android:layout_marginRight="35dp"
@@ -52,8 +52,8 @@
 
             <TextView
                 android:id="@+id/orderAddress_textView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="48dp"
                 android:layout_marginEnd="29dp"
                 android:layout_marginRight="29dp"
