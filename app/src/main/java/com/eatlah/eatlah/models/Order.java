@@ -3,6 +3,7 @@ package com.eatlah.eatlah.models;
 import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,14 +15,15 @@ public class Order implements Serializable {
     private String courier_id;  // mobile number of courier
     private String hawkerCentre_id; // postal code of hc
     private HashMap<String, Integer> orderDict;  // stores the orderitem as key and index in orders as value
-    private List<OrderItem> orders;
+    private ArrayList<OrderItem> orders;
     private String misc;
+    private String collectionTime;
     private boolean self_collection;
-    private boolean ready;
+    private boolean ready;  // is the order ready for collection
 
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id,
-                 List<OrderItem> orders, String misc, boolean self_collection, boolean ready) {
+                 ArrayList<OrderItem> orders, String misc, String collectionTime, boolean self_collection, boolean ready) {
         this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
@@ -29,13 +31,14 @@ public class Order implements Serializable {
         this.hawkerCentre_id = hawkerCentre_id;
         this.orders = orders;
         this.misc = misc;
+        this.collectionTime = collectionTime;
         this.self_collection = self_collection;
         this.ready = ready;
     }
 
     public Order(String timestamp, String user_id, String hawkerCentre_id) {
         this(timestamp, user_id, null, hawkerCentre_id, new ArrayList<OrderItem>(),
-                null, true, false);
+                null, null, true, false);
     }
 
     public Order() {}
@@ -176,8 +179,20 @@ public class Order implements Serializable {
         return user_id;
     }
 
-    public String getHawkerAddress() {
-        return String.format("Hawker Centre Address: \nPostal Code: %s\n", hawkerCentre_id);
+    public boolean isReady() {
+        return ready;
+    }
+
+    public boolean isSelf_collection() {
+        return self_collection;
+    }
+
+    public String getCollectionTime() {
+        return collectionTime;
+    }
+
+    public void setCollectionTime(String collectionTime) {
+        this.collectionTime = collectionTime;
     }
 
     public void setHawkerCentre_id(String hawkerCentre_id) {
@@ -188,7 +203,7 @@ public class Order implements Serializable {
         this.misc = misc;
     }
 
-    public void setOrders(List<OrderItem> orders) {
+    public void setOrders(ArrayList<OrderItem> orders) {
         this.orders = orders;
     }
 
@@ -206,5 +221,13 @@ public class Order implements Serializable {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    /**
+     * checks if a courier is already attending to this order
+     * @return true if a courier is already attending to this order, false otherwise.
+     */
+    public boolean isCourierAttending() {
+        return !(courier_id == null || courier_id.isEmpty());
     }
 }

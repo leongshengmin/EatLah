@@ -1,6 +1,9 @@
 package com.eatlah.eatlah.adapters;
 
+import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +12,15 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.Order;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,15 +48,9 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Order order = mValues.get(position);
-        holder.mTimeStampView.setText(order.getTimestamp());
-        holder.mAddressView.setText(order.getHawkerAddress());
 
-        holder.mViewOrdersView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo view orders
-            }
-        });
+        holder.mTimeStampView.setText(order.getCollectionTime());
+        holder.mAddressView.setText(order.getHawkerCentre_id());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,13 +72,11 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTimeStampView;
         private TextView mAddressView;
-        private Button mViewOrdersView;
 
         public ViewHolder(View view) {
             super(view);
             mTimeStampView = view.findViewById(R.id.orderName_textView);
             mAddressView = view.findViewById(R.id.orderAddress_textView);
-            mViewOrdersView = view.findViewById(R.id.viewOrders_button);
         }
     }
 }

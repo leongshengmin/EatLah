@@ -34,14 +34,7 @@ public class CourierHomepage extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        hideFab();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -119,8 +112,14 @@ public class CourierHomepage extends AppCompatActivity
         System.out.println("replaced fragment and committed");
     }
 
+    private void hideFab() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.hide();
+    }
+
     @Override
     public void onListFragmentInteraction(Order item) {
+        hideFab();
         // create foodItems fragment and pass in Order containing list of foodItems as arg
         Bundle bd = new Bundle();
         bd.putSerializable(getResources().getString(R.string.order_ref), item);
