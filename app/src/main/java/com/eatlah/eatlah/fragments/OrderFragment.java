@@ -52,14 +52,13 @@ public class OrderFragment extends Fragment {
     private FloatingActionButton submit_btn;
     private static Order mOrder;
     private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference;
+    private static DatabaseReference databaseReference;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public OrderFragment() {
-        databaseReference = mDb.getReference(getResources().getString(R.string.order_ref));
     }
 
     // TODO: Customize parameter initialization
@@ -150,7 +149,9 @@ public class OrderFragment extends Fragment {
      */
     private void displayPopup() {
         System.out.println("displaying popup");
-        final View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.custom_timepicker_dialog_layout, null);
+        final View popupView = LayoutInflater.
+                from(getActivity()).inflate(R.layout.custom_timepicker_dialog_layout, null)
+                .findViewById(R.id.custom_dialog_layout);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         popupView.findViewById(R.id.submit_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -174,20 +175,21 @@ public class OrderFragment extends Fragment {
                     public void onClick(View v) {
                         setDeliveryOption();
                         setCollectionTime();
-                        updateDb(v);
+                        updateDb();
+                        popupWindow.dismiss();
                     }
                 });
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
     }
 
-    private void updateDb(final View v) {
+    private void updateDb() {
         databaseReference.child(mOrder.getTimestamp())
                 .setValue(mOrder)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Snackbar.make(v, "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
                         } else {
                             Log.e("db", task.getException().getMessage());
                         }
@@ -243,6 +245,7 @@ public class OrderFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
+            databaseReference = mDb.getReference(getResources().getString(R.string.order_ref));
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");

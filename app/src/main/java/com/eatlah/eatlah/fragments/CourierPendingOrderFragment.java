@@ -144,7 +144,7 @@ public class CourierPendingOrderFragment extends Fragment {
      */
     private void retrieveOrders() {
         mDb.getReference(getResources().getString(R.string.order_ref))
-                .orderByKey()   // order by timestamp
+                .orderByChild(getResources().getString(R.string.collectionTimeRef))   // order by collectiontime
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -153,9 +153,6 @@ public class CourierPendingOrderFragment extends Fragment {
                         mOrders.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Order order = snapshot.getValue(Order.class);
-                            System.out.println("order self collect?:  " + order.isSelf_collection());
-                            System.out.println("order courier id: " + order.getCourier_id());
-                            System.out.println("order courier? : " + order.isCourierAttending());
 
                             // only add order if order is for delivery and no courier has attended yet
                             if (!order.isSelf_collection() && !order.isCourierAttending()) {

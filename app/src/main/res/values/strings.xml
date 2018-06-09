@@ -84,6 +84,9 @@
     <string name="lastKnownLocation">last_known_location</string>
     <string name="currentLocation">Current Location</string>
 
+    <!-- Strings related to db ref -->
+    <string name="collectionTimeRef">collectionTime</string>
+
     <!-- Strings related to fragment tags -->
     <string name="foodItemFrag">FoodItemFragment</string>
     <string name="hawkerStallFrag">HawkerStallFragment</string>
