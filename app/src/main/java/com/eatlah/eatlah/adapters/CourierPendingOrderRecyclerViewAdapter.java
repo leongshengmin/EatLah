@@ -1,6 +1,9 @@
 package com.eatlah.eatlah.adapters;
 
+import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +12,15 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.Order;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,7 +48,8 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Order order = mValues.get(position);
-        holder.mTimeStampView.setText(order.getTimestamp());
+
+        holder.mTimeStampView.setText(order.getCollectionTime());
         holder.mAddressView.setText(order.getHawkerCentre_id());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -3,6 +3,7 @@ package com.eatlah.eatlah.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,6 +74,7 @@ public class CourierOrderItemsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.courier_fragment_orderitems_list, container, false);
+        hideFab(view);
         initAttendToOrderButton(view);
 
         // Set the adapter
@@ -88,6 +90,11 @@ public class CourierOrderItemsFragment extends Fragment {
             recyclerView.setAdapter(mAdapter);
         }
         return view;
+    }
+
+    private void hideFab(View view) {
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.hide();
     }
 
     private void initAttendToOrderButton(View view) {

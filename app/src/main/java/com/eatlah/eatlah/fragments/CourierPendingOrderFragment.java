@@ -143,7 +143,6 @@ public class CourierPendingOrderFragment extends Fragment {
      * retrieves the updated orders from db
      */
     private void retrieveOrders() {
-        final DatabaseReference hcRef = mDb.getReference(getResources().getString(R.string.hawker_centre_ref));
         mDb.getReference(getResources().getString(R.string.order_ref))
                 .orderByKey()   // order by timestamp
                 .addValueEventListener(new ValueEventListener() {

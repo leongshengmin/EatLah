@@ -29,6 +29,7 @@ import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.Format;
@@ -50,12 +51,15 @@ public class OrderFragment extends Fragment {
     private OrderRecyclerViewAdapter mAdapter;
     private FloatingActionButton submit_btn;
     private static Order mOrder;
+    private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public OrderFragment() {
+        databaseReference = mDb.getReference(getResources().getString(R.string.order_ref));
     }
 
     // TODO: Customize parameter initialization
@@ -170,10 +174,25 @@ public class OrderFragment extends Fragment {
                     public void onClick(View v) {
                         setDeliveryOption();
                         setCollectionTime();
-                        Snackbar.make(v, "Submitted order!", Snackbar.LENGTH_SHORT).show();
+                        updateDb(v);
                     }
                 });
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+    }
+
+    private void updateDb(final View v) {
+        databaseReference.child(mOrder.getTimestamp())
+                .setValue(mOrder)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Snackbar.make(v, "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("db", task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     /**
