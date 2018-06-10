@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,9 @@ import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierOrderItemsDialogFragment;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
+import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
+import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
+import com.eatlah.eatlah.helpers.fetchLatLongFromService;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -51,17 +53,15 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class CourierMapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener, CourierOrderItemsFragment.OnListFragmentInteractionListener {
+public class CourierMapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener, CourierOrderItemsFragment.OnListFragmentInteractionListener,
+        OnTaskCompletedListener {
 
     // bunch of location related apis
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -127,17 +127,18 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
      * retrieves lat lng from queried place and pins latlng object onto map.
      */
     private void getLatLongFromPlace(String postalCode) {
-        new fetchLatLongFromService(postalCode)
+        new fetchLatLongFromService(postalCode, orderDict, mMap)
                 .execute();
     }
 
     /**
      * pins the given latlng object onto map
      */
-    private void pinOnToMap(LatLng latLng, String markerTag, String title) {
+    private void pinOnToMap(LatLng latLng, String markerTag, String title, String snippet) {
         System.out.println("pinning " + markerTag + " onto map");
         Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(title));
         marker.setTag(markerTag);
+        marker.setSnippet(snippet);
     }
 
     /**
@@ -149,7 +150,7 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
             // add pin at current location
             LatLng currentLoc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            pinOnToMap(currentLoc, getResources().getString(R.string.currentLocation), getResources().getString(R.string.currentLocation));
+            pinOnToMap(currentLoc, getResources().getString(R.string.currentLocation), getResources().getString(R.string.currentLocation), getResources().getString(R.string.currentLocation));
         }
     }
 
@@ -305,12 +306,7 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
         if (marker.getTag().equals(getResources().getString(R.string.currentLocation))) return false;
         String postalCode = (String) marker.getTag();
         Order order = orderDict.get(postalCode);
-        float dist = getDistanceFrom(marker);
-        displayPopup(order, marker.getTitle(), dist);
-
-//        setActivityResult(order);
-//        System.out.println("marker clicked!");
-//        finish();
+        displayPendingOrderInfo(order, marker);
         return false;
     }
 
@@ -346,19 +342,42 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
     }
 
     /**
-     * popup showing more info about order
+     * display pending order information
      * @param order
+     * @param marker
      */
-    private void displayPopup(final Order order, String label, float dist) {
-        final View popUpView = getLayoutInflater().inflate(R.layout.courier_order_markeronclick_layout, null, false);
-        final PopupWindow mPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, true); // Creation of popup
+    private void displayPendingOrderInfo(final Order order, Marker marker) {
+        displayOrder(order, marker);
+        TextView dir_textView = findViewById(R.id.directions_textView);
+        setDistanceFromCurrent(getDistanceFrom(marker), dir_textView);
 
-        // bind item with popupView
-        ((TextView) popUpView.findViewById(R.id.address_textView)).setText(label);
-        ((TextView) popUpView.findViewById(R.id.deliveryTime_textView)).setText(order.getCollectionTime());
-        ((TextView) popUpView.findViewById(R.id.distance_textView)).setText(Float.toString(dist)+" km");
-        ((Button) popUpView.findViewById(R.id.viewOrders_button)).setOnClickListener(new View.OnClickListener() {
+        final Button viewOrders_button = findViewById(R.id.viewOrders_button);
+        configureViewOrdersButton(order, viewOrders_button);
+
+        final Button attendToOrder_button = findViewById(R.id.attendToOrder_button);
+        configureAttendToOrderButton(order, attendToOrder_button, viewOrders_button, marker);
+    }
+
+    private void setCollectionTime(final Order order, final TextView time_textView) {
+        String time = String.format("Collection Time: %s", order.getCollectionTime());
+        time_textView.setText(time);
+    }
+
+    private void setDistanceFromCurrent(final float dist, final TextView distance_textView) {
+        DecimalFormat df = new DecimalFormat("##.##");
+        df.setRoundingMode(RoundingMode.DOWN);
+        String distance = String.format("Distance from Current: %s", df.format(dist));
+        distance_textView.setText(distance);
+    }
+
+    /**
+     * configures view order items button and sets on click listener.
+     * @param order
+     * @param viewOrders_button
+     */
+    private void configureViewOrdersButton(final Order order, final Button viewOrders_button) {
+        viewOrders_button.setVisibility(View.VISIBLE);
+        viewOrders_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // create foodItems fragment and pass in Order containing list of foodItems as arg
@@ -376,17 +395,58 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
                 fragment.show(ft, "dialog");
             }
         });
-
-        mPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0); // Displaying popup
     }
 
-    private void setActivityResult(Order order) {
-        Intent intent = new Intent();
-        Bundle bd = new Bundle();
-        bd.putSerializable(getResources().getString(R.string.order_ref), order);
+    /**
+     * initializes the attend to order button and sets on click listener
+     * @param order
+     * @param attendToOrder_button
+     */
+    private void configureAttendToOrderButton(final Order order, final Button attendToOrder_button, final Button viewOrders_button, final Marker marker) {
+        attendToOrder_button.setVisibility(View.VISIBLE);
+        attendToOrder_button.setOnClickListener(new View.OnClickListener() {
+            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-        intent.putExtra(getResources().getString(R.string.order_ref), bd);
-        setResult(CourierPendingOrderFragment.MARKER_CLICKED_CODE, intent);
+            @Override
+            public void onClick(View v) {
+                // update order fields in db
+                // to remove order from global courier view
+                updateOrder();
+                new FetchDirectionsFromService(mCurrentLocation, marker.getTitle(), mMap, CourierMapsActivity.this)
+                        .execute();
+
+                attendToOrder_button.setVisibility(View.INVISIBLE);
+                viewOrders_button.setVisibility(View.INVISIBLE);
+
+                displayOrder(order, marker);
+                Toast.makeText(CourierMapsActivity.this, "Loading directions...", Toast.LENGTH_LONG)
+                        .show();
+            }
+
+            /**
+             * updates the order in db
+             * since CourierPendingOrderFrag is listening to real-time value changes to orders in db
+             * UI will be updated automatically.
+             */
+            private void updateOrder() {
+                order.setCourier_id(mAuth.getUid());
+                mDb.getReference(getResources().getString(R.string.order_ref))
+                        .child(order.getTimestamp())
+                        .setValue(order);
+            }
+        });
+    }
+
+    /**
+     * displays confirmed order in view
+     * @param order
+     * @param marker
+     */
+    private void displayOrder(Order order, Marker marker) {
+        TextView addr_textView = findViewById(R.id.address_textView);
+        TextView time_textView = findViewById(R.id.time_textView);
+        addr_textView.setText(marker.getTitle());
+        setCollectionTime(order, time_textView);
     }
 
     @Override
@@ -394,82 +454,17 @@ public class CourierMapsActivity extends FragmentActivity implements OnMapReadyC
 
     }
 
-    public class fetchLatLongFromService extends
-            AsyncTask<Void, Void, StringBuilder> {
-        String place;
-
-
-        public fetchLatLongFromService(String place) {
-            super();
-            this.place = place;
-
+    @Override
+    public void onTaskCompleted(List<String> directions) {
+        TextView directions_textView = findViewById(R.id.directions_textView);
+        directions_textView.setVisibility(View.VISIBLE);
+        System.out.println("size of directions:" + directions.size());
+        StringBuilder sb = new StringBuilder();
+        for (String line : directions) {
+            sb.append(line);
+            sb.append(System.getProperty("line.separator"));
         }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            this.cancel(true);
-        }
-
-        @Override
-        protected StringBuilder doInBackground(Void... params) {
-            try {
-                HttpURLConnection conn = null;
-                StringBuilder jsonResults = new StringBuilder();
-
-                String mapUrl = "https://geocode.xyz/locate=" + this.place + "?geoit=JSON" + "&region=SG";
-
-                URL url = new URL(mapUrl);
-                conn = (HttpURLConnection) url.openConnection();
-                InputStreamReader in = new InputStreamReader(
-                        conn.getInputStream());
-                int read;
-                char[] buff = new char[1024];
-                while ((read = in.read(buff)) != -1) {
-                    jsonResults.append(buff, 0, read);
-                }
-                String a = "";
-                return jsonResults;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(StringBuilder result) {
-            super.onPostExecute(result);
-            try {
-                JSONObject jsonObj = new JSONObject(result.toString());
-                JSONObject std_jsonObj = jsonObj.getJSONObject("standard");
-
-                String addresst = std_jsonObj
-                        .getString("addresst");
-                String city = std_jsonObj.getString("city");
-                String postal = std_jsonObj
-                        .getString("postal").split("=")[1];
-
-                String lat_helper = jsonObj.getString("latt");
-                double lat = Double.valueOf(lat_helper);
-
-
-                String lng_helper = jsonObj.getString("longt");
-                double lng = Double.valueOf(lng_helper);
-
-                LatLng point = new LatLng(lat, lng);
-                String address = buildAddress(addresst, city, postal);
-                pinOnToMap(point, place, address);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-
-            }
-        }
-
-        private String buildAddress(String addresst, String city, String postal) {
-            return String.format("%s, %s %s", addresst, city, postal);
-        }
+        System.out.println(sb.toString());
+        directions_textView.setText(sb.toString());
     }
-
 }
