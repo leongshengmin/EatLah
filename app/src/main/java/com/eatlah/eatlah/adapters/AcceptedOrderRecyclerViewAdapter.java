@@ -1,13 +1,18 @@
 package com.eatlah.eatlah.adapters;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -38,13 +43,11 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Order order = mValues.get(position);
-        holder.mName.setText(order.getUser_id());
-        holder.mDesc.setText(order.getMisc());
+        holder.mName.setText(order.getCollectionTime());
+        holder.mDesc.setText(order.isReady() ? "Ready!" : "Not ready.");
 
         // Calculate price and set text
         calculatePrice(order, holder.mPrice);
-
-        holder.mQty.setText(Integer.toString(order.getOrders().size()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +55,6 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
                 mListener.onListFragmentInteraction(order);
             }
         });
-
     }
 
     private void calculatePrice(Order order, TextView priceView) {
@@ -70,17 +72,14 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mName;
-        private TextView mQty;
         private TextView mPrice;
         private TextView mDesc;
 
         public ViewHolder(View view) {
             super(view);
             mName = (TextView) view.findViewById(R.id.acceptedorder_orderName_textView);
-            mQty = (TextView) view.findViewById(R.id.acceptedorder_orderQty_textView);
             mPrice = view.findViewById(R.id.acceptedorder_price_textView);
             mDesc = view.findViewById(R.id.acceptedorder_orderDesc_textView);
-
         }
     }
 }

@@ -5,6 +5,7 @@
     <string name="login_page_title">Login</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
+    <string name="prompt_hawkerid">Hawker Stall ID (blank if not a hawker)</string>
     <string name="action_sign_in">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -91,6 +92,7 @@
     <string name="foodItemFrag">FoodItemFragment</string>
     <string name="hawkerStallFrag">HawkerStallFragment</string>
     <string name="hawkerCentreFrag">HawkerCentreFragment</string>
+    <string name="acceptedOrderItemFrag">AcceptedOrderItemFragment</string>
     <string name="orderFrag">OrderFragment</string>
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
     <string name="title_activity_courier_homepage">CourierHomepage</string>

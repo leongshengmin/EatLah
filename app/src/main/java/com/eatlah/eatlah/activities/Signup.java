@@ -87,6 +87,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private EditText mPhoneView;
+    private EditText mHawkerIdView;
     private Spinner mProfileView;
     private View mProgressView;
     private View mSignupView;
@@ -135,6 +136,8 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                 return false;
             }
         });
+
+        mHawkerIdView = findViewById(R.id.hawkerid_editText);
 
         mProfileView = (Spinner) findViewById(R.id.profile_spinner);
         mProfileView.setPrompt(getResources().getString(R.string.prompt_profile));
@@ -208,10 +211,12 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mHawkerIdView.setError(null);
 
         // Store values at the time of the signup attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String hawkerId = mHawkerIdView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -242,7 +247,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
             // Show a progress spinner, and kick off a background task to
             // perform the user signup attempt.
             showProgress(true);
-            mAuthTask = new UserSignupTask(email, password);
+            mAuthTask = new UserSignupTask(email, password, hawkerId);
             mAuthTask.execute((Void) null);
         }
     }
@@ -355,10 +360,12 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 
         private final String mEmail;
         private final String mPassword;
+        private final String mHawkerId;
 
-        UserSignupTask(String email, String password) {
+        UserSignupTask(String email, String password, String hawkerId) {
             mEmail = email;
             mPassword = password;
+            mHawkerId = hawkerId;
         }
 
         @Override
@@ -369,7 +376,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {  // successfully signed up valid user
-                                saveUserToDb(mPhoneView.getText().toString(), mEmail);  // add user to db
+                                saveUserToDb(mPhoneView.getText().toString(), mEmail, mHawkerId);  // add user to db
                                 System.out.println("password: " + mPassword);
                                 Log.d("signup", "created new user signup successfully");
                                 redirectToLogin();  // redirect newly created user to login page
@@ -392,10 +399,10 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
          * @param email email of user
          * @return true if user is successfully saved to db, false otherwise.
          */
-        private void saveUserToDb(String phone_number, String email) {
+        private void saveUserToDb(String phone_number, String email, String hawkerId) {
             mDbRef
                 .child(phone_number)
-                .setValue(new User(phone_number, email))
+                .setValue(new User(phone_number, email, hawkerId))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
