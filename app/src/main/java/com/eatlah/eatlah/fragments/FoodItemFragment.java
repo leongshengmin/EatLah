@@ -2,6 +2,7 @@ package com.eatlah.eatlah.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -98,23 +99,21 @@ public class FoodItemFragment extends Fragment {
 
         foodItemList.clear();
 
-        // loop through the list of food_ids and add the foodItem object to foodItems
-        for (String foodId : hawkerStall.getMenu()) {
-            mDbRef.child(foodId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    System.out.println("data snapshot of fooditem: " + dataSnapshot);
-                    FoodItem foodItem = dataSnapshot.getValue(FoodItem.class);
-                    System.out.println("food item: " + foodItem);
+        mDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Find every item that is in the hawker stall's menu
+                for (String foodId : hawkerStall.getMenu()) {
+                    System.out.println("data snapshot of fooditem: " + foodId);
+                    FoodItem foodItem = dataSnapshot.child(foodId).getValue(FoodItem.class);
                     foodItemList.add(foodItem);
-                    mAdapter.notifyDataSetChanged();
                 }
+                mAdapter.notifyDataSetChanged();
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {}
-            });
-        }
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @Override

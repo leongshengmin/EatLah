@@ -43,8 +43,8 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Order order = mValues.get(position);
-        holder.mName.setText(order.getUser_id());
-        holder.mDesc.setText(order.getMisc());
+        holder.mName.setText(order.getCollectionTime());
+        holder.mDesc.setText(order.isReady() ? "Ready!" : "Not ready.");
 
         // Calculate price and set text
         calculatePrice(order, holder.mPrice);
@@ -55,13 +55,6 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
                 mListener.onListFragmentInteraction(order);
             }
         });
-        holder.mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
     }
 
     private void calculatePrice(Order order, TextView priceView) {
@@ -81,14 +74,12 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
         private TextView mName;
         private TextView mPrice;
         private TextView mDesc;
-        private Button mButton;
 
         public ViewHolder(View view) {
             super(view);
             mName = (TextView) view.findViewById(R.id.acceptedorder_orderName_textView);
             mPrice = view.findViewById(R.id.acceptedorder_price_textView);
             mDesc = view.findViewById(R.id.acceptedorder_orderDesc_textView);
-            mButton = view.findViewById(R.id.hawker_viewOrder_button);
         }
     }
 }
