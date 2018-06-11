@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.dummy.DummyContent;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
 import com.eatlah.eatlah.models.Order;

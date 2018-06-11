@@ -6,11 +6,11 @@ public class User {
     private String address;
     private String _hawkerId;
 
-    public User(String _id, String email, String hawkerId) {
+    public User(String _id, String email, String hawkerId, String address) {
         this._id = _id;
         this.email = email;
         _hawkerId = hawkerId;
-
+        this.address = address;
     }
 
     public User() {}

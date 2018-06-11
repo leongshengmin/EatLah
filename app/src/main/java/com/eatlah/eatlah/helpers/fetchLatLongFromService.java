@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.eatlah.eatlah.models.Order;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -21,6 +22,7 @@ public class fetchLatLongFromService extends
     String place;
     HashMap<String, Order> orderDict;
     GoogleMap mMap;
+    OnTaskCompletedListener onTaskCompletedListener;
 
 
     public fetchLatLongFromService(String place, HashMap<String, Order> orderDict, GoogleMap mMap) {
@@ -28,7 +30,15 @@ public class fetchLatLongFromService extends
         this.mMap = mMap;
         this.orderDict = orderDict;
         this.place = place;
+    }
 
+    public fetchLatLongFromService(String place, GoogleMap mMap) {
+        this(place, null, mMap);
+    }
+
+    public fetchLatLongFromService(String place, OnTaskCompletedListener onTaskCompletedListener) {
+        this(place, null, null);
+        this.onTaskCompletedListener = onTaskCompletedListener;
     }
 
     @Override
@@ -84,8 +94,17 @@ public class fetchLatLongFromService extends
 
             LatLng point = new LatLng(lat, lng);
             String address = buildAddress(addresst, city, postal);
-            String time = String.format("Collection Time: %s", orderDict.get(place).getCollectionTime());
-            pinOnToMap(point, place, address, time);
+
+            if (orderDict != null && mMap != null) {
+                String time = String.format("Collection Time: %s", orderDict.get(place).getCollectionTime());
+                pinOnToMap(point, place, "Collection Location", "Address: " + address + "\nCollection time: " + time);
+            } else if (mMap != null) {
+                pinOnToMap(point, postal, "Delivery Location", address);
+            }
+
+            if (onTaskCompletedListener != null) {
+                onTaskCompletedListener.onTaskCompleted(address);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

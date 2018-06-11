@@ -25,6 +25,9 @@
     <string name="prompt_sign_up">Don\'t have an account? Sign up now!</string>
     <string name="action_sign_up">Sign up</string>
     <string name="mobile_number">Mobile Number</string>
+    <string name="customer_address">Customer\'s Home Address</string>
+    <string name="customer_address_empty">Empty Address Field</string>
+    <string name="customer_address_invalid">Invalid Address</string>
 
     <!-- CUSTOMER -->
     <!-- Strings related to customer homepage -->
@@ -79,6 +82,7 @@
     <string name="viewOrders">View Orders</string>
     <string name="attendToOrder">Attend to Order</string>
     <string name="pendingOrders">Pending Orders</string>
+    <string name="collectedOrder">Collected Order</string>
 
     <!-- Strings related to mapView -->
     <string name="requestingLocationServices">is_requesting_updates</string>
@@ -97,5 +101,6 @@
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
     <string name="title_activity_courier_homepage">CourierHomepage</string>
     <string name="title_activity_courier_maps">Map</string>
+    <string name="courierOrderItemsDialogFrag">courierOrderItemsDialogFragment</string>
 
 </resources>

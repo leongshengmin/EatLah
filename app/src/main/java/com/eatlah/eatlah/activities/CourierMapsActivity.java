@@ -9,13 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
 import com.eatlah.eatlah.helpers.fetchLatLongFromService;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,7 +47,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -78,6 +83,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     private long FASTEST_INTERVAL = 30000;  // 60s
 
     private HashMap<String, Order> orderDict;
+    private String customerAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +96,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         loadMap();
     }
+
 
     /**
      * sets bounding box around sg
@@ -303,9 +310,12 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (marker.getTag().equals(getResources().getString(R.string.currentLocation))) return false;
         String postalCode = (String) marker.getTag();
         Order order = orderDict.get(postalCode);
+        if (order == null) {
+            System.out.println("order not found for " + postalCode);
+            return false;
+        }
         displayPendingOrderInfo(order, marker);
         return false;
     }
@@ -347,6 +357,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
      * @param marker
      */
     private void displayPendingOrderInfo(final Order order, Marker marker) {
+        System.out.println("order: " + order);
         displayOrder(order, marker);
         TextView dir_textView = findViewById(R.id.directions_textView);
         setDistanceFromCurrent(getDistanceFrom(marker), dir_textView);
@@ -355,10 +366,13 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         configureViewOrdersButton(order, viewOrders_button);
 
         final Button attendToOrder_button = findViewById(R.id.attendToOrder_button);
-        configureAttendToOrderButton(order, attendToOrder_button, viewOrders_button, marker);
+        if (order.getCourier_id() == null || order.getCourier_id().isEmpty()) {
+            configureAttendToOrderButton(order, attendToOrder_button, viewOrders_button, marker);
+        }
     }
 
     private void setCollectionTime(final Order order, final TextView time_textView) {
+        System.out.println("setting collection time:" + order + " timeview: " + time_textView);
         String time = String.format("Collection Time: %s", order.getCollectionTime());
         time_textView.setText(time);
     }
@@ -387,7 +401,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 fragment.setArguments(bd);
 
                 // display the fragment
-                displayFragment(fragment, "dialogFrag");
+                displayFragment(fragment, getResources().getString(R.string.courierOrderItemsDialogFrag));
             }
 
             private void displayFragment(CourierOrderItemsDialogFragment fragment, String tag) {
@@ -416,7 +430,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                         .execute();
 
                 attendToOrder_button.setVisibility(View.INVISIBLE);
-                viewOrders_button.setVisibility(View.INVISIBLE);
+                retrieveCustomerAddress();
 
                 displayOrder(order, marker);
                 Toast.makeText(CourierMapsActivity.this, "Loading directions...", Toast.LENGTH_LONG)
@@ -434,7 +448,41 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                         .child(order.getTimestamp())
                         .setValue(order);
             }
+
+
+            private void retrieveCustomerAddress() {
+                System.out.println(order.getUser_id());
+                mDb.getReference(getResources().getString(R.string.user_ref))
+                        .child(order.getUser_id())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                System.out.println("datasnapshot: " + dataSnapshot);
+                                User customer = dataSnapshot.getValue(User.class);
+                                customerAddress = customer.getAddress();
+                                System.out.println("customer address retrieved: " + customerAddress);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.e("db", databaseError.getMessage());
+                            }
+                        });
+            }
         });
+    }
+
+    /**
+     * clears map and starts new route to customer's address
+     * if courier has collected all orders.
+     */
+    private void fetchNewRoute() {
+        if (customerAddress != null) {
+            System.out.println("fetching new route");
+            mMap.clear();
+            new FetchDirectionsFromService(mCurrentLocation, customerAddress, mMap, CourierMapsActivity.this)
+                    .execute();
+        }
     }
 
     /**
@@ -445,13 +493,17 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     private void displayOrder(Order order, Marker marker) {
         TextView addr_textView = findViewById(R.id.address_textView);
         TextView time_textView = findViewById(R.id.time_textView);
-        addr_textView.setText(marker.getTitle());
+        addr_textView.setText(marker.getSnippet());
         setCollectionTime(order, time_textView);
     }
 
+    /**
+     * listener notified when all orderItems are collected
+     * @param item
+     */
     @Override
     public void onListFragmentInteraction(OrderItem item) {
-
+        fetchNewRoute();
     }
 
     @Override
@@ -466,5 +518,10 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         }
         System.out.println(sb.toString());
         directions_textView.setText(sb.toString());
+    }
+
+    @Override
+    public void onTaskCompleted(String address) {
+        // null
     }
 }

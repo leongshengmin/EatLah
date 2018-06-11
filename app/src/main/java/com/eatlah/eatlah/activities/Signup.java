@@ -1,6 +1,8 @@
 package com.eatlah.eatlah.activities;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
+import com.eatlah.eatlah.helpers.fetchLatLongFromService;
 import com.eatlah.eatlah.models.User;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,11 +31,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +57,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>, OnTaskCompletedListener {
 
     /**
      * UI design
@@ -89,6 +93,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     private EditText mPhoneView;
     private EditText mHawkerIdView;
     private Spinner mProfileView;
+    private EditText mCustomerAddressView;
     private View mProgressView;
     private View mSignupView;
 
@@ -141,6 +146,18 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 
         mProfileView = (Spinner) findViewById(R.id.profile_spinner);
         mProfileView.setPrompt(getResources().getString(R.string.prompt_profile));
+        mProfileView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // retrieve profileId selected by user
+                /* to be used for changing the visibility of hawkerId, customerAddress views */
+                //todo hawkerId view
+                displayRelevantFields(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         Button mSignupButton = (Button) findViewById(R.id.signup_button);
         mSignupButton.setOnClickListener(new OnClickListener() {
@@ -149,6 +166,8 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
                 attemptSignup();
             }
         });
+
+        mCustomerAddressView = findViewById(R.id.customerAddr);
 
         mSignupView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -212,11 +231,11 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         mEmailView.setError(null);
         mPasswordView.setError(null);
         mHawkerIdView.setError(null);
+        mCustomerAddressView.setError(null);
 
         // Store values at the time of the signup attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String hawkerId = mHawkerIdView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -239,6 +258,18 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
             cancel = true;
         }
 
+        // profile selected is a hawker and no hawkerId given
+        if (mProfileView.getSelectedItemPosition() == 2 && TextUtils.isEmpty(mHawkerIdView.getText())) {
+            mHawkerIdView.setError(getResources().getString(R.string.error_field_required));
+            focusView = mHawkerIdView;
+            cancel = true;
+        }
+
+        if (mCustomerAddressView.getError() != null) {
+            focusView = mCustomerAddressView;
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt signup and focus the first
             // form field with an error.
@@ -247,9 +278,62 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
             // Show a progress spinner, and kick off a background task to
             // perform the user signup attempt.
             showProgress(true);
-            mAuthTask = new UserSignupTask(email, password, hawkerId);
-            mAuthTask.execute((Void) null);
+            createSignupTask(email, password);
         }
+    }
+
+    /**
+     * creates and executes the signup task depending on profile selected
+     * @param email
+     * @param password
+     */
+    private void createSignupTask(String email, String password) {
+        System.out.println("creating signup task for " + mProfileView.getSelectedItem().toString());
+        if (mProfileView.getSelectedItemPosition() == 0) {  // customer
+            String customerAddress = mCustomerAddressView.getText().toString();
+
+            new UserSignupTask(email, password, null, customerAddress)
+                .execute();
+        } else if (mProfileView.getSelectedItemPosition() == 2) {   // hawker
+            String hawkerId = mHawkerIdView.getText().toString();
+            new UserSignupTask(email, password, hawkerId)
+                    .execute();
+        } else {
+            new UserSignupTask(email, password, null, null)
+                    .execute();
+        }
+    }
+
+    /**
+     * changes the visibility of relevant fields.
+     * Precondition: associated fields are invisible
+     * Postcondition: depending on profile_idx selected, relevant fields set to visible
+     * @param profile_idx
+     */
+    private void displayRelevantFields(int profile_idx) {
+        System.out.println("profile selected: " + profile_idx);
+        if (profile_idx == 0) { // customer
+            // display customerAddress view
+            findViewById(R.id.customerAddr_inputLayout).setVisibility(View.VISIBLE);
+            mCustomerAddressView.setVisibility(View.VISIBLE);
+            mCustomerAddressView.setHint(getResources().getString(R.string.customer_address));
+            checkAddressValidity(mCustomerAddressView.getText().toString());
+        } else if (profile_idx == 1) {  // courier
+
+        } else {    // hawker
+
+        }
+    }
+
+    private void checkAddressValidity(String address) {
+        if (address.isEmpty()) {
+            mCustomerAddressView.setError(getResources().getString(R.string.customer_address_empty));
+            return;
+        }
+
+//        new fetchLatLongFromService(address, this)
+//                .execute();
+
     }
 
     private boolean isEmailValid(String email) {
@@ -341,6 +425,23 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         mEmailView.setAdapter(adapter);
     }
 
+    @Override
+    public void onTaskCompleted(List<String> list) {
+        // null
+    }
+
+    /**
+     * if customer address field is non-empty,
+     * validate address and set error corresponding to editText if any.
+     * @param address
+     */
+    @Override
+    public void onTaskCompleted(String address) {
+        if (TextUtils.isEmpty(address)) {
+            mCustomerAddressView.setError(getResources().getString(R.string.customer_address_invalid));
+        }
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -361,26 +462,33 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         private final String mEmail;
         private final String mPassword;
         private final String mHawkerId;
+        private final String mCustomerAddress;
 
-        UserSignupTask(String email, String password, String hawkerId) {
+        UserSignupTask(String email, String password, String hawkerId, String customerAddress) {
             mEmail = email;
             mPassword = password;
             mHawkerId = hawkerId;
+            mCustomerAddress = customerAddress;
+        }
+
+        UserSignupTask(String email, String password, String hawkerId) {
+            this(email, password, hawkerId, null);
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
+            System.out.println("signing up user in background");
             return mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {  // successfully signed up valid user
-                                saveUserToDb(mPhoneView.getText().toString(), mEmail, mHawkerId);  // add user to db
-                                System.out.println("password: " + mPassword);
+                                System.out.println("mauth created user successfully");
+                                saveUserToDb(mPhoneView.getText().toString(), mEmail);  // add user to db
                                 Log.d("signup", "created new user signup successfully");
                                 redirectToLogin();  // redirect newly created user to login page
                             } else {
+                                System.out.println("background task err");
                                 Log.e("signup", task.getException().getMessage());
                                 Toast.makeText(Signup.this, "Unsuccessful signup attempt.", Toast.LENGTH_SHORT)
                                         .show();
@@ -399,14 +507,16 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
          * @param email email of user
          * @return true if user is successfully saved to db, false otherwise.
          */
-        private void saveUserToDb(String phone_number, String email, String hawkerId) {
+        private void saveUserToDb(String phone_number, String email) {
+            System.out.println("saving user");
             mDbRef
-                .child(phone_number)
-                .setValue(new User(phone_number, email, hawkerId))
+                .child(mAuth.getUid())  // index by mAuth generated uid
+                .setValue(new User(phone_number, email, mHawkerId, mCustomerAddress))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            System.out.println("saved user to db successfully");
                             Log.d("signup", "saved user signup to db successfully.");
                             Toast.makeText(Signup.this, "Signed up successfully!", Toast.LENGTH_SHORT)
                                     .show();

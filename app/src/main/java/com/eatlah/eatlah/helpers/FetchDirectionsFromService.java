@@ -153,31 +153,37 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             // ./end_location
             JSONObject endLoc_jsonObj = legs_jsonObj.getJSONObject("end_location");
             String endLoc = legs_jsonObj.getString("end_address");
+            String endPostalCode = endLoc.split("(\\d{6})$")[1];
             LatLng endLoc_latlng = new LatLng(endLoc_jsonObj.getDouble("lat"),
                                               endLoc_jsonObj.getDouble("lng"));
 
             // ./start_location
             JSONObject startLoc_jsonObj = legs_jsonObj.getJSONObject("start_location");
             String startLoc = legs_jsonObj.getString("start_address");
+            String startPostal = startLoc.split("(\\d{6})$")[1];
             LatLng startLoc_latlng = new LatLng(startLoc_jsonObj.getDouble("lat"),
                                                 startLoc_jsonObj.getDouble("lng"));
 
-//            // pin start and end location onto map
-//            Marker src_marker = mMap.addMarker(new MarkerOptions()
-//                    .position(startLoc_latlng)
-//                    .title("Current Location"));
-//
-//            src_marker.setSnippet(startLoc + "\n" +
-//                    "Departure Time: " + departureTime +
-//                    "\nArrival Time: " + arrivalTime +
-//                    "\nDistance: " + distance +
-//                    "\nDuration: " + duration);
-//
-//            mMap.addMarker(new MarkerOptions()
-//                    .position(endLoc_latlng)
-//                    .title("Collection Point")
-//                    .snippet(endLoc)
-//            );
+            // pin start and end location onto map
+            Marker src_marker = mMap.addMarker(new MarkerOptions()
+                    .position(startLoc_latlng)
+                    .title("Current Location")
+            );
+
+            src_marker.setSnippet(startLoc + "\n" +
+                    "Departure Time: " + departureTime +
+                    "\nArrival Time: " + arrivalTime +
+                    "\nDistance: " + distance +
+                    "\nDuration: " + duration);
+            src_marker.setTag(startPostal);
+
+            Marker dest_marker = mMap.addMarker(new MarkerOptions()
+                    .position(endLoc_latlng)
+                    .title("Destination")
+                    .snippet(endLoc)
+            );
+            dest_marker.setTag(endPostalCode);
+
 
             // set lat lng bounds
             LatLngBounds latLngBounds = new LatLngBounds(sw_latlng, ne_latlng);
