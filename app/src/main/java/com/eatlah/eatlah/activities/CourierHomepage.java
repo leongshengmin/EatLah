@@ -18,13 +18,15 @@ import android.view.View;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
+import com.eatlah.eatlah.fragments.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
 public class CourierHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         CourierPendingOrderFragment.OnListFragmentInteractionListener,
-        CourierOrderItemsFragment.OnListFragmentInteractionListener {
+        CourierOrderItemsFragment.OnListFragmentInteractionListener,
+        CourierReceiptFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,5 +136,12 @@ public class CourierHomepage extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(OrderItem item) {
         // null
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+        //todo
+        Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
+                .show();
     }
 }

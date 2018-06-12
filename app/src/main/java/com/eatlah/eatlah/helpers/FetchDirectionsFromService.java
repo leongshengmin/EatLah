@@ -26,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuilder> {
     private String origin;
@@ -37,6 +39,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
     private Polyline polyline;
 
     public FetchDirectionsFromService(Location currentLocation, String destination, GoogleMap mMap, OnTaskCompletedListener onTaskCompletedListener) {
+        System.out.println("location: " + currentLocation + " dest: " + destination);
         origin = generateLocName(currentLocation);
         this.directions = new ArrayList<>();
         this.onTaskCompletedListener = onTaskCompletedListener;
@@ -55,10 +58,9 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
     private String generateLocName(Location location) {
         return new StringBuilder()
                 .append(Double.toString(location.getLatitude()))
-                .append(",")
+                .append(", ")
                 .append(Double.toString(location.getLongitude()))
-                .toString()
-                .trim();
+                .toString();
     }
 
     /**
@@ -68,6 +70,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
      * @return
      */
     private String generateLocName(String destination) {
+        System.out.println("DEST: " + destination);
         return destination.replaceAll(" ", "+").trim();
     }
 
@@ -86,6 +89,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             String mapUrl = "https://maps.googleapis.com/maps/api/directions/json?origin="
                     + origin + "&destination=" + destination
                     + "&mode=transit&region=sg";
+            System.out.println(mapUrl);
 
             URL url = new URL(mapUrl);
             conn = (HttpURLConnection) url.openConnection();
@@ -106,6 +110,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
     @Override
     protected void onPostExecute(StringBuilder result) {
         super.onPostExecute(result);
+        System.out.println(result);
 
         if (polyline != null) mMap.clear();
 
@@ -150,17 +155,28 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             JSONObject duration_jsonObj = legs_jsonObj.getJSONObject("duration");
             String duration = duration_jsonObj.getString("text");
 
+            // regex for extracting postal code
+            Pattern pattern = Pattern.compile("(\\d{6})$");
+
             // ./end_location
             JSONObject endLoc_jsonObj = legs_jsonObj.getJSONObject("end_location");
             String endLoc = legs_jsonObj.getString("end_address");
-            String endPostalCode = endLoc.split("(\\d{6})$")[1];
+
+            System.out.println("END ADDRESS: " + endLoc);
+            String endPostalCode = endLoc.split("Singapore ")[1];
+            System.out.println("end postal code: " + endPostalCode);
+
             LatLng endLoc_latlng = new LatLng(endLoc_jsonObj.getDouble("lat"),
                                               endLoc_jsonObj.getDouble("lng"));
 
             // ./start_location
             JSONObject startLoc_jsonObj = legs_jsonObj.getJSONObject("start_location");
             String startLoc = legs_jsonObj.getString("start_address");
-            String startPostal = startLoc.split("(\\d{6})$")[1];
+
+            System.out.println("START LOC: " + startLoc);
+            String startPostal = startLoc.split("Singapore ")[1];
+            System.out.println("start postal code: " + startPostal);
+
             LatLng startLoc_latlng = new LatLng(startLoc_jsonObj.getDouble("lat"),
                                                 startLoc_jsonObj.getDouble("lng"));
 

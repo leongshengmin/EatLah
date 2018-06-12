@@ -2,6 +2,8 @@ package com.eatlah.eatlah.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,10 +13,8 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,6 +24,7 @@ import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierOrderItemsDialogFragment;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.CourierReceiptFragment;
 import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
 import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
 import com.eatlah.eatlah.helpers.fetchLatLongFromService;
@@ -83,6 +84,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     private long FASTEST_INTERVAL = 30000;  // 60s
 
     private HashMap<String, Order> orderDict;
+    private Order attendingOrder;
     private String customerAddress;
 
     @Override
@@ -311,6 +313,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public boolean onMarkerClick(Marker marker) {
         String postalCode = (String) marker.getTag();
+        System.out.println("marker clicked: " + postalCode);
         Order order = orderDict.get(postalCode);
         if (order == null) {
             System.out.println("order not found for " + postalCode);
@@ -405,8 +408,8 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
             }
 
             private void displayFragment(CourierOrderItemsDialogFragment fragment, String tag) {
-                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-                fragment.show(ft, "dialog");
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                fragment.show(ft, tag);
             }
         });
     }
@@ -417,16 +420,19 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
      * @param attendToOrder_button
      */
     private void configureAttendToOrderButton(final Order order, final Button attendToOrder_button, final Button viewOrders_button, final Marker marker) {
+        System.out.println("marker: " + marker.getTag());
         attendToOrder_button.setVisibility(View.VISIBLE);
         attendToOrder_button.setOnClickListener(new View.OnClickListener() {
             final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
             @Override
             public void onClick(View v) {
+                attendingOrder = order;
+
                 // update order fields in db
                 // to remove order from global courier view
                 updateOrder();
-                new FetchDirectionsFromService(mCurrentLocation, marker.getTitle(), mMap, CourierMapsActivity.this)
+                new FetchDirectionsFromService(mCurrentLocation, (String) marker.getTag(), mMap, CourierMapsActivity.this)
                         .execute();
 
                 attendToOrder_button.setVisibility(View.INVISIBLE);
@@ -503,11 +509,13 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
      */
     @Override
     public void onListFragmentInteraction(OrderItem item) {
+        System.out.println("all items collected, fetching new route");
         fetchNewRoute();
     }
 
     @Override
     public void onTaskCompleted(List<String> directions) {
+        System.out.println("retrieved DIRECTIONS!");
         TextView directions_textView = findViewById(R.id.directions_textView);
         directions_textView.setVisibility(View.VISIBLE);
         System.out.println("size of directions:" + directions.size());
@@ -518,6 +526,38 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         }
         System.out.println(sb.toString());
         directions_textView.setText(sb.toString());
+
+        configEndRouteButton();
+    }
+
+    private void configEndRouteButton() {
+        // reuse attendToOrder button to end navigation
+        Button endRoute_button = findViewById(R.id.attendToOrder_button);
+        endRoute_button.setText(getResources().getString(R.string.endRouteLabel));
+        endRoute_button.setVisibility(View.VISIBLE);
+        endRoute_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                displayCourierReceipt(attendingOrder);
+            }
+
+            private void displayCourierReceipt(Order order) {
+                // create foodItems fragment and pass in Order containing list of foodItems as arg
+                Bundle bd = new Bundle();
+                Fragment fragment = CourierReceiptFragment.newInstance(order, customerAddress);
+                fragment.setArguments(bd);
+
+                // display the fragment
+                displayFragment(fragment, getResources().getString(R.string.courier_receipt_fragment));
+            }
+
+            private void displayFragment(Fragment fragment, String tag) {
+                FragmentTransaction ft = getParent().getFragmentManager().beginTransaction();
+                ft.replace(R.id.frag_container, fragment, tag);
+                ft.commit();
+            }
+        });
     }
 
     @Override

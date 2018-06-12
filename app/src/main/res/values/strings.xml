@@ -88,9 +88,14 @@
     <string name="requestingLocationServices">is_requesting_updates</string>
     <string name="lastKnownLocation">last_known_location</string>
     <string name="currentLocation">Current Location</string>
+    <string name="endRouteLabel">End Route</string>
 
     <!-- Strings related to db ref -->
     <string name="collectionTimeRef">collectionTime</string>
+
+    <!-- Strings related to courierReceiptFragment -->
+    <string name="completedOrder">Completed Order</string>
+    <string name="amountToCollect">Subtotal</string>
 
     <!-- Strings related to fragment tags -->
     <string name="foodItemFrag">FoodItemFragment</string>
@@ -102,5 +107,6 @@
     <string name="title_activity_courier_homepage">CourierHomepage</string>
     <string name="title_activity_courier_maps">Map</string>
     <string name="courierOrderItemsDialogFrag">courierOrderItemsDialogFragment</string>
+    <string name="courier_receipt_fragment">courierReceiptFragment</string>
 
 </resources>
