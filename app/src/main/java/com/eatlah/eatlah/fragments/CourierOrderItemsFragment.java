@@ -2,23 +2,32 @@ package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.CourierHomepage;
+import com.eatlah.eatlah.activities.CourierMapsActivity;
 import com.eatlah.eatlah.adapters.CourierOrderItemsRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A fragment representing a list of Items.
@@ -35,6 +44,7 @@ public class CourierOrderItemsFragment extends Fragment {
     private CourierOrderItemsRecyclerViewAdapter mAdapter;
     private OnListFragmentInteractionListener mListener;
     private Order mOrder;
+    private String customerAddress;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDb;
@@ -92,16 +102,49 @@ public class CourierOrderItemsFragment extends Fragment {
     }
 
     private void initAttendToOrderButton(View view) {
-        final Button attendToOrderBtn = ((Activity)mListener).findViewById(R.id.attendToOrderButton);
+        final Button attendToOrderBtn = ((Activity) mListener).findViewById(R.id.attendToOrderButton);
         attendToOrderBtn.setVisibility(View.VISIBLE);
-        attendToOrderBtn.setText(((Activity)mListener).getResources().getString(R.string.attendToOrder));
+        attendToOrderBtn.setText(((Activity) mListener).getResources().getString(R.string.attendToOrder));
         attendToOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                retrieveCustomerAddress();
                 // update order fields in db
                 // to remove order from global courier view
                 updateOrder();
-                attendToOrderBtn.setVisibility(View.INVISIBLE);
+
+                initCompletedOrderButton();
+            }
+
+            private void retrieveCustomerAddress() {
+                System.out.println(mOrder.getUser_id());
+                mDb.getReference(getResources().getString(R.string.user_ref))
+                        .child(mOrder.getUser_id())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                System.out.println("datasnapshot: " + dataSnapshot);
+                                User customer = dataSnapshot.getValue(User.class);
+                                customerAddress = customer.getAddress();
+                                System.out.println("customer address retrieved: " + customerAddress);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.e("db", databaseError.getMessage());
+                            }
+                        });
+            }
+
+            private void initCompletedOrderButton() {
+                attendToOrderBtn.setText(getResources().getString(R.string.completedOrder));
+                attendToOrderBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (customerAddress == null) return;
+                        ((CourierHomepage) mListener).displayCourierReceipt(mOrder, customerAddress);
+                    }
+                });
             }
         });
     }

@@ -59,7 +59,7 @@ public class CourierHomepage extends AppCompatActivity
         }
     }
 
-    private void displayCourierReceipt(Order order, String customerAddress) {
+    public void displayCourierReceipt(Order order, String customerAddress) {
         // create foodItems fragment and pass in Order containing list of foodItems as arg
         android.app.Fragment fragment = CourierReceiptFragment.newInstance(order, customerAddress);
 
