@@ -49,10 +49,10 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         holder.mOrderDesc.setText(orderItem.getDescription());
         holder.mOrderStallId.setText("Stall ID: " +orderItem.getStall_id());
 
-        holder.mCollected_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.mCollected_checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+            public void onClick(View v) {
+                if (v.getId() == R.id.collectedOrder_checkbox && ((CheckBox) v).isChecked()) {
                     recordCollectedOrderItem(orderItem);
                 }
             }

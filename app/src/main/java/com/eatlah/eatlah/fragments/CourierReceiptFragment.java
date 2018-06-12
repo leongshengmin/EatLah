@@ -1,9 +1,9 @@
 package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.CourierOrderItemsRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -22,8 +22,6 @@ import java.io.Serializable;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CourierReceiptFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link CourierReceiptFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -35,8 +33,8 @@ public class CourierReceiptFragment extends Fragment {
     private Order order;
     private String customerAddress;
 
-    private CourierOrderItemsRecyclerViewAdapter mAdapter;
-    private CourierOrderItemsFragment.OnListFragmentInteractionListener mListener;
+    private CourierBasicOrderItemRecyclerViewAdapter mAdapter;
+    private OnFragmentInteractionListener mListener;
 
     private Button completedOrder_button;
 
@@ -93,7 +91,7 @@ public class CourierReceiptFragment extends Fragment {
         RecyclerView orderItemsRecyclerView = fragmentView.findViewById(R.id.orderItems_recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager((Activity) mListener);
         orderItemsRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new CourierOrderItemsRecyclerViewAdapter(order.getOrders(), mListener);
+        mAdapter = new CourierBasicOrderItemRecyclerViewAdapter((Activity)mListener, order.getOrders());
         orderItemsRecyclerView.setAdapter(mAdapter);
         return fragmentView;
     }
@@ -114,7 +112,7 @@ public class CourierReceiptFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mListener = (CourierOrderItemsFragment.OnListFragmentInteractionListener) context;
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -138,7 +136,6 @@ public class CourierReceiptFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onListFragmentInteraction(OrderItem orderItem);
         void onFragmentInteraction();
     }
 }

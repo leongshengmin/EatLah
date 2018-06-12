@@ -2,11 +2,10 @@ package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import android.widget.Button;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.CourierHomepage;
-import com.eatlah.eatlah.activities.CourierMapsActivity;
 import com.eatlah.eatlah.adapters.CourierOrderItemsRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
@@ -101,7 +99,7 @@ public class CourierOrderItemsFragment extends Fragment {
         return view;
     }
 
-    private void initAttendToOrderButton(View view) {
+    private void initAttendToOrderButton(final View view) {
         final Button attendToOrderBtn = ((Activity) mListener).findViewById(R.id.attendToOrderButton);
         attendToOrderBtn.setVisibility(View.VISIBLE);
         attendToOrderBtn.setText(((Activity) mListener).getResources().getString(R.string.attendToOrder));
@@ -137,16 +135,19 @@ public class CourierOrderItemsFragment extends Fragment {
             }
 
             private void initCompletedOrderButton() {
-                attendToOrderBtn.setText(getResources().getString(R.string.completedOrder));
-                attendToOrderBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (customerAddress == null) return;
-                        ((CourierHomepage) mListener).displayCourierReceipt(mOrder, customerAddress);
-                    }
-                });
+                if (customerAddress == null) return;
+                attendToOrderBtn.setVisibility(View.INVISIBLE);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.remove(CourierOrderItemsFragment.this);
+                ft.commit();
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((CourierHomepage)mListener).displayCourierReceipt(mOrder, customerAddress);
     }
 
     /**

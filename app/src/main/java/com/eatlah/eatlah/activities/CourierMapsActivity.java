@@ -2,7 +2,6 @@ package com.eatlah.eatlah.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +9,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -25,8 +23,6 @@ import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierOrderItemsDialogFragment;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
-import com.eatlah.eatlah.fragments.CourierReceiptFragment;
 import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
 import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
 import com.eatlah.eatlah.helpers.fetchLatLongFromService;
@@ -144,6 +140,10 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
 
     /**
      * pins the given latlng object onto map
+     * @param latLng
+     * @param markerTag postal code of location
+     * @param title heading of marker (e.g. currentLocation, pickupLocation,...)
+     * @param snippet body of marker
      */
     private void pinOnToMap(LatLng latLng, String markerTag, String title, String snippet) {
         System.out.println("pinning " + markerTag + " onto map");
@@ -168,7 +168,9 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     /**
      * Starting location updates
      * Check whether location settings are satisfied and then
-     * location updates will be requested
+     * location updates will be requested.
+     *
+     * Retrieves current location of user.
      */
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
@@ -198,6 +200,10 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         fusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
+    /**
+     * if current location of user changes, mapView is updated to reflect change in location.
+     * @param location
+     */
     public void onLocationChanged(Location location) {
         // new location has been determined
         String msg = "Updated Location: " +
@@ -316,8 +322,9 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     public boolean onMarkerClick(Marker marker) {
         String postalCode = (String) marker.getTag();
         System.out.println("marker clicked: " + postalCode);
+
         Order order = orderDict.get(postalCode);
-        if (order == null) {
+        if (order == null) {    // marker is not meant to be clickable (only ORDER markers are clickable)
             System.out.println("order not found for " + postalCode);
             return false;
         }
@@ -371,7 +378,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         configureViewOrdersButton(order, viewOrders_button);
 
         final Button attendToOrder_button = findViewById(R.id.attendToOrder_button);
-        if (order.getCourier_id() == null || order.getCourier_id().isEmpty()) {
+        if (order.getCourier_id() == null || order.getCourier_id().isEmpty()) { // if no courier attending to this order yet
             configureAttendToOrderButton(order, attendToOrder_button, viewOrders_button, marker);
         }
     }
@@ -434,15 +441,26 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 // update order fields in db
                 // to remove order from global courier view
                 updateOrder();
-                new FetchDirectionsFromService(mCurrentLocation, (String) marker.getTag(), mMap, CourierMapsActivity.this)
-                        .execute();
+
+                // map out route from current location to pickup location
+                retrieveRouteToPickup();
 
                 attendToOrder_button.setVisibility(View.INVISIBLE);
+
+                // get customer address from customerUID for routing later
                 retrieveCustomerAddress();
 
-                displayOrder(order, marker);
                 Toast.makeText(CourierMapsActivity.this, "Loading directions...", Toast.LENGTH_LONG)
                         .show();
+            }
+
+            /**
+             * retrieves route from current location to pickup location async
+             */
+            private void retrieveRouteToPickup() {
+                System.out.println("Retrieving route to pickup");
+                new FetchDirectionsFromService(mCurrentLocation, (String) marker.getTag(), mMap, CourierMapsActivity.this)
+                        .execute();
             }
 
             /**
@@ -457,7 +475,9 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                         .setValue(order);
             }
 
-
+            /**
+             * retrieves customer address from customerUID async
+             */
             private void retrieveCustomerAddress() {
                 System.out.println(order.getUser_id());
                 mDb.getReference(getResources().getString(R.string.user_ref))
@@ -516,8 +536,17 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     }
 
     @Override
+    /**
+     * callback when FetchDirectionsFromService is completed.
+     */
     public void onTaskCompleted(List<String> directions) {
         System.out.println("retrieved DIRECTIONS!");
+        displayDirections(directions);
+
+        configEndRouteButton();
+    }
+
+    private void displayDirections(List<String> directions) {
         TextView directions_textView = findViewById(R.id.directions_textView);
         directions_textView.setVisibility(View.VISIBLE);
         System.out.println("size of directions:" + directions.size());
@@ -528,10 +557,12 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         }
         System.out.println(sb.toString());
         directions_textView.setText(sb.toString());
-
-        configEndRouteButton();
     }
 
+    /**
+     * reuses attendToOrder button which was set to invisible
+     * for courier to end navigation upon order completion.
+     */
     private void configEndRouteButton() {
         // reuse attendToOrder button to end navigation
         Button endRoute_button = findViewById(R.id.attendToOrder_button);
