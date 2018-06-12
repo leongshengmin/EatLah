@@ -212,9 +212,12 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             for (int j = 0; j < steps_jsonArray.length(); j++) {
 
                 JSONObject steps_jsonObj = steps_jsonArray.getJSONObject(j);
-                String dir1 = steps_jsonObj.getString("html_instructions");
-                directions.add(Html.fromHtml(dir1).toString());
-                System.out.println("outer steps jsonobj: " + steps_jsonObj);
+                if (steps_jsonObj.has("html_instructions")) {
+                    String dir1 = steps_jsonObj.getString("html_instructions");
+                    System.out.println("DIR: " + dir1);
+                    directions.add(Html.fromHtml(dir1).toString());
+                    System.out.println("outer steps jsonobj: " + steps_jsonObj);
+                }
 
                 // ./steps/steps
                 if (steps_jsonObj.has("steps")) {
@@ -222,9 +225,12 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
                     System.out.println("inner steps json: " + innerSteps_jsonArray);
                     for (int i = 0; i < innerSteps_jsonArray.length(); i++) {
                         JSONObject innerSteps_jsonObj = innerSteps_jsonArray.getJSONObject(i);
-                        String dir = innerSteps_jsonObj.getString("html_instructions");
-                        directions.add(Html.fromHtml(dir).toString());
-                        System.out.println("inner steps jsonobj: " + innerSteps_jsonObj);
+                        if (innerSteps_jsonObj.has("html_instructions")) {
+                            String dir = innerSteps_jsonObj.getString("html_instructions");
+                            System.out.println("DIR: " + dir);
+                            directions.add(Html.fromHtml(dir).toString());
+                            System.out.println("inner steps jsonobj: " + innerSteps_jsonObj);
+                        }
                     }
                 }
 
@@ -243,12 +249,13 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
                 polyline = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(src.latitude, src.longitude),
                              new LatLng(dest.latitude, dest.longitude))
-                        .width(5)
+                        .width(10)
                         .color(Color.BLUE)
                         .geodesic(true)
                 );
             }
 
+            System.out.println("directions has " + directions.size() + " segments");
             onTaskCompletedListener.onTaskCompleted(directions);
 
         } catch (JSONException e) {

@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 public class CourierPendingOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    public static final int MARKER_CLICKED_CODE = 1;
+    public static final int COMPLETED_ORDER = 1;
     private int mColumnCount = 1;
 
     private FirebaseDatabase mDb;
@@ -117,19 +117,7 @@ public class CourierPendingOrderFragment extends Fragment {
     private void displayMap() {
         Intent intent = new Intent(getActivity(), CourierMapsActivity.class);
         intent.putExtra(getResources().getString(R.string.pendingOrders), mOrders);
-        startActivityForResult(intent, MARKER_CLICKED_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        if (requestCode == CourierPendingOrderFragment.MARKER_CLICKED_CODE) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                Order order = (Order) data.getSerializableExtra(getResources().getString(R.string.order_ref));
-                mListener.onListFragmentInteraction(order);
-            }
-        }
+        startActivity(intent);
     }
 
     @Override

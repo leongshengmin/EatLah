@@ -74,6 +74,11 @@
 
     <!-- COURIER -->
     <!-- Strings related to CourierHomepage -->
+    <string name="ordersView">View All Orders</string>
+    <string name="pastOrdersView">View Past Orders</string>
+    <string name="profilePageView">Profile</string>
+    <string name="courierContactView">Contact Customer</string>
+
     <!-- tags -->
     <string name="courierPendingOrderFrag">CourierPendingOrderFragment</string>
     <string name="courierFoodItemsFrag">CourierOrderItemsFragment</string>
@@ -108,5 +113,6 @@
     <string name="title_activity_courier_maps">Map</string>
     <string name="courierOrderItemsDialogFrag">courierOrderItemsDialogFragment</string>
     <string name="courier_receipt_fragment">courierReceiptFragment</string>
+    <string name="courierPastOrdersFragment">courierPastOrdersFragment</string>
 
 </resources>
