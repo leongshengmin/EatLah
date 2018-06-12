@@ -1,8 +1,10 @@
 package com.eatlah.eatlah.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +65,9 @@ public class CourierReceiptFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            order = (Order) getArguments().getSerializable(ORDER_TAG);
-            customerAddress = getArguments().getString(CUSTOMER_ADDRESS_TAG);
+            this.order = (Order) getArguments().getSerializable(ORDER_TAG);
+            this.customerAddress = getArguments().getString(CUSTOMER_ADDRESS_TAG);
+            System.out.println("On create fragment, order : " + order );
         }
     }
 
@@ -88,6 +91,8 @@ public class CourierReceiptFragment extends Fragment {
         });
 
         RecyclerView orderItemsRecyclerView = fragmentView.findViewById(R.id.orderItems_recyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager((Activity) mListener);
+        orderItemsRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new CourierOrderItemsRecyclerViewAdapter(order.getOrders(), mListener);
         orderItemsRecyclerView.setAdapter(mAdapter);
         return fragmentView;

@@ -10,6 +10,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +25,7 @@ import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierOrderItemsDialogFragment;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.CourierReceiptFragment;
 import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
 import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
@@ -538,24 +540,11 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         endRoute_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(CourierMapsActivity.this, CourierHomepage.class);
+                intent.putExtra(getResources().getString(R.string.order_ref), attendingOrder);
+                intent.putExtra(getResources().getString(R.string.customer_address), customerAddress);
+                startActivity(intent);
                 finish();
-                displayCourierReceipt(attendingOrder);
-            }
-
-            private void displayCourierReceipt(Order order) {
-                // create foodItems fragment and pass in Order containing list of foodItems as arg
-                Bundle bd = new Bundle();
-                Fragment fragment = CourierReceiptFragment.newInstance(order, customerAddress);
-                fragment.setArguments(bd);
-
-                // display the fragment
-                displayFragment(fragment, getResources().getString(R.string.courier_receipt_fragment));
-            }
-
-            private void displayFragment(Fragment fragment, String tag) {
-                FragmentTransaction ft = getParent().getFragmentManager().beginTransaction();
-                ft.replace(R.id.frag_container, fragment, tag);
-                ft.commit();
             }
         });
     }

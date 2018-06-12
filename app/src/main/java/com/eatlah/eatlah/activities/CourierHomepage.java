@@ -33,6 +33,8 @@ public class CourierHomepage extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.courier_activity_homepage);
 
+        retrieveExtras();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -46,6 +48,29 @@ public class CourierHomepage extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void retrieveExtras() {
+        String customerAddress = getIntent().getStringExtra(getString(R.string.customer_address));
+        Order order = (Order) getIntent().getSerializableExtra(getString(R.string.order_ref));
+        System.out.println("order : " + order + "customer Address: " + customerAddress);
+        if (order != null) {
+            displayCourierReceipt(order, customerAddress);
+        }
+    }
+
+    private void displayCourierReceipt(Order order, String customerAddress) {
+        // create foodItems fragment and pass in Order containing list of foodItems as arg
+        android.app.Fragment fragment = CourierReceiptFragment.newInstance(order, customerAddress);
+
+        // display the fragment
+        displayFragment(fragment, getResources().getString(R.string.courier_receipt_fragment));
+    }
+
+    private void displayFragment(android.app.Fragment fragment, String tag) {
+        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.frag_container, fragment, tag);
+        ft.commit();
     }
 
     @Override
@@ -140,7 +165,6 @@ public class CourierHomepage extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction() {
-        //todo
         Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
                 .show();
     }
