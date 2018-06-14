@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.CourierHomepage;
-import com.eatlah.eatlah.activities.CustomerHomepage;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
+import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
 import com.eatlah.eatlah.models.Order;
 
 import java.util.List;

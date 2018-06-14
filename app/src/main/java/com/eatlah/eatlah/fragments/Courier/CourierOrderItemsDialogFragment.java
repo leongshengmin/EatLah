@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.Courier;
 
 import android.app.DialogFragment;
 import android.os.Bundle;

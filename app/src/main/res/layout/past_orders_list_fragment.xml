@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.PastOrdersFragment"
+    tools:context=".fragments.General.PastOrdersFragment"
     tools:listitem="@layout/past_orders_viewholder" />

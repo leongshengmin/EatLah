@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.CourierHomepage"
+    tools:context=".activities.Courier.CourierHomepage"
     tools:showIn="@layout/courier_app_bar_homepage">
 
     <Button

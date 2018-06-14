@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.Customer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,7 +30,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HawkerStallFragment extends Fragment {
+public class CustomerHawkerStallFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
@@ -46,13 +46,13 @@ public class HawkerStallFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HawkerStallFragment() {
+    public CustomerHawkerStallFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static HawkerStallFragment newInstance(int columnCount, HawkerCentre hc) {
+    public static CustomerHawkerStallFragment newInstance(int columnCount, HawkerCentre hc) {
         hawkerCentre = hc;
-        HawkerStallFragment fragment = new HawkerStallFragment();
+        CustomerHawkerStallFragment fragment = new CustomerHawkerStallFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

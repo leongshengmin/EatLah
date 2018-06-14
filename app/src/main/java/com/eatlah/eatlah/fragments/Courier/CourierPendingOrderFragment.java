@@ -1,10 +1,9 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.Courier;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -17,20 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.CourierMapsActivity;
+import com.eatlah.eatlah.activities.Courier.CourierMapsActivity;
 import com.eatlah.eatlah.adapters.CourierPendingOrderRecyclerViewAdapter;
-import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A fragment representing a list of Items.

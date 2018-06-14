@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.CustomerHomepage;
-import com.eatlah.eatlah.fragments.OrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
+import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.listeners.OnSwipeTouchListener;
 import com.eatlah.eatlah.models.OrderItem;
 

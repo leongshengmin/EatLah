@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.Customer;
 
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -22,11 +22,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.PastOrdersFragment;
-import com.eatlah.eatlah.fragments.FoodItemFragment;
-import com.eatlah.eatlah.fragments.HawkerCentreFragment;
-import com.eatlah.eatlah.fragments.HawkerStallFragment;
-import com.eatlah.eatlah.fragments.OrderFragment;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
+import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
@@ -41,16 +41,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
 public class CustomerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HawkerCentreFragment.OnListFragmentInteractionListener,
-        HawkerStallFragment.OnListFragmentInteractionListener,
-        FoodItemFragment.OnListFragmentInteractionListener,
-        OrderFragment.OnListFragmentInteractionListener {
+        CustomerHawkerStallFragment.OnListFragmentInteractionListener,
+        CustomerFoodItemFragment.OnListFragmentInteractionListener,
+        CustomerOrderFragment.OnListFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -229,7 +228,7 @@ public class CustomerHomepage extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(HawkerCentre hawkerCentre) {
         // retrieve the fragment containing a recyclerview of hawkerStalls
-        HawkerStallFragment hsFragment = HawkerStallFragment.newInstance(1, hawkerCentre);
+        CustomerHawkerStallFragment hsFragment = CustomerHawkerStallFragment.newInstance(1, hawkerCentre);
 
         // display fragment
         displayFragment(hsFragment, getResources().getString(R.string.hawkerStallFrag));
@@ -238,7 +237,7 @@ public class CustomerHomepage extends AppCompatActivity
     // onclick callback when hawkerStall item is clicked.
     // Display menu items associated with hawkerStall.
     public void onListFragmentInteraction(HawkerStall hawkerStall) {
-        FoodItemFragment fragment = FoodItemFragment.newInstance(1, hawkerStall);
+        CustomerFoodItemFragment fragment = CustomerFoodItemFragment.newInstance(1, hawkerStall);
 
         // display fragment
         displayFragment(fragment, getResources().getString(R.string.foodItemFrag));
@@ -262,7 +261,7 @@ public class CustomerHomepage extends AppCompatActivity
     }
 
     private void initializeCart() {
-        HawkerStall hs = FoodItemFragment.getHawkerStall();
+        HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
         dbRef = mDb
                 .getReference(getResources().getString(R.string.order_ref))
                 .push();
@@ -278,10 +277,10 @@ public class CustomerHomepage extends AppCompatActivity
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d("db", "successfully saved order");
-                                    OrderFragment orderFragment = OrderFragment.newInstance(1, order);
+                                    CustomerOrderFragment customerOrderFragment = CustomerOrderFragment.newInstance(1, order);
 
                                     // display fragment
-                                    displayFragment(orderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
+                                    displayFragment(customerOrderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
                                 } else {
                                     Log.e("db", task.getException().getMessage());
                                 }

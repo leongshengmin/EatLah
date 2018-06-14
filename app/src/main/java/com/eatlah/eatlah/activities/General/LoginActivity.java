@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.General;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -37,12 +37,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
+import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
+import com.eatlah.eatlah.activities.HawkerHomepage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
-import org.jivesoftware.smack.AbstractXMPPConnection;
 
 import java.util.ArrayList;
 import java.util.List;

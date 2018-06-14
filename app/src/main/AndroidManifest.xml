@@ -37,7 +37,7 @@
 
         <service android:enabled="true" android:name=".helpers.RoosterConnectionService" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.General.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
@@ -48,11 +48,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.CustomerHomepage"
+            android:name=".activities.Customer.CustomerHomepage"
             android:label="@string/title_activity_customer_homepage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.Signup"
+            android:name=".activities.General.Signup"
             android:label="@string/title_activity_signup"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -60,7 +60,7 @@
             android:label="@string/title_activity_hawker_homepage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.CourierHomepage"
+            android:name=".activities.Courier.CourierHomepage"
             android:label="@string/title_activity_courier_homepage"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
@@ -76,7 +76,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".activities.CourierMapsActivity"
+            android:name=".activities.Courier.CourierMapsActivity"
             android:label="@string/title_activity_courier_maps" />
     </application>
 

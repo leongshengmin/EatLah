@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.Customer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,7 +42,7 @@ import java.util.Calendar;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class OrderFragment extends Fragment {
+public class CustomerOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
@@ -58,14 +58,14 @@ public class OrderFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public OrderFragment() {
+    public CustomerOrderFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static OrderFragment newInstance(int columnCount, Order order) {
+    public static CustomerOrderFragment newInstance(int columnCount, Order order) {
         mOrder = order;
-        OrderFragment fragment = new OrderFragment();
+        CustomerOrderFragment fragment = new CustomerOrderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -190,6 +190,8 @@ public class OrderFragment extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
+
+
                         } else {
                             Log.e("db", task.getException().getMessage());
                         }

@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.HawkerStallFragment"
+    tools:context=".fragments.Customer.CustomerHawkerStallFragment"
     tools:listitem="@layout/customer_view_holder_hawker_stall" />

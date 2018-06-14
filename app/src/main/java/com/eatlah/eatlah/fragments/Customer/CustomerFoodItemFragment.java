@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.Customer;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -30,7 +30,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class FoodItemFragment extends Fragment {
+public class CustomerFoodItemFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
@@ -44,13 +44,13 @@ public class FoodItemFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FoodItemFragment() {
+    public CustomerFoodItemFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static FoodItemFragment newInstance(int columnCount, HawkerStall stall) {
+    public static CustomerFoodItemFragment newInstance(int columnCount, HawkerStall stall) {
         hawkerStall = stall;
-        FoodItemFragment fragment = new FoodItemFragment();
+        CustomerFoodItemFragment fragment = new CustomerFoodItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.Courier;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,10 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.PastOrdersFragment;
-import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
-import com.eatlah.eatlah.fragments.CourierReceiptFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.auth.FirebaseAuth;

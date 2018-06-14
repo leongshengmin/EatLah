@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.Customer;
 
 import android.app.Activity;
 import android.content.Context;
