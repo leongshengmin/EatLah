@@ -15,11 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.CourierPastOrdersFragment;
+import com.eatlah.eatlah.fragments.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
@@ -31,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CourierHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -41,9 +39,10 @@ public class CourierHomepage extends AppCompatActivity
 
     private final FirebaseAuth mAuth;
     private final FirebaseDatabase mDb;
+
     private ArrayList<Order> orders;
 
-    CourierHomepage() {
+    public CourierHomepage() {
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseDatabase.getInstance();
     }
@@ -177,8 +176,8 @@ public class CourierHomepage extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {  // view past orders
             if (orders != null && !orders.isEmpty()) {
-                fragment = CourierPastOrdersFragment.newInstance(1, orders);
-                tag = getResources().getString(R.string.courierPastOrdersFragment);
+                fragment = PastOrdersFragment.newInstance(1, orders);
+                tag = getResources().getString(R.string.pastOrdersFragment);
             }
         } else if (id == R.id.nav_send) {   // contact customer
 

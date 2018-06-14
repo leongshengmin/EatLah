@@ -9,16 +9,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.CourierHomepage;
+import com.eatlah.eatlah.activities.CustomerHomepage;
 import com.eatlah.eatlah.models.Order;
 
 import java.util.List;
 
-public class CourierPastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<CourierPastOrdersRecyclerViewAdapter.ViewHolder> {
+public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrdersRecyclerViewAdapter.ViewHolder> {
 
     private final List<Order> mValues;
     private final Activity mListener;
 
-    public CourierPastOrdersRecyclerViewAdapter(List<Order> items, Activity listener) {
+    public PastOrdersRecyclerViewAdapter(List<Order> items, Activity listener) {
         mValues = items;
         mListener = listener;
     }
@@ -26,7 +28,7 @@ public class CourierPastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<C
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.courier_past_orders_viewholder, parent, false);
+                .inflate(R.layout.past_orders_viewholder, parent, false);
         return new ViewHolder(view);
     }
 
@@ -34,10 +36,18 @@ public class CourierPastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<C
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.item = mValues.get(position);
         holder.orderIdView.setText(mValues.get(position).getTimestamp());
-        holder.customerIdView.setText(mValues.get(position).getUser_id());
+        bindID(holder);
         holder.timeView.setText(mValues.get(position).getCollectionTime());
         holder.orderItemsView.setLayoutManager(new LinearLayoutManager((Activity) mListener));
         holder.orderItemsView.setAdapter(new CourierBasicOrderItemRecyclerViewAdapter((Activity)mListener, holder.item.getOrders()));
+    }
+
+    private void bindID(ViewHolder holder) {
+        if (mListener instanceof CourierHomepage) {
+            holder.customerIdView.setText(holder.item.getUser_id());
+        } else if (mListener instanceof CustomerHomepage) {
+            holder.customerIdView.setText(holder.item.getCourier_id());
+        }
     }
 
     @Override

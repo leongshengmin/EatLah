@@ -3,26 +3,24 @@ package com.eatlah.eatlah.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,6 +41,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.jivesoftware.smack.AbstractXMPPConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -361,7 +361,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -405,9 +404,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             showProgress(false);
 
                             if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT)
-                                        .show();
                                 handleSuccessfulLogin();
+                                Toast.makeText(LoginActivity.this, "Loading...", Toast.LENGTH_LONG)
+                                        .show();
                             } else {
                                 Log.e("login", task.getException().getMessage());
                                 Toast.makeText(LoginActivity.this, "Unsuccessful login", Toast.LENGTH_SHORT)
@@ -425,8 +424,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             onCancelled();
         }
 
-        // todo check profile registered during signup with login profile
         private void handleSuccessfulLogin() {
+            Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT)
+                    .show();
+
             // get profile selected by user
             String selectedProfile = mProfileView.getSelectedItem().toString();
             String[] profiles = getResources().getStringArray(R.array.profiles);

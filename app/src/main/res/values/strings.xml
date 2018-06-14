@@ -97,6 +97,8 @@
 
     <!-- Strings related to db ref -->
     <string name="collectionTimeRef">collectionTime</string>
+    <string name="fcmTokenRef">fcmTokens</string>
+    <string name="messagesRef">Messages</string>
 
     <!-- Strings related to courierReceiptFragment -->
     <string name="completedOrder">Completed Order</string>
@@ -113,6 +115,6 @@
     <string name="title_activity_courier_maps">Map</string>
     <string name="courierOrderItemsDialogFrag">courierOrderItemsDialogFragment</string>
     <string name="courier_receipt_fragment">courierReceiptFragment</string>
-    <string name="courierPastOrdersFragment">courierPastOrdersFragment</string>
+    <string name="pastOrdersFragment">pastOrdersFragment</string>
 
 </resources>

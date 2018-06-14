@@ -11,9 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eatlah.eatlah.helpers.MyFirebaseMessagingService;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.CourierPastOrdersRecyclerViewAdapter;
-import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.adapters.MessageRecyclerViewAdapter;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,28 +22,35 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  */
-public class CourierPastOrdersFragment extends Fragment {
+public class MessageFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String PAST_ORDERS_LIST = "pastOrdersList";
+    private static final String ARG_MESSAGES = "messages";
 
     private int mColumnCount = 1;
-    private List<Order> mPastOrders;
-    private Activity mListener;
+    private List<String> messages;
+    private Activity mContext;
+    private MessageRecyclerViewAdapter mAdapter;
+
+    private final FirebaseMessaging mFirebaseMessaging;
+    private final MyFirebaseMessagingService messagingService;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public CourierPastOrdersFragment() {
+    public MessageFragment() {
+        messagingService = new MyFirebaseMessagingService();
+        mFirebaseMessaging = FirebaseMessaging.getInstance();
     }
 
-    // TODO: Customize parameter initialization
+
     @SuppressWarnings("unused")
-    public static CourierPastOrdersFragment newInstance(int columnCount, ArrayList<Order> pastOrders) {
-        CourierPastOrdersFragment fragment = new CourierPastOrdersFragment();
+    public static MessageFragment newInstance(int columnCount, ArrayList<String> messages) {
+        MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
-        args.putSerializable(PAST_ORDERS_LIST, pastOrders);
+        args.putStringArrayList(ARG_MESSAGES, messages);
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
@@ -53,15 +61,15 @@ public class CourierPastOrdersFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mPastOrders = (ArrayList<Order>) getArguments().getSerializable(PAST_ORDERS_LIST);
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            messages = getArguments().getStringArrayList(ARG_MESSAGES);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.courier_past_orders_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.message_fragment, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -72,22 +80,40 @@ public class CourierPastOrdersFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new CourierPastOrdersRecyclerViewAdapter(mPastOrders, mListener));
+            mAdapter = new MessageRecyclerViewAdapter(mContext, messages);
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
 
+    private void updateUI(final int position) {
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyItemInserted(position);
+            }
+        });
+    }
+
+    private void updateUI() {
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (Activity) context;
+        mContext = (Activity) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mContext = null;
     }
 
 }
