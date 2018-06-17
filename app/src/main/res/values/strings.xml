@@ -25,6 +25,9 @@
     <string name="prompt_sign_up">Don\'t have an account? Sign up now!</string>
     <string name="action_sign_up">Sign up</string>
     <string name="mobile_number">Mobile Number</string>
+    <string name="customer_address">Customer\'s Home Address</string>
+    <string name="customer_address_empty">Empty Address Field</string>
+    <string name="customer_address_invalid">Invalid Address</string>
 
     <!-- CUSTOMER -->
     <!-- Strings related to customer homepage -->
@@ -71,6 +74,11 @@
 
     <!-- COURIER -->
     <!-- Strings related to CourierHomepage -->
+    <string name="ordersView">View All Orders</string>
+    <string name="pastOrdersView">View Past Orders</string>
+    <string name="profilePageView">Profile</string>
+    <string name="courierContactView">Contact Customer</string>
+
     <!-- tags -->
     <string name="courierPendingOrderFrag">CourierPendingOrderFragment</string>
     <string name="courierFoodItemsFrag">CourierOrderItemsFragment</string>
@@ -79,14 +87,20 @@
     <string name="viewOrders">View Orders</string>
     <string name="attendToOrder">Attend to Order</string>
     <string name="pendingOrders">Pending Orders</string>
+    <string name="collectedOrder">Collected Order</string>
 
     <!-- Strings related to mapView -->
     <string name="requestingLocationServices">is_requesting_updates</string>
     <string name="lastKnownLocation">last_known_location</string>
     <string name="currentLocation">Current Location</string>
+    <string name="endRouteLabel">End Route</string>
 
     <!-- Strings related to db ref -->
     <string name="collectionTimeRef">collectionTime</string>
+
+    <!-- Strings related to courierReceiptFragment -->
+    <string name="completedOrder">Completed Order</string>
+    <string name="amountToCollect">Subtotal</string>
 
     <!-- Strings related to fragment tags -->
     <string name="foodItemFrag">FoodItemFragment</string>
@@ -97,5 +111,8 @@
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
     <string name="title_activity_courier_homepage">CourierHomepage</string>
     <string name="title_activity_courier_maps">Map</string>
+    <string name="courierOrderItemsDialogFrag">courierOrderItemsDialogFragment</string>
+    <string name="courier_receipt_fragment">courierReceiptFragment</string>
+    <string name="courierPastOrdersFragment">courierPastOrdersFragment</string>
 
 </resources>

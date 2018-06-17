@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class Order implements Serializable {
     private String timestamp;
-    private String user_id; // mobile number of customer
-    private String courier_id;  // mobile number of courier
+    private String user_id; // mauth uid of customer
+    private String courier_id;  // mauth uid of courier
     private String hawkerCentre_id; // postal code of hc
     private HashMap<String, Integer> orderDict;  // stores the orderitem as key and index in orders as value
     private ArrayList<OrderItem> orders;

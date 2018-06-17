@@ -143,6 +143,27 @@
                 android:paddingTop="20dp"
                 android:textColorHint="@color/textColor" />
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/customerAddr_inputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible">
+
+                <AutoCompleteTextView
+                    android:id="@+id/customerAddr"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext"
+                    android:inputType="textMultiLine|textPostalAddress"
+                    android:lines="2"
+                    android:maxLines="4"
+                    android:singleLine="false"
+                    android:textColor='@color/textColor'
+                    android:textColorHint='@color/textColor'
+                    android:visibility="invisible" />
+
+            </android.support.design.widget.TextInputLayout>
+
             <Button
                 android:id="@+id/signup_button"
                 android:layout_width="match_parent"

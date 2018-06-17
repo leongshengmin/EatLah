@@ -63,7 +63,8 @@
 
         <activity
             android:name=".activities.CourierMapsActivity"
-            android:label="@string/title_activity_courier_maps"></activity>
+            android:label="@string/title_activity_courier_maps" />
+        <activity android:name=".activities.CourierReceiptActivity"></activity>
     </application>
 
 </manifest>

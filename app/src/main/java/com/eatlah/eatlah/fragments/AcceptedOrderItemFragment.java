@@ -12,11 +12,7 @@ import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.AcceptedOrderItemRecyclerViewAdapter;
-import com.eatlah.eatlah.adapters.FoodItemRecyclerViewAdapter;
-import com.eatlah.eatlah.dummy.DummyContent;
-import com.eatlah.eatlah.dummy.DummyContent.DummyItem;
 import com.eatlah.eatlah.models.FoodItem;
-import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.database.DataSnapshot;

@@ -1,12 +1,16 @@
 package com.eatlah.eatlah.adapters;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.CourierMapsActivity;
 import com.eatlah.eatlah.fragments.CourierOrderItemsFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -21,10 +25,12 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
 
     private final List<OrderItem> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private int ordersCollected;
 
     public CourierOrderItemsRecyclerViewAdapter(List<OrderItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+        ordersCollected = 0;
     }
 
     @Override
@@ -39,20 +45,26 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         final OrderItem orderItem = mValues.get(position);
         System.out.println("order item: " + orderItem.getName() + " " + orderItem.getQty());
         holder.mOrderName.setText(orderItem.getName());
-        holder.mOrderQty.setText(Integer.toString(orderItem.getQty()));
+        holder.mOrderQty.setText("Quantity: "+ Integer.toString(orderItem.getQty()));
         holder.mOrderDesc.setText(orderItem.getDescription());
-        holder.mOrderStallId.setText(orderItem.getStall_id());
+        holder.mOrderStallId.setText("Stall ID: " +orderItem.getStall_id());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.mCollected_checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(orderItem);
+                if (v.getId() == R.id.collectedOrder_checkbox && ((CheckBox) v).isChecked()) {
+                    recordCollectedOrderItem(orderItem);
                 }
             }
         });
+
+    }
+
+    private void recordCollectedOrderItem(OrderItem orderItem) {
+        ordersCollected++;
+        if (ordersCollected >= mValues.size()) {    // collected all orders
+            mListener.onListFragmentInteraction(orderItem);
+        }
     }
 
     @Override
@@ -66,9 +78,12 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         private TextView mOrderQty;
         private TextView mOrderDesc;
         private TextView mOrderStallId;
+        private CheckBox mCollected_checkbox;
 
         public ViewHolder(View view) {
             super(view);
+            mCollected_checkbox = view.findViewById(R.id.collectedOrder_checkbox);
+            mCollected_checkbox.setVisibility(View.VISIBLE);
             mOrderName = view.findViewById(R.id.orderName_textView);
             mOrderQty = view.findViewById(R.id.orderQty_textView);
             mOrderDesc = view.findViewById(R.id.orderDesc_textView);

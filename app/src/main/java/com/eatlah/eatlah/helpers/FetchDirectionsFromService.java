@@ -26,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuilder> {
     private String origin;
@@ -37,6 +39,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
     private Polyline polyline;
 
     public FetchDirectionsFromService(Location currentLocation, String destination, GoogleMap mMap, OnTaskCompletedListener onTaskCompletedListener) {
+        System.out.println("location: " + currentLocation + " dest: " + destination);
         origin = generateLocName(currentLocation);
         this.directions = new ArrayList<>();
         this.onTaskCompletedListener = onTaskCompletedListener;
@@ -55,10 +58,9 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
     private String generateLocName(Location location) {
         return new StringBuilder()
                 .append(Double.toString(location.getLatitude()))
-                .append(",")
+                .append(", ")
                 .append(Double.toString(location.getLongitude()))
-                .toString()
-                .trim();
+                .toString();
     }
 
     /**
@@ -68,6 +70,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
      * @return
      */
     private String generateLocName(String destination) {
+        System.out.println("DEST: " + destination);
         return destination.replaceAll(" ", "+").trim();
     }
 
@@ -86,6 +89,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             String mapUrl = "https://maps.googleapis.com/maps/api/directions/json?origin="
                     + origin + "&destination=" + destination
                     + "&mode=transit&region=sg";
+            System.out.println(mapUrl);
 
             URL url = new URL(mapUrl);
             conn = (HttpURLConnection) url.openConnection();
@@ -106,6 +110,7 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
     @Override
     protected void onPostExecute(StringBuilder result) {
         super.onPostExecute(result);
+        System.out.println(result);
 
         if (polyline != null) mMap.clear();
 
@@ -150,34 +155,51 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             JSONObject duration_jsonObj = legs_jsonObj.getJSONObject("duration");
             String duration = duration_jsonObj.getString("text");
 
+            // regex for extracting postal code
+            Pattern pattern = Pattern.compile("(\\d{6})$");
+
             // ./end_location
             JSONObject endLoc_jsonObj = legs_jsonObj.getJSONObject("end_location");
             String endLoc = legs_jsonObj.getString("end_address");
+
+            System.out.println("END ADDRESS: " + endLoc);
+            String endPostalCode = endLoc.split("Singapore ")[1];
+            System.out.println("end postal code: " + endPostalCode);
+
             LatLng endLoc_latlng = new LatLng(endLoc_jsonObj.getDouble("lat"),
                                               endLoc_jsonObj.getDouble("lng"));
 
             // ./start_location
             JSONObject startLoc_jsonObj = legs_jsonObj.getJSONObject("start_location");
             String startLoc = legs_jsonObj.getString("start_address");
+
+            System.out.println("START LOC: " + startLoc);
+            String startPostal = startLoc.split("Singapore ")[1];
+            System.out.println("start postal code: " + startPostal);
+
             LatLng startLoc_latlng = new LatLng(startLoc_jsonObj.getDouble("lat"),
                                                 startLoc_jsonObj.getDouble("lng"));
 
-//            // pin start and end location onto map
-//            Marker src_marker = mMap.addMarker(new MarkerOptions()
-//                    .position(startLoc_latlng)
-//                    .title("Current Location"));
-//
-//            src_marker.setSnippet(startLoc + "\n" +
-//                    "Departure Time: " + departureTime +
-//                    "\nArrival Time: " + arrivalTime +
-//                    "\nDistance: " + distance +
-//                    "\nDuration: " + duration);
-//
-//            mMap.addMarker(new MarkerOptions()
-//                    .position(endLoc_latlng)
-//                    .title("Collection Point")
-//                    .snippet(endLoc)
-//            );
+            // pin start and end location onto map
+            Marker src_marker = mMap.addMarker(new MarkerOptions()
+                    .position(startLoc_latlng)
+                    .title("Current Location")
+            );
+
+            src_marker.setSnippet(startLoc + "\n" +
+                    "Departure Time: " + departureTime +
+                    "\nArrival Time: " + arrivalTime +
+                    "\nDistance: " + distance +
+                    "\nDuration: " + duration);
+            src_marker.setTag(startPostal);
+
+            Marker dest_marker = mMap.addMarker(new MarkerOptions()
+                    .position(endLoc_latlng)
+                    .title("Destination")
+                    .snippet(endLoc)
+            );
+            dest_marker.setTag(endPostalCode);
+
 
             // set lat lng bounds
             LatLngBounds latLngBounds = new LatLngBounds(sw_latlng, ne_latlng);
@@ -190,9 +212,12 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
             for (int j = 0; j < steps_jsonArray.length(); j++) {
 
                 JSONObject steps_jsonObj = steps_jsonArray.getJSONObject(j);
-                String dir1 = steps_jsonObj.getString("html_instructions");
-                directions.add(Html.fromHtml(dir1).toString());
-                System.out.println("outer steps jsonobj: " + steps_jsonObj);
+                if (steps_jsonObj.has("html_instructions")) {
+                    String dir1 = steps_jsonObj.getString("html_instructions");
+                    System.out.println("DIR: " + dir1);
+                    directions.add(Html.fromHtml(dir1).toString());
+                    System.out.println("outer steps jsonobj: " + steps_jsonObj);
+                }
 
                 // ./steps/steps
                 if (steps_jsonObj.has("steps")) {
@@ -200,9 +225,12 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
                     System.out.println("inner steps json: " + innerSteps_jsonArray);
                     for (int i = 0; i < innerSteps_jsonArray.length(); i++) {
                         JSONObject innerSteps_jsonObj = innerSteps_jsonArray.getJSONObject(i);
-                        String dir = innerSteps_jsonObj.getString("html_instructions");
-                        directions.add(Html.fromHtml(dir).toString());
-                        System.out.println("inner steps jsonobj: " + innerSteps_jsonObj);
+                        if (innerSteps_jsonObj.has("html_instructions")) {
+                            String dir = innerSteps_jsonObj.getString("html_instructions");
+                            System.out.println("DIR: " + dir);
+                            directions.add(Html.fromHtml(dir).toString());
+                            System.out.println("inner steps jsonobj: " + innerSteps_jsonObj);
+                        }
                     }
                 }
 
@@ -221,12 +249,13 @@ public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuil
                 polyline = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(src.latitude, src.longitude),
                              new LatLng(dest.latitude, dest.longitude))
-                        .width(5)
+                        .width(10)
                         .color(Color.BLUE)
                         .geodesic(true)
                 );
             }
 
+            System.out.println("directions has " + directions.size() + " segments");
             onTaskCompletedListener.onTaskCompleted(directions);
 
         } catch (JSONException e) {
