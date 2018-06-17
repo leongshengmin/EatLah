@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
+import com.eatlah.eatlah.fragments.MenuItemFragment;
+import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class HawkerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         AcceptedOrderFragment.OnListFragmentInteractionListener,
-        AcceptedOrderItemFragment.OnListFragmentInteractionListener {
+        AcceptedOrderItemFragment.OnListFragmentInteractionListener, MenuItemFragment.OnListFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -117,21 +119,25 @@ public class HawkerHomepage extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        System.out.println("Item chosen." + id);
 
         Fragment fragment = null;
+        String tag = null;
 
         if (id == R.id.nav_accepted_orders) {
             fragment = AcceptedOrderFragment.newInstance(1);
+            tag = "AcceptedOrderFragment";
         } else if (id == R.id.nav_completed_orders) {
 
         } else if (id == R.id.nav_admin_page) {
-
+            fragment = MenuItemFragment.newInstance(1);
+            tag = "MenuItemFragment";
         } else if (id == R.id.nav_hawker_send) {
 
         }
 
         if (fragment != null) {
-            displayFragment(fragment, "HawkerCentreFragment");
+            displayFragment(fragment, tag);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.hawker_drawer_layout);
@@ -159,6 +165,11 @@ public class HawkerHomepage extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(OrderItem item) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(FoodItem item) {
 
     }
 }
