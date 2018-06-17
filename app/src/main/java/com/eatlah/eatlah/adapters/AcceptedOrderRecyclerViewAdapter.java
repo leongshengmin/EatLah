@@ -47,7 +47,8 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
         holder.mDesc.setText(order.isReady() ? "Ready!" : "Not ready.");
 
         // Calculate price and set text
-        calculatePrice(order, holder.mPrice);
+        String hawkerId = AcceptedOrderFragment.user.get_hawkerId();
+        calculatePrice(order, holder.mPrice, hawkerId);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,10 +58,11 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
         });
     }
 
-    private void calculatePrice(Order order, TextView priceView) {
+    private void calculatePrice(Order order, TextView priceView, String hawkerId) {
         double price = 0;
         for (OrderItem orderItem : order.getOrders()) {
-            price += orderItem.getQty() * Double.parseDouble(orderItem.getPrice());
+            if (orderItem.getStall_id().equals(hawkerId))
+                price += orderItem.getQty() * Double.parseDouble(orderItem.getPrice());
         }
         priceView.setText(Double.toString(price));
     }

@@ -230,4 +230,6 @@ public class Order implements Serializable {
     public boolean isCourierAttending() {
         return !(courier_id == null || courier_id.isEmpty());
     }
+    // Fake setter to compile properly
+    public void setCourierAttending(boolean b) {}
 }

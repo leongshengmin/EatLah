@@ -3,6 +3,8 @@ package com.eatlah.eatlah.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,10 @@ import android.view.ViewGroup;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.AcceptedOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +39,9 @@ public class AcceptedOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
-    private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance("https://eatlah-fe598.firebaseio.com/");
+    private FirebaseDatabase mDb;
+
+    public static User user;
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -47,7 +55,6 @@ public class AcceptedOrderFragment extends Fragment {
     public AcceptedOrderFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static AcceptedOrderFragment newInstance(int columnCount) {
         AcceptedOrderFragment fragment = new AcceptedOrderFragment();
@@ -61,10 +68,16 @@ public class AcceptedOrderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mOrderList = new ArrayList<>();
+        mDb = FirebaseDatabase.getInstance();
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        System.out.println("Oncreate done");
+    }
+
+    private void storeUser(User user) {
+        AcceptedOrderFragment.user = user;
     }
 
     /*
@@ -72,22 +85,29 @@ public class AcceptedOrderFragment extends Fragment {
      */
     private void retrieveOrders() {
         DatabaseReference mDbRef = mDb.getReference("Orders");
+        System.out.println("Retrieving orders.");
+        final String hawkerId = user.get_hawkerId();
         mDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mOrderList.clear();
+                // Look through all orders, add those with an order from this hawker.
                 for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
                     Order o = fcSnapshot.getValue(Order.class);
-                    mOrderList.add(o);
+                    // If one orderItem belongs to the user, add it.
+                    boolean correctUser = false;
+                    for (OrderItem oi : o.getOrders()) {
+                        if (oi.getStall_id().equals(hawkerId)) {
+                            correctUser = true;
+                            break;
+                        }
+                    }
+                    if (correctUser) mOrderList.add(o);
                 }
-
                 notifyAdapter((Activity) mListener, mOrderList);
             }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
 
     }
@@ -130,7 +150,24 @@ public class AcceptedOrderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        retrieveOrders();
+        // Get user for the hawker ID
+        String uid = FirebaseAuth.getInstance().getUid();
+        System.out.println("LOOKIE HERE" + uid);
+        mDb.getReference("users")
+                .child(uid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User currUser = dataSnapshot.getValue(User.class);
+                        System.out.println("curr user: " + currUser.get_hawkerId());
+                        storeUser(currUser);
+                        retrieveOrders();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
     }
 
     @Override

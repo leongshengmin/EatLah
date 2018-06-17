@@ -115,12 +115,16 @@ public class AcceptedOrderItemFragment extends Fragment {
         orderItemList.clear();
 
         for (final OrderItem orderItem : order.getOrders()) {
+
+            // I don't know why when I remove this outer bracket down there V the thing breaks.
             mDbRef.child(orderItem.get_id()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     FoodItem foodItem = dataSnapshot.getValue(FoodItem.class);
-                    orderItemList.add(orderItem);
-                    mAdapter.notifyDataSetChanged();
+                    if (orderItem.getStall_id().equals(AcceptedOrderFragment.user.get_hawkerId())) {
+                        orderItemList.add(orderItem);
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
 
                 @Override
