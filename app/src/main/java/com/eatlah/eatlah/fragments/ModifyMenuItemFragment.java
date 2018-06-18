@@ -2,6 +2,7 @@ package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,9 +30,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -45,6 +49,8 @@ import java.io.IOException;
 public class ModifyMenuItemFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+
+    private static final int RC_PHOTO_PICKER =  1;
 
     // Object related
     private String mFoodItemId;
@@ -145,7 +151,20 @@ public class ModifyMenuItemFragment extends Fragment {
                 getActivity().onBackPressed(); // Close this activity
             }
         });
+        mPicIV.setOnClickListener(new View.OnClickListener() { // Open image picker
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+            }
+        });
         // Last async task
+        glideImage();
+    }
+
+    private void glideImage() {
         if (mImagePath != null && !mImagePath.isEmpty()) {
             mFoodItemsStorageRef.child(mImagePath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
@@ -155,7 +174,7 @@ public class ModifyMenuItemFragment extends Fragment {
                             .into(mPicIV);
                 }
             });
-        } else {}
+        }
     }
 
     public void saveFoodItem(FoodItem foodItem) {
@@ -174,6 +193,32 @@ public class ModifyMenuItemFragment extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            Uri selectedImageUri = data.getData();
+            // if file from phone was blah/asdf.jpg, store as FoodItems/asdf.jpg
+            final StorageReference photoRef = mFoodItemsStorageRef.child(selectedImageUri.getLastPathSegment());
+            photoRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // When successful, get download url
+                            photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    mImagePath = uri.getLastPathSegment().toString().split("/")[1]; // The path is "FoodItems/ID", so return just ID
+
+                                    System.out.println("uri: " + uri.toString() + ", lastPath: " + uri.getLastPathSegment().toString().split("/")[1]);
+                                    glideImage();
+                                }
+                            });
+                        }
+                    });
         }
     }
 
