@@ -52,8 +52,7 @@ public class AcceptedOrderFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public AcceptedOrderFragment() {
-    }
+    public AcceptedOrderFragment() {}
 
     @SuppressWarnings("unused")
     public static AcceptedOrderFragment newInstance(int columnCount) {

@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.activities;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
 import com.eatlah.eatlah.fragments.MenuItemFragment;
+import com.eatlah.eatlah.fragments.ModifyMenuItemFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
@@ -31,7 +33,9 @@ import com.google.firebase.database.FirebaseDatabase;
 public class HawkerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         AcceptedOrderFragment.OnListFragmentInteractionListener,
-        AcceptedOrderItemFragment.OnListFragmentInteractionListener, MenuItemFragment.OnListFragmentInteractionListener {
+        AcceptedOrderItemFragment.OnListFragmentInteractionListener,
+        MenuItemFragment.OnListFragmentInteractionListener,
+        ModifyMenuItemFragment.OnFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -156,7 +160,7 @@ public class HawkerHomepage extends AppCompatActivity
 
     // When order is clicked
     @Override
-    public void onListFragmentInteraction(Order order) {
+    public void onListFragmentInteraction(Order order) { // For orders pages
         AcceptedOrderItemFragment fragment = AcceptedOrderItemFragment.newInstance(1, order);
         displayFragment(fragment, getResources().getString(R.string.acceptedOrderItemFrag));
 
@@ -169,7 +173,11 @@ public class HawkerHomepage extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(FoodItem item) {
-
+    public void onListFragmentInteraction(FoodItem item) { // For menu items of admin page
+        ModifyMenuItemFragment fragment = ModifyMenuItemFragment.newInstance(item.get_id());
+        displayFragment(fragment, getResources().getString(R.string.modifyMenuItemFrag));
     }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {}
 }
