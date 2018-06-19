@@ -3,6 +3,11 @@ package com.eatlah.eatlah.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -26,8 +31,10 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -149,7 +156,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mSignupFab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectToSignup();
+                HawkerOrUserDialog houd = new HawkerOrUserDialog();
+                houd.show(getFragmentManager().beginTransaction(), "Dialog");
             }
         });
 
@@ -160,8 +168,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Redirects user to signup page.
      */
-    private void redirectToSignup() {
+    void redirectToSignup() {
         startActivity(new Intent(this, Signup.class));
+    }
+
+    /**
+     * Redirects user to restaurant signup page.
+     */
+    void redirectToRestaurantSignup() {
+        startActivity(new Intent(this, RestaurantSignup.class));
     }
 
     @Override
@@ -450,3 +465,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 }
 
+// Ignore warning.
+class HawkerOrUserDialog extends DialogFragment {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
+        _builder.setMessage("Are you registering as a user account or a restaurant?")
+                .setTitle("Registration Type")
+                .setPositiveButton("User", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((LoginActivity) getActivity()).redirectToSignup();
+                    }})
+                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}})
+                .setNegativeButton("Restaurant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((LoginActivity) getActivity()).redirectToRestaurantSignup();
+                    }
+                });
+        return _builder.create();
+    }
+}
