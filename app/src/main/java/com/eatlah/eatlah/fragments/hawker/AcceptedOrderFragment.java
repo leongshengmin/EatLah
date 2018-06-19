@@ -147,6 +147,9 @@ public class AcceptedOrderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        // Set title
+
+
         // Get user for the hawker ID
         String uid = FirebaseAuth.getInstance().getUid();
         System.out.println("LOOKIE HERE" + uid);

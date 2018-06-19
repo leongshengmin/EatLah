@@ -1,11 +1,13 @@
 package com.eatlah.eatlah.activities;
 
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -84,6 +86,9 @@ public class HawkerHomepage extends AppCompatActivity
         mHawkerName_editText.setText(user.getEmail());
 
         navigationView.setNavigationItemSelectedListener(this);
+        onNavigationItemSelected(navigationView.getMenu().getItem(2)); // Default select admin
+
+        setActionBarTitle("Admin Page");
     }
 
     @Override
@@ -130,11 +135,13 @@ public class HawkerHomepage extends AppCompatActivity
 
         if (id == R.id.nav_accepted_orders) {
             fragment = AcceptedOrderFragment.newInstance(1);
+            setActionBarTitle("Accepted Orders");
             tag = "AcceptedOrderFragment";
         } else if (id == R.id.nav_completed_orders) {
-
+            setActionBarTitle("Completed Orders");
         } else if (id == R.id.nav_admin_page) {
             fragment = MenuItemFragment.newInstance(1);
+            setActionBarTitle("Admin Page");
             tag = "MenuItemFragment";
         } else if (id == R.id.nav_hawker_send) {
 
@@ -180,4 +187,9 @@ public class HawkerHomepage extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {}
+
+    public void setActionBarTitle(String actionBarTitle) {
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(actionBarTitle);
+    }
 }
