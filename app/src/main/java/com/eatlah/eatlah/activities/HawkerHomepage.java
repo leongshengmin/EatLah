@@ -1,12 +1,14 @@
 package com.eatlah.eatlah.activities;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -27,10 +29,14 @@ import com.eatlah.eatlah.fragments.hawker.ModifyMenuItemFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HawkerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -47,6 +53,10 @@ public class HawkerHomepage extends AppCompatActivity
 
     // floating action button
     private FloatingActionButton fab;
+    private NavigationView navigationView;
+
+    // Fields
+    public static User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +67,23 @@ public class HawkerHomepage extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        mDb.getReference("users")
+                .child(user.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User u = dataSnapshot.getValue(User.class);
+                        saveUser(u);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+
         initializeComponents();
+    }
+
+    private void saveUser(User _user) {
+        mUser = _user;
     }
 
     private void initializeComponents() {
@@ -68,8 +94,9 @@ public class HawkerHomepage extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Add new item selected.", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
+                displayFragment(ModifyMenuItemFragment.newInstance(getResources().getString(R.string.NEW_ITEM)), "ModifyMenuItemFragment");
             }
         });
 
@@ -79,13 +106,14 @@ public class HawkerHomepage extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.hawker_nav_view);
+        navigationView = (NavigationView) findViewById(R.id.hawker_nav_view);
         View headerView = navigationView.getHeaderView(0);
         // set the display name
         TextView mHawkerName_editText = (TextView) headerView.findViewById(R.id.hawkerName_textView);
         mHawkerName_editText.setText(user.getEmail());
 
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(2).setChecked(true);
         onNavigationItemSelected(navigationView.getMenu().getItem(2)); // Default select admin
 
         setActionBarTitle("Admin Page");
@@ -99,6 +127,10 @@ public class HawkerHomepage extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        // If it's the admin page, show the FAB.
+        System.out.println("Selected page: " + navigationView.getMenu().getItem(2).isChecked());
+        if (navigationView.getMenu().getItem(2).isChecked()) showFab();
+
     }
 
     @Override
@@ -163,6 +195,13 @@ public class HawkerHomepage extends AppCompatActivity
         ft.commit();
         System.out.println("replaced fragment and committed");
 
+    }
+
+    public void hideFab() {
+        fab.setVisibility(FloatingActionButton.INVISIBLE);
+    }
+    public void showFab() {
+        fab.setVisibility(FloatingActionButton.VISIBLE);
     }
 
     // When order is clicked

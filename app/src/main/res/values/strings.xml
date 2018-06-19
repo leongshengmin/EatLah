@@ -118,6 +118,8 @@
     <!-- Strings related to hawker homepage -->
     <string name="hawker_nav_header_subtitle">Stall Owner View</string>
     <string name="hawker_modify_menu_title">Modify Menu Item</string>
+    <!-- Strings for argument purposes -->
+    <string name="NEW_ITEM">NEW_ITEM</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

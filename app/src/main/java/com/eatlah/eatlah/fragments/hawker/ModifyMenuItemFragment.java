@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.HawkerHomepage;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,12 +34,9 @@ import static android.app.Activity.RESULT_OK;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ModifyMenuItemFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ModifyMenuItemFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This is the method used to add or modify menu items.
+ * note that if the new instance is created with "NEW_ITEM", all fields will be blank, and
+ * the title of the page is "Add New Item" instead of "Modify Item".
  */
 public class ModifyMenuItemFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,7 +71,7 @@ public class ModifyMenuItemFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param foodItemId Food Item Id to modify
+     * @param foodItemId Food Item Id to modify, or R.string.NEW_ITEM for new item.
      * @return A new instance of fragment ModifyMenuItemFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -88,6 +89,9 @@ public class ModifyMenuItemFragment extends Fragment {
         if (getArguments() != null) {
             mFoodItemId = getArguments().getString(ARG_PARAM1);
         }
+        // Hide FAB
+        ((HawkerHomepage) getActivity()).hideFab();
+
         loadDbRelatedFields(); // This will load into the view as well
         System.out.println("MMI onCreate done.");
 
@@ -98,20 +102,24 @@ public class ModifyMenuItemFragment extends Fragment {
         mStorage = FirebaseStorage.getInstance();
         mFoodItemsRef = mDb.getReference("FoodItems");
         mFoodItemsStorageRef = mStorage.getReference("FoodItems");
+        System.out.println("12 Food item id: " + mFoodItemId + ", equals or not to " + getResources().getString(R.string.NEW_ITEM));
 
-        // Get the food item then load all the views
         mFoodItemsRef.child(mFoodItemId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                saveFoodItem(dataSnapshot.getValue(FoodItem.class)); // Saves in the field
+                // Get the food item if it's not a new item
+                if (!mFoodItemId.equals(getResources().getString(R.string.NEW_ITEM)))
+                    saveFoodItem(dataSnapshot.getValue(FoodItem.class)); // Saves in the field
                 loadViewFields();
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
     private void loadViewFields() {
+        // Common among both add and modify
         View v = getView();
         mNameET = v.findViewById(R.id.hawker_mmi_name_editText);
         mPriceET = v.findViewById(R.id.hawker_mmi_price_editText);
@@ -120,25 +128,59 @@ public class ModifyMenuItemFragment extends Fragment {
         mBackBtn = v.findViewById(R.id.hawker_mmi_back_button);
         mSaveBtn = v.findViewById(R.id.hawker_mmi_save_button);
 
-        mNameET.setText(mFoodItem.getName());
-        mPriceET.setText(mFoodItem.getPrice());
-        mDescET.setText(mFoodItem.getDescription());
+        // Modifying menu item
+        if (mFoodItem != null) {
+            mNameET.setText(mFoodItem.getName());
+            mPriceET.setText(mFoodItem.getPrice());
+            mDescET.setText(mFoodItem.getDescription());
+
+            mSaveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFoodItemsRef.child(mFoodItemId)
+                            .setValue(new FoodItem(mFoodItemId,
+                                    mFoodItem.getStall_id(),
+                                    mNameET.getText().toString(),
+                                    mPriceET.getText().toString(),
+                                    mImagePath,
+                                    mDescET.getText().toString()));
+                    (getView().findViewById(R.id.hawker_fab)).setVisibility(FloatingActionButton.VISIBLE);
+                    getActivity().onBackPressed(); // Close this activity
+
+                }
+            });
+        // Add new menu item
+        } else {
+            // Change title of page
+            TextView mTitleTV = v.findViewById(R.id.hawker_modmenuitem_title_textview);
+            mTitleTV.setText("Add Menu Item");
+
+            mImagePath = "no_image.jpg"; // Default no_image
+
+            mSaveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference newDR = mFoodItemsRef.push();
+                    mFoodItemId = newDR.getKey();
+                    mFoodItemsRef
+                            .child(mFoodItemId)
+                            .setValue(new FoodItem(mFoodItemId,
+                                    HawkerHomepage.mUser.get_hawkerId(),
+                                    mNameET.getText().toString(),
+                                    mPriceET.getText().toString(),
+                                    mImagePath,
+                                    mDescET.getText().toString()));
+                    getActivity().onBackPressed(); // Close this activity
+                }
+            });
+
+        }
+
+        // Common among both add and modify
         mBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed(); // Close this activity
-            }
-        });
-        mSaveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFoodItemsRef.child(mFoodItemId)
-                             .setValue(new FoodItem(mFoodItemId,
-                                                    mFoodItem.getStall_id(),
-                                                    mNameET.getText().toString(),
-                                                    mPriceET.getText().toString(),
-                                                    mImagePath,
-                                                    mDescET.getText().toString()));
+                Toast.makeText(getContext(), "Changes not saved.", Toast.LENGTH_SHORT).show();
                 getActivity().onBackPressed(); // Close this activity
             }
         });
