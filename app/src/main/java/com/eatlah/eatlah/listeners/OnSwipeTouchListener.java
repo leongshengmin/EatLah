@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.eatlah.eatlah.activities.CustomerHomepage;
-import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.customer.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 

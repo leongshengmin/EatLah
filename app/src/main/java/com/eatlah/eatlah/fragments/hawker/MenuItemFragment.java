@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.hawker;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MenuItemRecyclerViewAdapter;
-import com.eatlah.eatlah.dummy.DummyContent;
-import com.eatlah.eatlah.dummy.DummyContent.DummyItem;
+import com.eatlah.eatlah.adapters.hawker.MenuItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;

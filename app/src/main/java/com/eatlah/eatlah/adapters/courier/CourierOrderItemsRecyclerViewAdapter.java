@@ -1,17 +1,14 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.courier;
 
-import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.CourierMapsActivity;
-import com.eatlah.eatlah.fragments.CourierOrderItemsFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.OrderItem;
 
 import java.util.List;

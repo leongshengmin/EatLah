@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.CourierOrderItemsDialogFragment;
-import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsDialogFragment;
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment;
 import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
 import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
 import com.eatlah.eatlah.helpers.fetchLatLongFromService;

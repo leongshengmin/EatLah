@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.customer;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.HawkerCentreFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.customer.HawkerCentreFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

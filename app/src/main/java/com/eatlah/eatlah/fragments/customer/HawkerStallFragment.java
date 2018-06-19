@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.customer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.HawkerStallRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.customer.HawkerStallRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;

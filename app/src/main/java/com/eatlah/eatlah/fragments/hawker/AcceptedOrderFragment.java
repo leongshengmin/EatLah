@@ -1,21 +1,23 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.hawker;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.HawkerCentreRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.models.HawkerCentre;
+import com.eatlah.eatlah.adapters.hawker.AcceptedOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,28 +33,28 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HawkerCentreFragment extends Fragment {
+public class AcceptedOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
-    // database and authentication instances
-    private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance("https://eatlah-fe598.firebaseio.com/");
+    private FirebaseDatabase mDb;
+
+    public static User user;
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<HawkerCentre> mHCList;
-    private HawkerCentreRecyclerViewAdapter mAdapter;
+    private AcceptedOrderRecyclerViewAdapter mAdapter;
+    List<Order> mOrderList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HawkerCentreFragment() {
-    }
+    public AcceptedOrderFragment() {}
 
     @SuppressWarnings("unused")
-    public static HawkerCentreFragment newInstance(int columnCount) {
-        HawkerCentreFragment fragment = new HawkerCentreFragment();
+    public static AcceptedOrderFragment newInstance(int columnCount) {
+        AcceptedOrderFragment fragment = new AcceptedOrderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -62,54 +64,58 @@ public class HawkerCentreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.mHCList = new ArrayList<>();
+        this.mOrderList = new ArrayList<>();
+        mDb = FirebaseDatabase.getInstance();
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
+        System.out.println("Oncreate done");
     }
 
+    private void storeUser(User user) {
+        AcceptedOrderFragment.user = user;
+    }
 
-    /**
-     * One time retrieval of hawker centres from db for display in recyclerView body
+    /*
+     * Retrieval of Orders from db for display in recyclerView body
      */
-    private void retrieveHawkerCentres() {
-        System.out.println("retrieving hawker centres");
-        DatabaseReference mDbRef = mDb.getReference(getResources().getString(R.string.hawker_centre_ref));
-        mDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void retrieveOrders() {
+        DatabaseReference mDbRef = mDb.getReference("Orders");
+        System.out.println("Retrieving orders.");
+        final String hawkerId = user.get_hawkerId();
+        mDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("retrieving...");
-                System.out.println("datasnapshot: " + dataSnapshot);
-                mHCList.clear();
-
-                // add all hawker centres in db to hawkerCentreList
+                mOrderList.clear();
+                // Look through all orders, add those with an order from this hawker.
                 for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
-                    HawkerCentre hc = fcSnapshot.getValue(HawkerCentre.class);
-                    System.out.println("Hawker centre: " + hc.get_id());
-                    mHCList.add(hc);
+                    Order o = fcSnapshot.getValue(Order.class);
+                    // If one orderItem belongs to the user, add it.
+                    boolean correctUser = false;
+                    for (OrderItem oi : o.getOrders()) {
+                        if (oi.getStall_id().equals(hawkerId)) {
+                            correctUser = true;
+                            break;
+                        }
+                    }
+                    if (correctUser) mOrderList.add(o);
                 }
-
-                notifyAdapter((Activity) mListener, mHCList);
-                System.out.println("done!");
+                notifyAdapter((Activity) mListener, mOrderList);
             }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("db", databaseError.getMessage());
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
 
     }
 
     /**
-     * Notifies adapter to update recycler view due to change in dataset.
-     * @param context context to update view.
+     * Notifies adapter to update recycler view due to change in dataset
+     * @param context context to update view
+     * @param orderList Orders list reference
      */
-    public void notifyAdapter(Activity context, List<HawkerCentre> hawkerCentreList) {
-        mHCList = hawkerCentreList;
-
+    private void notifyAdapter(Activity context, List<Order> orderList) {
+        mOrderList = orderList;
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -118,26 +124,22 @@ public class HawkerCentreFragment extends Fragment {
         });
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.customer_fragment_hawkercentre_list, container, false);
+        View view = inflater.inflate(R.layout.hawker_fragment_acceptedorder_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            final RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-
-            mAdapter = new HawkerCentreRecyclerViewAdapter(mHCList, mListener);
+            mAdapter = new AcceptedOrderRecyclerViewAdapter(mOrderList, mListener);
             recyclerView.setAdapter(mAdapter);
-            System.out.println("done setting adapter in hcfrag");
         }
         return view;
     }
@@ -145,7 +147,24 @@ public class HawkerCentreFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        retrieveHawkerCentres();
+        // Get user for the hawker ID
+        String uid = FirebaseAuth.getInstance().getUid();
+        System.out.println("LOOKIE HERE" + uid);
+        mDb.getReference("users")
+                .child(uid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User currUser = dataSnapshot.getValue(User.class);
+                        System.out.println("curr user: " + currUser.get_hawkerId());
+                        storeUser(currUser);
+                        retrieveOrders();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
     }
 
     @Override
@@ -176,6 +195,11 @@ public class HawkerCentreFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(HawkerCentre hawkerCentre);
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(Order item);
+    }
+
+    public AcceptedOrderRecyclerViewAdapter getmAdapter() {
+        return mAdapter;
     }
 }

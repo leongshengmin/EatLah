@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.customer;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.CustomerHomepage;
-import com.eatlah.eatlah.fragments.OrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.customer.OrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.listeners.OnSwipeTouchListener;
 import com.eatlah.eatlah.models.OrderItem;
 

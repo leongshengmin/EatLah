@@ -1,18 +1,14 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.hawker;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
-import com.eatlah.eatlah.fragments.AcceptedOrderFragment.OnListFragmentInteractionListener;
-import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
+import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment;
+import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 

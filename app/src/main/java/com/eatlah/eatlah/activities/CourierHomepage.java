@@ -15,13 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.CourierPastOrdersFragment;
-import com.eatlah.eatlah.fragments.CourierPendingOrderFragment;
-import com.eatlah.eatlah.fragments.CourierReceiptFragment;
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.courier.CourierPastOrdersFragment;
+import com.eatlah.eatlah.fragments.courier.CourierPendingOrderFragment;
+import com.eatlah.eatlah.fragments.courier.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CourierHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,

@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.CourierPastOrdersFragment"
+    tools:context=".fragments.courier.CourierPastOrdersFragment"
     tools:listitem="@layout/courier_past_orders_viewholder" />

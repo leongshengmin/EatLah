@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.AcceptedOrderFragment"
+    tools:context=".fragments.hawker.AcceptedOrderFragment"
     tools:listitem="@layout/hawker_view_holder_acceptedorder" />

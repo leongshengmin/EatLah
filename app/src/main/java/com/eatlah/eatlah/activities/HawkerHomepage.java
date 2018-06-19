@@ -18,10 +18,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.AcceptedOrderFragment;
-import com.eatlah.eatlah.fragments.AcceptedOrderItemFragment;
-import com.eatlah.eatlah.fragments.MenuItemFragment;
-import com.eatlah.eatlah.fragments.ModifyMenuItemFragment;
+import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment;
+import com.eatlah.eatlah.fragments.hawker.AcceptedOrderItemFragment;
+import com.eatlah.eatlah.fragments.hawker.MenuItemFragment;
+import com.eatlah.eatlah.fragments.hawker.ModifyMenuItemFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;

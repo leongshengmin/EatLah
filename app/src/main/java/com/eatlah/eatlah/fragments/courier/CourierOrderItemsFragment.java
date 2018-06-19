@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.courier;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.widget.Button;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.CourierHomepage;
-import com.eatlah.eatlah.adapters.CourierOrderItemsRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.courier.CourierOrderItemsRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;

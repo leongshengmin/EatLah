@@ -1,9 +1,8 @@
 package com.eatlah.eatlah.models;
 
-import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.customer.OrderRecyclerViewAdapter;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

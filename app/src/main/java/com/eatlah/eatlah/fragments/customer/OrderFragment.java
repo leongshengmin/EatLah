@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments;
+package com.eatlah.eatlah.fragments.customer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +24,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.customer.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;

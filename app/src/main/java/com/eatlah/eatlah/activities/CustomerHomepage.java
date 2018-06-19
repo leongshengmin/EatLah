@@ -22,10 +22,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.FoodItemFragment;
-import com.eatlah.eatlah.fragments.HawkerCentreFragment;
-import com.eatlah.eatlah.fragments.HawkerStallFragment;
-import com.eatlah.eatlah.fragments.OrderFragment;
+import com.eatlah.eatlah.fragments.customer.FoodItemFragment;
+import com.eatlah.eatlah.fragments.customer.HawkerCentreFragment;
+import com.eatlah.eatlah.fragments.customer.HawkerStallFragment;
+import com.eatlah.eatlah.fragments.customer.OrderFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
