@@ -127,9 +127,14 @@ public class HawkerHomepage extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-        // If it's the admin page, show the FAB.
+        // If it's the admin page, show the FAB. else hide it. Change the art on fab.
         System.out.println("Selected page: " + navigationView.getMenu().getItem(2).isChecked());
-        if (navigationView.getMenu().getItem(2).isChecked()) showFab();
+        if (navigationView.getMenu().getItem(2).isChecked()) {
+            showFab(); plusFab();
+        }
+        if (navigationView.getMenu().getItem(1).isChecked() || navigationView.getMenu().getItem(0).isChecked()) {
+            hideFab(); sendFab();
+        }
 
     }
 
@@ -168,12 +173,18 @@ public class HawkerHomepage extends AppCompatActivity
         if (id == R.id.nav_accepted_orders) {
             fragment = AcceptedOrderFragment.newInstance(1);
             setActionBarTitle("Accepted Orders");
+            hideFab();
+            sendFab();
             tag = "AcceptedOrderFragment";
         } else if (id == R.id.nav_completed_orders) {
             setActionBarTitle("Completed Orders");
+            hideFab();
+            sendFab();
         } else if (id == R.id.nav_admin_page) {
             fragment = MenuItemFragment.newInstance(1);
             setActionBarTitle("Admin Page");
+            showFab();
+            plusFab();
             tag = "MenuItemFragment";
         } else if (id == R.id.nav_hawker_send) {
 
@@ -197,6 +208,27 @@ public class HawkerHomepage extends AppCompatActivity
 
     }
 
+    /**
+     * Use to make FAB for use of the accepted/completed orders page
+     */
+    public void sendFab() {
+        fab.setImageResource(R.drawable.ic_send_black_24dp);
+    }
+
+    /**
+     * Use to make FAB for use of the Admin Page.
+     */
+    public void plusFab() {
+        fab.setImageResource(R.drawable.ic_add_black_24dp);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Add new item selected.", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                displayFragment(ModifyMenuItemFragment.newInstance(getResources().getString(R.string.NEW_ITEM)), "ModifyMenuItemFragment");
+            }
+        });
+    }
     public void hideFab() {
         fab.setVisibility(FloatingActionButton.INVISIBLE);
     }
@@ -209,7 +241,7 @@ public class HawkerHomepage extends AppCompatActivity
     public void onListFragmentInteraction(Order order) { // For orders pages
         AcceptedOrderItemFragment fragment = AcceptedOrderItemFragment.newInstance(1, order);
         displayFragment(fragment, getResources().getString(R.string.acceptedOrderItemFrag));
-
+        showFab();
     }
 
 
