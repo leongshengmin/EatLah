@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.hawker.ModifyMenuItemFragment">
+    tools:context=".activities.RestaurantSignup">
 
-    <!-- TODO: Update blank fragment layout -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,72 +13,21 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/hawker_modmenuitem_title_textview"
+                android:id="@+id/restaurant_signup_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/hawker_modify_menu_title"
-                android:textColorLink="@android:color/black"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:padding="20dp"
+                android:text="Restaurant Signup"
+                android:textColor="@android:color/black"
+                android:textSize="44sp"
+                android:textStyle="bold" />
+
 
             <TextView
-                android:id="@+id/hawker_modmenuitem_picture_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="Picture of Food Item (Click to add/modify)"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hawker_modmenuitem_title_textview" />
-
-            <ImageView
-                android:id="@+id/hawker_signup_picture_imageView"
-                android:layout_width="match_parent"
-                android:layout_height="202dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@android:drawable/sym_def_app_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hawker_modmenuitem_picture_textview" />
-
-            <TextView
-                android:id="@+id/hawker_modmenuitem_name_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="Name of Food Item"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hawker_signup_picture_imageView" />
-
-            <EditText
-                android:id="@+id/hawker_mmi_name_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:ems="10"
-                android:hint="Name"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hawker_modmenuitem_name_textview" />
-
-            <TextView
-                android:id="@+id/hawker_modmenuitem_price_textview"
+                android:id="@+id/hawkerSuggestions_guide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -95,8 +37,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_mmi_name_editText" />
 
+            <AutoCompleteTextView
+                android:id="@+id/hawkerSuggestions_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:completionThreshold="1"
+                android:hint="Hawker Centre Id"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/hawkerId_guide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Hawker Stall Id"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hawker_mmi_price_editText" />
+
             <EditText
-                android:id="@+id/hawker_mmi_price_editText"
+                android:id="@+id/hawkerId_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -104,11 +67,37 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:ems="10"
-                android:hint="Price"
-                android:inputType="textPersonName"
+                android:hint="Unique Hawker Id"
+                android:inputType="textCapSentences|textMultiLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hawker_modmenuitem_price_textview" />
+                app:layout_constraintTop_toBottomOf="@+id/hawkerOwner_guide" />
+
+            <TextView
+                android:id="@+id/hawkerName_guide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Stall Name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hawker_mmi_price_editText" />
+
+            <EditText
+                android:id="@+id/hawkerName_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="Stall Name"
+                android:inputType="textCapSentences|textMultiLine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hawkerOwner_guide" />
 
             <TextView
                 android:id="@+id/hawkerOwner_guide"
@@ -117,12 +106,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Description"
+                android:text="Owner's Phone Number"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_mmi_price_editText" />
 
             <EditText
-                android:id="@+id/hawker_mmi_description_editText"
+                android:id="@+id/hawkerOwner_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -130,7 +119,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:ems="10"
-                android:hint="Description"
+                android:hint="Owner's Phone Number"
                 android:inputType="textCapSentences|textMultiLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -142,22 +131,20 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/hawker_mmi_back_button"
+                    android:id="@+id/hawker_stall_back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Back" />
 
                 <Button
-                    android:id="@+id/hawker_mmi_save_button"
+                    android:id="@+id/hawker_stall_confirm_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Save Changes" />
+                    android:text="Confirm" />
 
             </LinearLayout>
-
         </LinearLayout>
-    </ScrollView>
 
-</android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -124,7 +124,7 @@ public class ModifyMenuItemFragment extends Fragment {
         mNameET = v.findViewById(R.id.hawker_mmi_name_editText);
         mPriceET = v.findViewById(R.id.hawker_mmi_price_editText);
         mDescET = v.findViewById(R.id.hawker_mmi_description_editText);
-        mPicIV = v.findViewById(R.id.hawker_mmi_picture_imageView);
+        mPicIV = v.findViewById(R.id.hawker_signup_picture_imageView);
         mBackBtn = v.findViewById(R.id.hawker_mmi_back_button);
         mSaveBtn = v.findViewById(R.id.hawker_mmi_save_button);
 
@@ -245,7 +245,6 @@ public class ModifyMenuItemFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     mImagePath = uri.getLastPathSegment().toString().split("/")[1]; // The path is "FoodItems/ID", so return just ID
-
                                     System.out.println("uri: " + uri.toString() + ", lastPath: " + uri.getLastPathSegment().toString().split("/")[1]);
                                     glideImage();
                                 }
