@@ -113,12 +113,12 @@ public class HawkerStallFragment extends Fragment {
                 System.out.println("datasnapshot: " + dataSnapshot);
                 mHSList.clear();
 
-                // add all hawker centres in db to hawkerCentreList
+                // add all hawker centres in db that have menus to hawkerCentreList
 
                 for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
                     System.out.println("fc snapshot: " + fcSnapshot);
                     HawkerStall hs = fcSnapshot.getValue(HawkerStall.class);
-                    mHSList.add(hs);
+                    if (hs.hasMenu()) mHSList.add(hs);
                 }
 
                 notifyAdapter((Activity) mListener, mHSList);
