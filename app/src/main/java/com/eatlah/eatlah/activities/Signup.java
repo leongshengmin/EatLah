@@ -156,23 +156,18 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         mHawkerIdView = findViewById(R.id.hawkerid_editText);
         mHawkerCentreIdView = findViewById(R.id.hawkercentreid_editText);
         mHawkerCentres = new ArrayList<>();
-        System.out.println("LOOKIE HERERE ASLFJDLFJDSLKF\nADSLFJDLFDS\nADSFHDSFKJHDSFKJ:");
         DatabaseReference stallsRef = mDb.getReference("HawkerStalls");
         stallsRef.addValueEventListener(new ValueEventListener() { // get hawkers
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.print("znxc.,vmnzxc.vnzcx,.vncxzvm,zcxnvcmx,.zvnx,vx");
                 for (DataSnapshot ds : dataSnapshot.getChildren()) { // get all hawker centre ids
-                    System.out.println("MADE IT INSDIE");
                     saveHawkerCentre(ds.getKey());
-
                 }
                 fixHawkerAdapter();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-        System.out.println("YOLO finished");
 
         mProfileView = (Spinner) findViewById(R.id.profile_spinner);
         mProfileView.setPrompt(getResources().getString(R.string.prompt_profile));
@@ -216,7 +211,6 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         mHawkerCentresArray = mHawkerCentres.toArray(new String[0]);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, mHawkerCentresArray);
         mHawkerCentreIdView.setAdapter(adapter);
-        System.out.println("FISXD AADDAPTER!");
     }
 
     private void populateAutoComplete() {
