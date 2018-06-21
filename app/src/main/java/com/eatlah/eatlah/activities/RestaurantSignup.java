@@ -122,7 +122,7 @@ public class RestaurantSignup extends AppCompatActivity {
                                           mHawkerName.getText().toString(),
                                           mHawkerOwner.getText().toString(),
                                           null,
-                                          "no_image"));
+                                          "no_image.jpg"));
         Toast.makeText(this, "Hawker stall signup successful!", Toast.LENGTH_SHORT).show();
         finish();
     }

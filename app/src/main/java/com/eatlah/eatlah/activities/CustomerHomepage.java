@@ -99,6 +99,10 @@ public class CustomerHomepage extends AppCompatActivity
         mUserName_editText.setTypeface(typefaceRaleway);
         mUserName_editText.setText(user.getEmail());
 
+        // Default item selected
+        navigationView.getMenu().getItem(0).setChecked(true);
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+
         navigationView.setNavigationItemSelectedListener(this);
     }
 
