@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.HawkerHomepage;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,6 +57,7 @@ public class ModifyMenuItemFragment extends Fragment {
     private DatabaseReference mFoodItemsRef;
     private FirebaseStorage mStorage;
     private StorageReference mFoodItemsStorageRef;
+    private DatabaseReference mMenuRef;
 
     // Form related
     private EditText mPriceET;
@@ -102,6 +105,10 @@ public class ModifyMenuItemFragment extends Fragment {
         mStorage = FirebaseStorage.getInstance();
         mFoodItemsRef = mDb.getReference("FoodItems");
         mFoodItemsStorageRef = mStorage.getReference("FoodItems");
+        mMenuRef = mDb .getReference("HawkerStalls")
+                       .child(HawkerHomepage.mUser.get_hawkerCentreId())
+                       .child(HawkerHomepage.mUser.get_hawkerId())
+                       .child("menu");
         System.out.println("12 Food item id: " + mFoodItemId + ", equals or not to " + getResources().getString(R.string.NEW_ITEM));
 
         mFoodItemsRef.child(mFoodItemId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -113,8 +120,7 @@ public class ModifyMenuItemFragment extends Fragment {
                 loadViewFields();
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
 
@@ -170,6 +176,17 @@ public class ModifyMenuItemFragment extends Fragment {
                                     mPriceET.getText().toString(),
                                     mImagePath,
                                     mDescET.getText().toString()));
+                    // Get the last index of the array (and add 1) and add to the menu at that spot
+                    mMenuRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count = dataSnapshot.getChildrenCount();
+                            mMenuRef.child("" + count)
+                                    .setValue(mFoodItemId);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    });
                     getActivity().onBackPressed(); // Close this activity
                 }
             });
