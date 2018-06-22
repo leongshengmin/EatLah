@@ -1,6 +1,8 @@
 package com.eatlah.eatlah.fragments.Customer;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,14 +28,20 @@ import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 
 /**
  * A fragment representing a list of Items.
@@ -53,6 +60,7 @@ public class CustomerOrderFragment extends Fragment {
     private static Order mOrder;
     private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance();
     private static DatabaseReference databaseReference;
+    private User mUser;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -61,7 +69,6 @@ public class CustomerOrderFragment extends Fragment {
     public CustomerOrderFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static CustomerOrderFragment newInstance(int columnCount, Order order) {
         mOrder = order;
@@ -72,16 +79,46 @@ public class CustomerOrderFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * retrieves customer object async from db.
+     */
+    private void retrieveCustomerAsync() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mDb.getReference(getResources().getString(R.string.user_ref))
+                .child(mAuth.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d("customer", "retrieved customer object");
+                        mUser = dataSnapshot.getValue(User.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("customer", databaseError.getMessage());
+                    }
+                });
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // retrieve customer object
+        Thread t1 = new Thread() {
+            @Override
+            public void run() {
+                retrieveCustomerAsync();
+            }
+
+        };
+        t1.setName("customerAddress");
+        t1.start();
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void displayButton() {
         // hides fab
         FloatingActionButton fab = ((Activity)mListener).findViewById(R.id.fab);
@@ -89,7 +126,6 @@ public class CustomerOrderFragment extends Fragment {
 
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
-        submit_btn.setTooltipText(getButtonDisplayText());
         submit_btn.show();
     }
 
@@ -165,18 +201,61 @@ public class CustomerOrderFragment extends Fragment {
                         }
                     }
 
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     private void setCollectionTime() {
                         TimePicker timePicker = popupView.findViewById(R.id.collectionTime_timePicker);
                         String time = formatTime(timePicker.getHour(), timePicker.getMinute());
                         mOrder.setCollectionTime(time);
                     }
 
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
+                    /**
+                     * displays popup window for customer to select delivery option,
+                     * collection/delivery time.
+                     */
                     public void onClick(View v) {
+                        // customize order
                         setDeliveryOption();
                         setCollectionTime();
                         updateDb();
+
                         popupWindow.dismiss();
+
+                        // order confirmed and updated
+                        // display receipt
+                        displayReceiptView();
+                    }
+
+                    /**
+                     * displays the receipt corresponding to this customer's order
+                     */
+                    private void displayReceiptView() {
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.remove(CustomerOrderFragment.this);
+                        Fragment fragment = CustomerReceiptFragment.newInstance(mOrder, retrieveCustomerAddress());
+                        ft.add(fragment, "customerReceiptFragment");
+                        ft.commit();
+                    }
+
+                    /**
+                     * @return customer address associated with this order
+                     */
+                    private String retrieveCustomerAddress() {
+                        if (mUser != null) return mUser.getAddress();
+
+                        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+                        for (Thread thread : threadSet) {
+                            if (thread.getName().equals("customerAddress")) {
+                                try {
+                                    thread.join();
+                                    return mUser.getAddress();
+                                } catch (InterruptedException e) {
+                                    Log.e("customer", e.getLocalizedMessage());
+                                }
+                            }
+                        }
+                        return null;
                     }
                 });
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
