@@ -35,7 +35,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Price of Food Item"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hawker_mmi_name_editText" />
+                app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_name_editText" />
 
             <AutoCompleteTextView
                 android:id="@+id/hawkerSuggestions_textView"

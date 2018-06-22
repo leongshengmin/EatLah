@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.HawkerHomepage;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,10 +125,10 @@ public class ModifyMenuItemFragment extends Fragment {
     private void loadViewFields() {
         // Common among both add and modify
         View v = getView();
-        mNameET = v.findViewById(R.id.hawker_mmi_name_editText);
+        mNameET = v.findViewById(R.id.hawker_updatedetails_name_editText);
         mPriceET = v.findViewById(R.id.hawker_mmi_price_editText);
         mDescET = v.findViewById(R.id.hawker_mmi_description_editText);
-        mPicIV = v.findViewById(R.id.hawker_signup_picture_imageView);
+        mPicIV = v.findViewById(R.id.hawker_updatedetails_picture_imageView);
         mBackBtn = v.findViewById(R.id.hawker_mmi_back_button);
         mSaveBtn = v.findViewById(R.id.hawker_mmi_save_button);
 
@@ -158,7 +156,7 @@ public class ModifyMenuItemFragment extends Fragment {
         // Add new menu item
         } else {
             // Change title of page
-            TextView mTitleTV = v.findViewById(R.id.hawker_modmenuitem_title_textview);
+            TextView mTitleTV = v.findViewById(R.id.hawker_updateDetails_textview);
             mTitleTV.setText("Add Menu Item");
 
             mImagePath = "no_image.jpg"; // Default no_image

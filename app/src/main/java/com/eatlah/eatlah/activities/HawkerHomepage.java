@@ -26,6 +26,7 @@ import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.hawker.AcceptedOrderItemFragment;
 import com.eatlah.eatlah.fragments.hawker.MenuItemFragment;
 import com.eatlah.eatlah.fragments.hawker.ModifyMenuItemFragment;
+import com.eatlah.eatlah.fragments.hawker.UpdateDetailsFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
@@ -43,7 +44,7 @@ public class HawkerHomepage extends AppCompatActivity
         AcceptedOrderFragment.OnListFragmentInteractionListener,
         AcceptedOrderItemFragment.OnListFragmentInteractionListener,
         MenuItemFragment.OnListFragmentInteractionListener,
-        ModifyMenuItemFragment.OnFragmentInteractionListener {
+        ModifyMenuItemFragment.OnFragmentInteractionListener, UpdateDetailsFragment.OnFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -182,10 +183,15 @@ public class HawkerHomepage extends AppCompatActivity
             sendFab();
         } else if (id == R.id.nav_admin_page) {
             fragment = MenuItemFragment.newInstance(1);
-            setActionBarTitle("Admin Page");
+            setActionBarTitle("Update Menu");
             showFab();
             plusFab();
             tag = "MenuItemFragment";
+        } else if (id == R.id.nav_change_photo) {
+            fragment = UpdateDetailsFragment.newInstance(mUser.get_hawkerId(), mUser.get_hawkerCentreId(), mUser.get_id());
+            setActionBarTitle("Update Details");
+            hideFab();
+            sendFab();
         } else if (id == R.id.nav_hawker_send) {
 
         }
@@ -256,6 +262,7 @@ public class HawkerHomepage extends AppCompatActivity
         displayFragment(fragment, getResources().getString(R.string.modifyMenuItemFrag));
     }
 
+    // For nothing, dummy
     @Override
     public void onFragmentInteraction(Uri uri) {}
 
