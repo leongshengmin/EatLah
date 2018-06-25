@@ -148,7 +148,6 @@ public class ModifyMenuItemFragment extends Fragment {
                                     mPriceET.getText().toString(),
                                     mImagePath,
                                     mDescET.getText().toString()));
-                    (getView().findViewById(R.id.hawker_fab)).setVisibility(FloatingActionButton.VISIBLE);
                     getActivity().onBackPressed(); // Close this activity
 
                 }

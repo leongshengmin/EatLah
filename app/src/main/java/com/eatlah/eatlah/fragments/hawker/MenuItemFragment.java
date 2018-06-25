@@ -68,28 +68,22 @@ public class MenuItemFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        System.out.println("On create before getInstance");
         mDb = FirebaseDatabase.getInstance();
         mFoodItems = mDb.getReference("FoodItems");
         mFoodItemList = new ArrayList<>();
-        System.out.println("On create before find User");
         findUserAndRetrieveMenu();
     }
 
     private void findUserAndRetrieveMenu() {
-        System.out.println("finduserandretrievemenu");
         String uid = FirebaseAuth.getInstance().getUid();
-        System.out.println("Retrieved UID " + uid);
         mDb.getReference("users")
                 .child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User currUser = dataSnapshot.getValue(User.class);
-                        System.out.println("curr user: " + currUser.get_hawkerId());
                         storeUser(currUser);
                         retrieveItems();
-
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -98,7 +92,6 @@ public class MenuItemFragment extends Fragment {
     }
 
     private void retrieveItems() {
-        System.out.println("RetrieveItems!");
         DatabaseReference mDbRef = mDb.getReference("FoodItems");
         final String hawkerId = mUser.get_hawkerId();
         System.out.println("Hawker id: " + hawkerId);
@@ -114,6 +107,7 @@ public class MenuItemFragment extends Fragment {
                         mFoodItemList.add(fi);
                     }
                 }
+                if (mListener == null) mListener = (OnListFragmentInteractionListener) getContext();
                 ((Activity) mListener).runOnUiThread(new Runnable() {
                     @Override
                     public void run() { mAdapter.notifyDataSetChanged(); }
