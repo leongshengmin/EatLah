@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.fragments.hawker;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,8 +39,8 @@ public class AcceptedOrderItemFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private List<OrderItem> orderItemList;
     private AcceptedOrderItemRecyclerViewAdapter mAdapter;
-    private static Order order; // Maybe this isn't necessary, will find out lol
-
+    private static Order order;
+    private static FragmentManager mFragmentManager;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -48,12 +49,13 @@ public class AcceptedOrderItemFragment extends Fragment {
     }
 
     @SuppressWarnings("unused")
-    public static AcceptedOrderItemFragment newInstance(int columnCount, Order _order) {
+    public static AcceptedOrderItemFragment newInstance(int columnCount, Order _order, FragmentManager fragmentManager) {
         order = _order;
         AcceptedOrderItemFragment fragment = new AcceptedOrderItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+        mFragmentManager = fragmentManager;
         return fragment;
     }
 
@@ -79,7 +81,7 @@ public class AcceptedOrderItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new AcceptedOrderItemRecyclerViewAdapter(orderItemList, mListener);
+            mAdapter = new AcceptedOrderItemRecyclerViewAdapter(orderItemList, mListener, mFragmentManager, order);
 
             recyclerView.setAdapter(mAdapter);
         }

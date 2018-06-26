@@ -1,7 +1,14 @@
 package com.eatlah.eatlah.adapters.hawker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,15 +20,24 @@ import android.widget.TextView;
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.fragments.hawker.AcceptedOrderItemFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,14 +46,22 @@ import java.util.List;
  * TODO: Replace the implementation with code for your data type.
  */
 public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<AcceptedOrderItemRecyclerViewAdapter.ViewHolder> {
+    private static int GREEN = 0xFF00FA9A;
+    private static int RED = 0xFFFFC0CB;
+    private static int GREENCOLOR = -16713062;
+
     private final List<OrderItem> mValues;
     private final OnListFragmentInteractionListener mListener;
     private FirebaseStorage mStorage;
+    private FragmentManager mFragmentManager;
+    Order mOrder;
 
-    public AcceptedOrderItemRecyclerViewAdapter(List<OrderItem> items, OnListFragmentInteractionListener listener) {
+    public AcceptedOrderItemRecyclerViewAdapter(List<OrderItem> items, OnListFragmentInteractionListener listener, FragmentManager fragmentManager, Order order) {
         mValues = items;
         mListener = listener;
         mStorage = FirebaseStorage.getInstance();
+        mFragmentManager = fragmentManager;
+        mOrder = order;
     }
 
     @Override
@@ -48,7 +72,7 @@ public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final OrderItem orderItem = mValues.get(position);
 
         if (orderItem.getImage_path() != null && !orderItem.getImage_path().isEmpty()) {
@@ -58,13 +82,27 @@ public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<A
         holder.mPriceView.setText(orderItem.getPrice());
         holder.mDescView.setText(orderItem.getDescription());
         holder.mQtyView.setText("" + orderItem.getQty()); // qty is int, cast to string
+        holder.mCardView.setCardBackgroundColor(orderItem.isComplete() ? 0xFF00FA9A : 0xFFFFC0CB);
+        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ConfirmChangeStatus ccs = new ConfirmChangeStatus();
+                ccs.orderItem = orderItem;
+                ccs.position = position;
+                ccs.context = AcceptedOrderItemRecyclerViewAdapter.this; // outer class
+                ccs.holder = holder;
+                ccs.show(mFragmentManager.beginTransaction(), "dialog");
+            }
+        });
+
     }
+
+
 
     private void glideImageInto(String file_name, final ImageView imageView) {
         System.out.println("gliding image " + file_name);
-        StorageReference imgRef = mStorage.getReference(((Activity)mListener).getResources().getString(R.string.food_item_ref))
+        StorageReference imgRef = mStorage.getReference(((Activity) mListener).getResources().getString(R.string.food_item_ref))
                 .child(file_name);
-
         try {
             final File tmpFile = File.createTempFile("images", "jpg");
             imgRef.getFile(tmpFile)
@@ -97,6 +135,7 @@ public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<A
         private TextView mPriceView;
         private TextView mQtyView;
         private ImageView mImageView;
+        private CardView mCardView;
 
         public ViewHolder(View view) {
             super(view);
@@ -105,6 +144,60 @@ public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<A
             mPriceView = view.findViewById(R.id.accepted_price_textView);
             mQtyView = view.findViewById(R.id.accepted_orderqty_textView);
             mImageView = view.findViewById(R.id.accepted_foodItem_image);
+            mCardView = view.findViewById(R.id.accepted_fooditem_view_holder);
         }
+
+        public CardView getmCardView() { return mCardView; }
+    }
+
+}
+
+class ConfirmChangeStatus extends DialogFragment {
+    private static int GREEN = 0xFF00FA9A;
+    private static int RED = 0xFFFFC0CB;
+    private static int GREENCOLOR = -16713062;
+
+    OrderItem orderItem;
+    int position;
+    AcceptedOrderItemRecyclerViewAdapter context;
+    AcceptedOrderItemRecyclerViewAdapter.ViewHolder holder;
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
+        _builder.setMessage(orderItem.isComplete()
+                ? "Mark order item as incomplete?"
+                : "Mark order item as complete?")
+                .setTitle("Confirm Action")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final DatabaseReference orderRef =
+                                FirebaseDatabase
+                                        .getInstance()
+                                        .getReference("Orders")
+                                        .child(context.mOrder.getTimestamp())
+                                        .child("orders");
+                        orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                ArrayList<OrderItem> updatedOrders = (dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<OrderItem>>(){}));
+                                OrderItem toMod = updatedOrders.get(position);
+                                toMod.setComplete(!toMod.isComplete()); // Flip completion status
+                                orderRef.setValue(updatedOrders);
+                                CardView cv = holder.getmCardView();
+                                System.out.println(cv.getCardBackgroundColor().getDefaultColor());
+                                cv.setCardBackgroundColor( // If green, make red, otherwise green.
+                                        cv.getCardBackgroundColor().getDefaultColor() == -16713062 ? RED : GREEN
+                                );
+                            }
+                            public void onCancelled(@NonNull DatabaseError databaseError) {}
+                        });
+                    }})
+                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }});
+        return _builder.create();
     }
 }

@@ -245,7 +245,7 @@ public class HawkerHomepage extends AppCompatActivity
     // When order is clicked
     @Override
     public void onListFragmentInteraction(Order order) { // For orders pages
-        AcceptedOrderItemFragment fragment = AcceptedOrderItemFragment.newInstance(1, order);
+        AcceptedOrderItemFragment fragment = AcceptedOrderItemFragment.newInstance(1, order, getFragmentManager());
         displayFragment(fragment, getResources().getString(R.string.acceptedOrderItemFrag));
         showFab();
     }
