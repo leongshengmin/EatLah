@@ -49,7 +49,6 @@ import java.util.List;
 public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<AcceptedOrderItemRecyclerViewAdapter.ViewHolder> {
     private static int GREEN = 0xFF00FA9A;
     private static int RED = 0xFFFFC0CB;
-    private static int GREENCOLOR = -16713062;
 
     private final List<OrderItem> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -83,7 +82,7 @@ public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<A
         holder.mPriceView.setText(orderItem.getPrice());
         holder.mDescView.setText(orderItem.getDescription());
         holder.mQtyView.setText("" + orderItem.getQty()); // qty is int, cast to string
-        holder.mCardView.setCardBackgroundColor(orderItem.isComplete() ? 0xFF00FA9A : 0xFFFFC0CB);
+        holder.mCardView.setCardBackgroundColor(orderItem.isComplete() ? GREEN : RED);
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +152,7 @@ public class AcceptedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<A
 
 }
 
+// Sorry for the callback hell lol
 class ConfirmChangeStatus extends DialogFragment {
     private static int GREEN = 0xFF00FA9A;
     private static int RED = 0xFFFFC0CB;
@@ -190,7 +190,7 @@ class ConfirmChangeStatus extends DialogFragment {
                                 // Local gui changes
                                 CardView cv = holder.getmCardView();
                                 cv.setCardBackgroundColor( // If green, make red, otherwise green.
-                                        cv.getCardBackgroundColor().getDefaultColor() == -16713062 ? RED : GREEN
+                                        cv.getCardBackgroundColor().getDefaultColor() == GREENCOLOR ? RED : GREEN
                                 );
 
                                 // Update Order status

@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.adapters.hawker;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,11 +8,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.HawkerHomepage;
 import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.eatlah.eatlah.models.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,6 +27,9 @@ import java.util.List;
  * TODO: Replace the implementation with code for your data type.
  */
 public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<AcceptedOrderRecyclerViewAdapter.ViewHolder> {
+    private static int GREEN = 0xFF00FA9A;
+    private static int RED = 0xFFFFC0CB;
+    private static int CYAN = 0xFF6BD6D6;
 
     private final List<Order> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -40,7 +50,11 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Order order = mValues.get(position);
         holder.mName.setText(order.getCollectionTime());
-        holder.mDesc.setText(order.isReady() ? "Ready!" : "Not ready.");
+        holder.mDesc.setText(order.isReady()
+                             ? "Ready!"
+                             : isItReadyForThisHawker(order)
+                               ? "Ready on your side"
+                               : "Not ready.");
 
         // Calculate price and set text
         String hawkerId = AcceptedOrderFragment.user.get_hawkerId();
@@ -52,6 +66,31 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
                 mListener.onListFragmentInteraction(order);
             }
         });
+
+        // Color based on "isReady"
+        holder  .mCardView
+                .setCardBackgroundColor(
+                        order.isReady()
+                        ? GREEN
+                        : isItReadyForThisHawker(order)
+                          ? CYAN
+                          : RED);
+    }
+
+    private boolean isItReadyForThisHawker(Order order) {
+        User user = HawkerHomepage.mUser;
+        List<OrderItem> orders = order.getOrders();
+
+        boolean result = true; Iterator<OrderItem> iter = orders.iterator();
+
+        // Loop through all, if any belong to him and are incomplete, false.
+        while (result && iter.hasNext()) {
+            OrderItem o = iter.next();
+            if (o.getStall_id().equals(user.get_hawkerId()) && !o.isComplete())
+                result = false;
+
+        }
+        return result;
     }
 
     private void calculatePrice(Order order, TextView priceView, String hawkerId) {
@@ -72,12 +111,14 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
         private TextView mName;
         private TextView mPrice;
         private TextView mDesc;
+        private CardView mCardView;
 
         public ViewHolder(View view) {
             super(view);
-            mName = (TextView) view.findViewById(R.id.acceptedorder_orderName_textView);
-            mPrice = view.findViewById(R.id.acceptedorder_price_textView);
-            mDesc = view.findViewById(R.id.acceptedorder_orderDesc_textView);
+            mName   = view.findViewById(R.id.acceptedorder_orderName_textView);
+            mPrice  = view.findViewById(R.id.acceptedorder_price_textView);
+            mDesc   = view.findViewById(R.id.acceptedorder_orderDesc_textView);
+            mCardView = view.findViewById(R.id.acceptedorder_hc_view_holder);
         }
     }
 }

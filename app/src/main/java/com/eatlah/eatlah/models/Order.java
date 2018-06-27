@@ -19,10 +19,12 @@ public class Order implements Serializable {
     private String collectionTime;
     private boolean self_collection;
     private boolean ready;  // is the order ready for collection
+    private boolean transaction_complete;
 
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id,
-                 ArrayList<OrderItem> orders, String misc, String collectionTime, boolean self_collection, boolean ready) {
+                 ArrayList<OrderItem> orders, String misc, String collectionTime,
+                 boolean self_collection, boolean ready, boolean transaction_complete) {
         this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
@@ -33,11 +35,12 @@ public class Order implements Serializable {
         this.collectionTime = collectionTime;
         this.self_collection = self_collection;
         this.ready = ready;
+        this.transaction_complete = transaction_complete;
     }
 
     public Order(String timestamp, String user_id, String hawkerCentre_id) {
         this(timestamp, user_id, null, hawkerCentre_id, new ArrayList<OrderItem>(),
-                null, null, true, false);
+                null, null, true, false, false);
     }
 
     public Order() {}
@@ -87,6 +90,7 @@ public class Order implements Serializable {
      * removes an order from orders.
      * @param orderItem
      */
+
     public void removeOrder(OrderItem orderItem, OrderRecyclerViewAdapter adapter) {
         int idx = orderDict.get(orderItem.get_id());
         if (orderItem.getQty() == 1) {  // swiping will remove this item from view
@@ -153,6 +157,10 @@ public class Order implements Serializable {
         ready = true;
         //todo notify courier
     }
+
+    public boolean isTransaction_complete() { return transaction_complete; }
+
+    public void setTransaction_complete(boolean transaction_complete) { this.transaction_complete = transaction_complete; }
 
     public List<OrderItem> getOrders() {
         return orders;

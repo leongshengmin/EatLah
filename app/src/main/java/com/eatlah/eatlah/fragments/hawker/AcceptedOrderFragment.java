@@ -73,10 +73,6 @@ public class AcceptedOrderFragment extends Fragment {
         System.out.println("Oncreate done");
     }
 
-    private void storeUser(User user) {
-        AcceptedOrderFragment.user = user;
-    }
-
     /*
      * Retrieval of Orders from db for display in recyclerView body
      */
@@ -147,12 +143,8 @@ public class AcceptedOrderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        // Set title
-
-
         // Get user for the hawker ID
         String uid = FirebaseAuth.getInstance().getUid();
-        System.out.println("LOOKIE HERE" + uid);
         mDb.getReference("users")
                 .child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -160,7 +152,7 @@ public class AcceptedOrderFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User currUser = dataSnapshot.getValue(User.class);
                         System.out.println("curr user: " + currUser.get_hawkerId());
-                        storeUser(currUser);
+                        AcceptedOrderFragment.user = currUser;
                         retrieveOrders();
 
                     }
