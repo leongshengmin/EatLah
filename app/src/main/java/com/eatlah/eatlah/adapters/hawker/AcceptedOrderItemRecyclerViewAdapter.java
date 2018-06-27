@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -164,31 +165,48 @@ class ConfirmChangeStatus extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
-        _builder.setMessage(orderItem.isComplete()
-                ? "Mark order item as incomplete?"
-                : "Mark order item as complete?")
+        _builder.setMessage("Change order status?")
                 .setTitle("Confirm Action")
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        // Reference to the whole order
                         final DatabaseReference orderRef =
                                 FirebaseDatabase
                                         .getInstance()
                                         .getReference("Orders")
-                                        .child(context.mOrder.getTimestamp())
-                                        .child("orders");
+                                        .child(context.mOrder.getTimestamp());
+                        // Modify order/orderItem status
                         orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                ArrayList<OrderItem> updatedOrders = (dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<OrderItem>>(){}));
+                                Order order = dataSnapshot.getValue(Order.class);
+                                List<OrderItem> updatedOrders = order.getOrders();
+
+                                // Update orderitem status
                                 OrderItem toMod = updatedOrders.get(position);
                                 toMod.setComplete(!toMod.isComplete()); // Flip completion status
-                                orderRef.setValue(updatedOrders);
+
+                                // Local gui changes
                                 CardView cv = holder.getmCardView();
-                                System.out.println(cv.getCardBackgroundColor().getDefaultColor());
                                 cv.setCardBackgroundColor( // If green, make red, otherwise green.
                                         cv.getCardBackgroundColor().getDefaultColor() == -16713062 ? RED : GREEN
                                 );
+
+                                // Update Order status
+                                boolean allComplete = true;
+                                Iterator<OrderItem> iter = updatedOrders.iterator();
+                                while (allComplete && iter.hasNext()) { // If any item isn't complete, allComplete is false.
+                                    if (!iter.next().isComplete()) allComplete = false;
+                                }
+                                if (allComplete) {
+                                    order.setReady(true);
+                                } else {
+                                    order.setReady(false);
+                                }
+
+                                // Upload change on firebase
+                                orderRef.setValue(order);
                             }
                             public void onCancelled(@NonNull DatabaseError databaseError) {}
                         });
