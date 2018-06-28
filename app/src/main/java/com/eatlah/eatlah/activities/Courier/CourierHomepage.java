@@ -17,10 +17,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.eatlah.eatlah.R;
+<<<<<<< HEAD:app/src/main/java/com/eatlah/eatlah/activities/Courier/CourierHomepage.java
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
 import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
+=======
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.courier.CourierPastOrdersFragment;
+import com.eatlah.eatlah.fragments.courier.CourierPendingOrderFragment;
+import com.eatlah.eatlah.fragments.courier.CourierReceiptFragment;
+>>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/java/com/eatlah/eatlah/activities/CourierHomepage.java
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.auth.FirebaseAuth;

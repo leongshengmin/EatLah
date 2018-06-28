@@ -21,11 +21,19 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
+<<<<<<< HEAD:app/src/main/java/com/eatlah/eatlah/activities/Courier/CourierMapsActivity.java
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsDialogFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
 import com.eatlah.eatlah.helpers.Courier.FetchDirectionsFromService;
 import com.eatlah.eatlah.helpers.Courier.OnTaskCompletedListener;
 import com.eatlah.eatlah.helpers.Courier.fetchLatLongFromService;
+=======
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsDialogFragment;
+import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment;
+import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
+import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
+import com.eatlah.eatlah.helpers.fetchLatLongFromService;
+>>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/java/com/eatlah/eatlah/activities/CourierMapsActivity.java
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;

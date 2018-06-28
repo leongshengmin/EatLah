@@ -9,5 +9,9 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
+<<<<<<< HEAD
     tools:context=".fragments.Customer.HawkerCentreFragment"
+=======
+    tools:context=".fragments.customer.HawkerCentreFragment"
+>>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6
     tools:listitem="@layout/customer_view_holder_hawker_centre" />

@@ -78,6 +78,11 @@
         <activity
             android:name=".activities.Courier.CourierMapsActivity"
             android:label="@string/title_activity_courier_maps" />
+<<<<<<< HEAD
+=======
+        <activity android:name=".activities.CourierReceiptActivity" />
+        <activity android:name=".activities.RestaurantSignup"></activity>
+>>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6
     </application>
 
 </manifest>
