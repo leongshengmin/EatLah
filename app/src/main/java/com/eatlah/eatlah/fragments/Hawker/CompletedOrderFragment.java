@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.Hawker;
+package com.eatlah.eatlah.fragments.hawker;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.Hawker.AcceptedOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.hawker.CompletedOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.fragments.hawker.dummy.DummyContent;
+import com.eatlah.eatlah.fragments.hawker.dummy.DummyContent.DummyItem;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
@@ -33,7 +35,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class AcceptedOrderFragment extends Fragment {
+public class CompletedOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
@@ -43,18 +45,19 @@ public class AcceptedOrderFragment extends Fragment {
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private AcceptedOrderRecyclerViewAdapter mAdapter;
+    private CompletedOrderRecyclerViewAdapter mAdapter;
     List<Order> mOrderList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public AcceptedOrderFragment() {}
+    public CompletedOrderFragment() {
+    }
 
     @SuppressWarnings("unused")
-    public static AcceptedOrderFragment newInstance(int columnCount) {
-        AcceptedOrderFragment fragment = new AcceptedOrderFragment();
+    public static CompletedOrderFragment newInstance(int columnCount) {
+        CompletedOrderFragment fragment = new CompletedOrderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -79,7 +82,7 @@ public class AcceptedOrderFragment extends Fragment {
     private void retrieveOrders() {
         DatabaseReference mDbRef = mDb.getReference("Orders");
         System.out.println("Retrieving orders.");
-        final String hawkerId = user.get_hawkerId();
+        final String hawkerId = user.get_hawkerId();`
         mDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -97,32 +100,21 @@ public class AcceptedOrderFragment extends Fragment {
                     }
                     if (correctUser) mOrderList.add(o);
                 }
-                notifyAdapter((Activity) mListener, mOrderList);
+                ((Activity) mListener).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() { mAdapter.notifyDataSetChanged(); }
+                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-    }
 
-    /**
-     * Notifies adapter to update recycler view due to change in dataset
-     * @param context context to update view
-     * @param orderList Orders list reference
-     */
-    private void notifyAdapter(Activity context, List<Order> orderList) {
-        mOrderList = orderList;
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.hawker_fragment_acceptedorder_list, container, false);
+        View view = inflater.inflate(R.layout.hawker_fragment_completedorder_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -133,7 +125,7 @@ public class AcceptedOrderFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new AcceptedOrderRecyclerViewAdapter(mOrderList, mListener);
+            mAdapter = new CompletedOrderRecyclerViewAdapter(mOrderList, mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -150,8 +142,7 @@ public class AcceptedOrderFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User currUser = dataSnapshot.getValue(User.class);
-                        System.out.println("curr user: " + currUser.get_hawkerId());
-                        AcceptedOrderFragment.user = currUser;
+                        CompletedOrderFragment.user = currUser;
                         retrieveOrders();
                     }
                     @Override
@@ -177,6 +168,8 @@ public class AcceptedOrderFragment extends Fragment {
         mListener = null;
     }
 
+    public CompletedOrderRecyclerViewAdapter getmAdapter() { return mAdapter; }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -189,9 +182,5 @@ public class AcceptedOrderFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(Order item);
-    }
-
-    public AcceptedOrderRecyclerViewAdapter getmAdapter() {
-        return mAdapter;
     }
 }
