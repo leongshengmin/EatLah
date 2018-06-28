@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.customer;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,15 +29,15 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link FoodItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link CustomerFoodItemFragment.OnListFragmentInteractionListener}.
  */
 public class FoodItemRecyclerViewAdapter extends RecyclerView.Adapter<FoodItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<FoodItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final CustomerFoodItemFragment.OnListFragmentInteractionListener mListener;
     private FirebaseStorage mStorage;
 
-    public FoodItemRecyclerViewAdapter(List<FoodItem> items, OnListFragmentInteractionListener listener) {
+    public FoodItemRecyclerViewAdapter(List<FoodItem> items, CustomerFoodItemFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
         mStorage = FirebaseStorage.getInstance();

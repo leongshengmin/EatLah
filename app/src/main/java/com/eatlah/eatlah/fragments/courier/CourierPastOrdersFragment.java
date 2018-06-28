@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.courier;
+package com.eatlah.eatlah.fragments.Courier;
 
 import android.app.Activity;
 import android.content.Context;

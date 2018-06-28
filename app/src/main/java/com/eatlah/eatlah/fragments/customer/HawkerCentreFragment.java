@@ -13,8 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.HawkerCentreRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.adapters.customer.HawkerCentreRecyclerViewAdapter;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

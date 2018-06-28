@@ -116,9 +116,7 @@
     <string name="courier_receipt_fragment">courierReceiptFragment</string>
     <string name="pastOrdersFragment">pastOrdersFragment</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
     <!-- Hawker -->
     <!-- Strings related to hawker homepage -->
@@ -127,7 +125,5 @@
     <!-- Strings for argument purposes -->
     <string name="NEW_ITEM">NEW_ITEM</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

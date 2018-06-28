@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.customer;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
-import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
 import com.eatlah.eatlah.listeners.OnSwipeTouchListener;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -18,15 +18,15 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link OrderItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link CustomerOrderFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.ViewHolder> {
 
     private final List<OrderItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final CustomerOrderFragment.OnListFragmentInteractionListener mListener;
 
-    public OrderRecyclerViewAdapter(List<OrderItem> items, OnListFragmentInteractionListener listener) {
+    public OrderRecyclerViewAdapter(List<OrderItem> items, CustomerOrderFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

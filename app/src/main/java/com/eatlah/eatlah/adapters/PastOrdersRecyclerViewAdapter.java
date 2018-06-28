@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
+import com.eatlah.eatlah.adapters.courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.past_orders_viewholder, parent, false);
+                .inflate(R.layout.courier_past_orders_viewholder, parent, false);
         return new ViewHolder(view);
     }
 
