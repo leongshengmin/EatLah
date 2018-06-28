@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
-import com.eatlah.eatlah.adapters.courier.CourierBasicOrderItemRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 
 import java.util.List;

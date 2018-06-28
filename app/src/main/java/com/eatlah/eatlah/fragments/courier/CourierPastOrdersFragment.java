@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.courier.CourierPastOrdersRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Courier.CourierPastOrdersRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.hawker;
+package com.eatlah.eatlah.adapters.Hawker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.GlideApp;
-import com.eatlah.eatlah.fragments.hawker.AcceptedOrderItemFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderItemFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
@@ -28,7 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,8 +35,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -184,7 +181,13 @@ class ConfirmChangeStatus extends DialogFragment {
                                 List<OrderItem> updatedOrders = order.getOrders();
 
                                 // Update orderitem status
-                                OrderItem toMod = updatedOrders.get(position);
+                                // need to iterate to find, since the array doesn't only contain orders from this stall
+                                Iterator<OrderItem> iter = updatedOrders.iterator();
+                                OrderItem toMod = null;
+                                while (iter.hasNext()) {
+                                    toMod = iter.next();
+                                    if (toMod.get_id().equals(orderItem.get_id())) break;
+                                }
                                 toMod.setComplete(!toMod.isComplete()); // Flip completion status
 
                                 // Local gui changes
@@ -195,9 +198,9 @@ class ConfirmChangeStatus extends DialogFragment {
 
                                 // Update Order status
                                 boolean allComplete = true;
-                                Iterator<OrderItem> iter = updatedOrders.iterator();
-                                while (allComplete && iter.hasNext()) { // If any item isn't complete, allComplete is false.
-                                    if (!iter.next().isComplete()) allComplete = false;
+                                Iterator<OrderItem> iter2 = updatedOrders.iterator();
+                                while (allComplete && iter2.hasNext()) { // If any item isn't complete, allComplete is false.
+                                    if (!iter2.next().isComplete()) allComplete = false;
                                 }
                                 if (allComplete) {
                                     order.setReady(true);

@@ -17,7 +17,7 @@ import android.widget.Button;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Courier.CourierHomepage;
-import com.eatlah.eatlah.adapters.courier.CourierOrderItemsRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Courier.CourierOrderItemsRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;

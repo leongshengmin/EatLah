@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.hawker;
+package com.eatlah.eatlah.adapters.Hawker;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,16 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.HawkerHomepage;
-import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment;
-import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.activities.Hawker.HawkerHomepage;
+import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderFragment;
+import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

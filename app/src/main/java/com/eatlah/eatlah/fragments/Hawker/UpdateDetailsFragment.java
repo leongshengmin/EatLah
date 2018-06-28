@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.hawker;
+package com.eatlah.eatlah.fragments.Hawker;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.hawker;
+package com.eatlah.eatlah.adapters.Hawker;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.GlideApp;
-import com.eatlah.eatlah.fragments.hawker.MenuItemFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.Hawker.MenuItemFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnCompleteListener;

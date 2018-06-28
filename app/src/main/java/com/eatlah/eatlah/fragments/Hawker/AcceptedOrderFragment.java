@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.hawker;
+package com.eatlah.eatlah.fragments.Hawker;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.hawker.AcceptedOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Hawker.AcceptedOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;

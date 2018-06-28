@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.courier;
+package com.eatlah.eatlah.adapters.Courier;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

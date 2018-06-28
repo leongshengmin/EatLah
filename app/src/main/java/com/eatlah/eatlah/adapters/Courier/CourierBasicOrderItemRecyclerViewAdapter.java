@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.courier;
+package com.eatlah.eatlah.adapters.Courier;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.customer;
+package com.eatlah.eatlah.adapters.Customer;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

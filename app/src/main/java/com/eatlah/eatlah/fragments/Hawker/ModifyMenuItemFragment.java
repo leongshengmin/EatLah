@@ -1,11 +1,10 @@
-package com.eatlah.eatlah.fragments.hawker;
+package com.eatlah.eatlah.fragments.Hawker;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.HawkerHomepage;
+import com.eatlah.eatlah.activities.Hawker.HawkerHomepage;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
