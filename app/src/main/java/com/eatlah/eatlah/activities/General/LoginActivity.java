@@ -1,40 +1,31 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.General;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.DialogInterface;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -46,6 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
+import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
+import com.eatlah.eatlah.activities.HawkerHomepage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -156,8 +150,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mSignupFab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                HawkerOrUserDialog houd = new HawkerOrUserDialog();
-                houd.show(getFragmentManager().beginTransaction(), "Dialog");
+                redirectToSignup();
             }
         });
 
@@ -168,27 +161,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Redirects user to signup page.
      */
-    void redirectToSignup() {
+    private void redirectToSignup() {
         startActivity(new Intent(this, Signup.class));
-    }
-
-    /**
-     * Redirects user to restaurant (stall) signup page.
-     */
-    void redirectToRestaurantSignup() {
-        startActivity(new Intent(this, RestaurantSignup.class));
-    }
-
-    /**
-     * Redirects user to HAWKER CENTRE signup page.
-     */
-    void redirectToHawkerCentreSignup() {
-        startActivity(new Intent(this, RestaurantSignup.class));
-    }
-
-    void askIfHawkerExists() {
-        NewCentreOrStall ncos = new NewCentreOrStall();
-        ncos.show(getFragmentManager().beginTransaction(), "HOUD");
     }
 
     @Override
@@ -388,7 +362,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -432,9 +405,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             showProgress(false);
 
                             if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT)
-                                        .show();
                                 handleSuccessfulLogin();
+                                Toast.makeText(LoginActivity.this, "Loading...", Toast.LENGTH_LONG)
+                                        .show();
                             } else {
                                 Log.e("login", task.getException().getMessage());
                                 Toast.makeText(LoginActivity.this, "Unsuccessful login", Toast.LENGTH_SHORT)
@@ -452,8 +425,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             onCancelled();
         }
 
-        // todo check profile registered during signup with login profile
         private void handleSuccessfulLogin() {
+            Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT)
+                    .show();
+
             // get profile selected by user
             String selectedProfile = mProfileView.getSelectedItem().toString();
             String[] profiles = getResources().getStringArray(R.array.profiles);
@@ -477,52 +452,3 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 }
 
-// Ignore warning.
-class HawkerOrUserDialog extends DialogFragment {
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
-        _builder.setMessage("Are you registering as a user account or a restaurant?")
-                .setTitle("Registration Type")
-                .setPositiveButton("User", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ((LoginActivity) getActivity()).redirectToSignup();
-                    }})
-                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {}})
-                .setNegativeButton("Restaurant", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ((LoginActivity) getActivity()).askIfHawkerExists();
-                    }
-                });
-        return _builder.create();
-    }
-}
-
-// Ignore warning
-class NewCentreOrStall extends DialogFragment {
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
-        _builder.setMessage("Is the hawker centre you are working for already registered? (Check with admin before registering)")
-                .setTitle("Existing Hawker Centre?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ((LoginActivity) getActivity()).redirectToRestaurantSignup();
-                    }})
-                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {}})
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ((LoginActivity) getActivity()).redirectToHawkerCentreSignup();
-                    }
-                });
-        return _builder.create();
-    }
-}

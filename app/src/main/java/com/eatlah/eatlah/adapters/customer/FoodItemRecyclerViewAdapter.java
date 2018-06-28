@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.customer;
+package com.eatlah.eatlah.adapters;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.customer.FoodItemFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

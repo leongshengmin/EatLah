@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.customer;
+package com.eatlah.eatlah.adapters;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.customer.HawkerStallFragment;
-import com.eatlah.eatlah.fragments.customer.HawkerStallFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,7 +44,7 @@ public class HawkerStallRecyclerViewAdapter extends RecyclerView.Adapter<HawkerS
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
 
-    public HawkerStallRecyclerViewAdapter(List<HawkerStall> mHSlist, HawkerStallFragment.OnListFragmentInteractionListener listener) {
+    public HawkerStallRecyclerViewAdapter(List<HawkerStall> mHSlist, CustomerHawkerStallFragment.OnListFragmentInteractionListener listener) {
         mValues = mHSlist;
         mListener = listener;
 

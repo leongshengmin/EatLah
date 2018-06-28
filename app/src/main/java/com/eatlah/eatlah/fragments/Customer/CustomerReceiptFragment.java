@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.Courier;
+package com.eatlah.eatlah.fragments.Customer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.CourierBasicOrderItemRecyclerViewAdapter;
+import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -22,10 +23,12 @@ import java.io.Serializable;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * Use the {@link CourierReceiptFragment#newInstance} factory method to
+ * {@link CustomerReceiptFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link CustomerReceiptFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CourierReceiptFragment extends Fragment {
+public class CustomerReceiptFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ORDER_TAG = "order";
     private static final String CUSTOMER_ADDRESS_TAG = "customerAddress";
@@ -34,11 +37,11 @@ public class CourierReceiptFragment extends Fragment {
     private String customerAddress;
 
     private CourierBasicOrderItemRecyclerViewAdapter mAdapter;
-    private OnFragmentInteractionListener mListener;
+    private CustomerReceiptFragment.OnFragmentInteractionListener mListener;
 
     private Button completedOrder_button;
 
-    public CourierReceiptFragment() {
+    public CustomerReceiptFragment() {
         // Required empty public constructor
     }
 
@@ -50,8 +53,8 @@ public class CourierReceiptFragment extends Fragment {
      * @param customerAddress
      * @return A new instance of fragment CourierReceiptFragment.
      */
-    public static CourierReceiptFragment newInstance(Serializable order, String customerAddress) {
-        CourierReceiptFragment fragment = new CourierReceiptFragment();
+    public static CustomerReceiptFragment newInstance(Serializable order, String customerAddress) {
+        CustomerReceiptFragment fragment = new CustomerReceiptFragment();
         Bundle args = new Bundle();
         args.putSerializable(ORDER_TAG, order);
         args.putString(CUSTOMER_ADDRESS_TAG, customerAddress);
@@ -74,7 +77,6 @@ public class CourierReceiptFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.courier_receipt_fragment, container, false);
-        ((TextView) fragmentView.findViewById(R.id.courierId_textView)).setText("Courier ID: " + order.getCourier_id());
         ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText("Customer ID: " + order.getUser_id());
         ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText("Customer Address: " + customerAddress);
         TextView subtotal_textView = fragmentView.findViewById(R.id.amtToCollect_textView);
@@ -105,14 +107,14 @@ public class CourierReceiptFragment extends Fragment {
     }
 
     public void onOrderCompletion() {
-        ((OnFragmentInteractionListener) mListener).onFragmentInteraction();
+        ((CustomerReceiptFragment.OnFragmentInteractionListener) mListener).onFragmentInteraction();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof CourierReceiptFragment.OnFragmentInteractionListener) {
+            mListener = (CustomerReceiptFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

@@ -1,11 +1,10 @@
-package com.eatlah.eatlah.helpers;
+package com.eatlah.eatlah.helpers.Courier;
 
 import android.os.AsyncTask;
 
 import com.eatlah.eatlah.models.Order;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 

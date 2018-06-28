@@ -1,21 +1,20 @@
 package com.eatlah.eatlah.fragments.Customer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.HawkerCentreRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.models.HawkerCentre;
+import com.eatlah.eatlah.adapters.FoodItemRecyclerViewAdapter;
+import com.eatlah.eatlah.models.FoodItem;
+import com.eatlah.eatlah.models.HawkerStall;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,28 +30,27 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HawkerCentreFragment extends Fragment {
+public class CustomerFoodItemFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
-    // database and authentication instances
-    private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance("https://eatlah-fe598.firebaseio.com/");
-
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<HawkerCentre> mHCList;
-    private HawkerCentreRecyclerViewAdapter mAdapter;
+    private List<FoodItem> foodItemList;
+    private FoodItemRecyclerViewAdapter mAdapter;
+    private static HawkerStall hawkerStall;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HawkerCentreFragment() {
+    public CustomerFoodItemFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static HawkerCentreFragment newInstance(int columnCount) {
-        HawkerCentreFragment fragment = new HawkerCentreFragment();
+    public static CustomerFoodItemFragment newInstance(int columnCount, HawkerStall stall) {
+        hawkerStall = stall;
+        CustomerFoodItemFragment fragment = new CustomerFoodItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -62,82 +60,28 @@ public class HawkerCentreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.mHCList = new ArrayList<>();
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
     }
-
-
-    /**
-     * One time retrieval of hawker centres from db for display in recyclerView body
-     */
-    private void retrieveHawkerCentres() {
-        System.out.println("retrieving hawker centres");
-        DatabaseReference mDbRef = mDb.getReference(getResources().getString(R.string.hawker_centre_ref));
-        mDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("retrieving...");
-                System.out.println("datasnapshot: " + dataSnapshot);
-                mHCList.clear();
-
-                // add all hawker centres in db to hawkerCentreList
-                for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
-                    HawkerCentre hc = fcSnapshot.getValue(HawkerCentre.class);
-                    System.out.println("Hawker centre: " + hc.get_id());
-                    mHCList.add(hc);
-                }
-
-                notifyAdapter((Activity) mListener, mHCList);
-                System.out.println("done!");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("db", databaseError.getMessage());
-            }
-        });
-
-    }
-
-    /**
-     * Notifies adapter to update recycler view due to change in dataset.
-     * @param context context to update view.
-     */
-    public void notifyAdapter(Activity context, List<HawkerCentre> hawkerCentreList) {
-        mHCList = hawkerCentreList;
-
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.customer_fragment_hawkercentre_list, container, false);
-
+        View view = inflater.inflate(R.layout.customer_fragment_fooditem_list, container, false);
+        System.out.println("fooditem list now contains: " + foodItemList.size());
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            final RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+            mAdapter = new FoodItemRecyclerViewAdapter(foodItemList, mListener);
 
-            mAdapter = new HawkerCentreRecyclerViewAdapter(mHCList, mListener);
             recyclerView.setAdapter(mAdapter);
-            System.out.println("done setting adapter in hcfrag");
         }
         return view;
     }
@@ -145,7 +89,31 @@ public class HawkerCentreFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        retrieveHawkerCentres();
+
+    }
+
+    private void retrieveFoodItems() {
+        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+        // set the db reference
+        DatabaseReference mDbRef = mDb.getReference(getResources().getString(R.string.food_item_ref));
+
+        foodItemList.clear();
+
+        mDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Find every item that is in the hawker stall's menu
+                for (String foodId : hawkerStall.getMenu()) {
+                    System.out.println("data snapshot of fooditem: " + foodId);
+                    FoodItem foodItem = dataSnapshot.child(foodId).getValue(FoodItem.class);
+                    foodItemList.add(foodItem);
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @Override
@@ -153,6 +121,8 @@ public class HawkerCentreFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
+            foodItemList = new ArrayList<>();
+            retrieveFoodItems();
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -163,6 +133,10 @@ public class HawkerCentreFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public static HawkerStall getHawkerStall() {
+        return hawkerStall;
     }
 
     /**
@@ -176,6 +150,6 @@ public class HawkerCentreFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(HawkerCentre hawkerCentre);
+        void onListFragmentInteraction(FoodItem item, int qty);
     }
 }

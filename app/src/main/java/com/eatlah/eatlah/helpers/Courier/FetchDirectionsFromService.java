@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.helpers;
+package com.eatlah.eatlah.helpers.Courier;
 
 import android.graphics.Color;
 import android.location.Location;
@@ -6,10 +6,8 @@ import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -26,7 +24,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FetchDirectionsFromService extends AsyncTask<Void, Void, StringBuilder> {

@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.helpers;
+package com.eatlah.eatlah.helpers.Courier;
 
 import java.util.List;
 

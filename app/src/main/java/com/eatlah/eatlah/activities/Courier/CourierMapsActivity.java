@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.Courier;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -21,11 +21,11 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.BuildConfig;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.courier.CourierOrderItemsDialogFragment;
-import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment;
-import com.eatlah.eatlah.helpers.FetchDirectionsFromService;
-import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
-import com.eatlah.eatlah.helpers.fetchLatLongFromService;
+import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsDialogFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
+import com.eatlah.eatlah.helpers.Courier.FetchDirectionsFromService;
+import com.eatlah.eatlah.helpers.Courier.OnTaskCompletedListener;
+import com.eatlah.eatlah.helpers.Courier.fetchLatLongFromService;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;

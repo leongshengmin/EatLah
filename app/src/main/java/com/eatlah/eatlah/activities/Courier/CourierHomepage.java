@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.Courier;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,10 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.courier.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.courier.CourierPastOrdersFragment;
-import com.eatlah.eatlah.fragments.courier.CourierPendingOrderFragment;
-import com.eatlah.eatlah.fragments.courier.CourierReceiptFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
+import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,9 +39,10 @@ public class CourierHomepage extends AppCompatActivity
 
     private final FirebaseAuth mAuth;
     private final FirebaseDatabase mDb;
+
     private ArrayList<Order> orders;
 
-    CourierHomepage() {
+    public CourierHomepage() {
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseDatabase.getInstance();
     }
@@ -175,8 +176,8 @@ public class CourierHomepage extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {  // view past orders
             if (orders != null && !orders.isEmpty()) {
-                fragment = CourierPastOrdersFragment.newInstance(1, orders);
-                tag = getResources().getString(R.string.courierPastOrdersFragment);
+                fragment = PastOrdersFragment.newInstance(1, orders);
+                tag = getResources().getString(R.string.pastOrdersFragment);
             }
         } else if (id == R.id.nav_send) {   // contact customer
 

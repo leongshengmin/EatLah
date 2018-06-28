@@ -1,8 +1,7 @@
-package com.eatlah.eatlah.activities;
+package com.eatlah.eatlah.activities.General;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.helpers.OnTaskCompletedListener;
-import com.eatlah.eatlah.helpers.fetchLatLongFromService;
+import com.eatlah.eatlah.helpers.Courier.OnTaskCompletedListener;
 import com.eatlah.eatlah.models.User;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -37,7 +36,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
