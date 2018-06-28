@@ -5,19 +5,13 @@ public class User {
     private String email;
     private String address;
     private String _hawkerId;
-    private String _hawkerCentreId;
 
-    public User(String _id, String email, String hawkerId, String hawkerCentreId, String address) {
+    public User(String _id, String email, String hawkerId, String address) {
         this._id = _id;
         this.email = email;
         _hawkerId = hawkerId;
-        _hawkerCentreId = hawkerCentreId;
         this.address = address;
     }
-
-    public String get_hawkerCentreId() { return _hawkerCentreId; }
-
-    public void set_hawkerCentreId(String _hawkerCentreId) { this._hawkerCentreId = _hawkerCentreId; }
 
     public User() {}
 

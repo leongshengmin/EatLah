@@ -69,6 +69,4 @@ public class HawkerStall {
     public void setStall_owner(String stall_owner) {
         this.stall_owner = stall_owner;
     }
-
-    public boolean hasMenu() { return menu != null && !menu.isEmpty(); }
 }

@@ -5,11 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
     tools:context=".fragments.Courier.CourierReceiptFragment">
-=======
-    tools:context=".fragments.courier.CourierReceiptFragment">
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6
 
     <TextView
         android:id="@+id/courierId_textView"

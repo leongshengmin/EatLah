@@ -22,11 +22,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
+import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
-import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
-import com.eatlah.eatlah.fragments.customer.HawkerCentreFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
@@ -43,10 +43,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
-<<<<<<<HEAD:app/src/main/java/com/eatlah/eatlah/activities/Customer/CustomerHomepage.java
-        =======
-        >>>>>>>63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/java/com/eatlah/eatlah/activities/CustomerHomepage.java
 
 public class CustomerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -109,10 +105,6 @@ public class CustomerHomepage extends AppCompatActivity
         EditText mUserName_editText = (EditText) headerView.findViewById(R.id.userName_editText);
         mUserName_editText.setTypeface(typefaceRaleway);
         mUserName_editText.setText(user.getEmail());
-
-        // Default item selected
-        navigationView.getMenu().getItem(0).setChecked(true);
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
 
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -285,7 +277,7 @@ public class CustomerHomepage extends AppCompatActivity
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d("db", "successfully saved order");
-                                    Fragment customerOrderFragment = CustomerOrderFragment.newInstance(1, order);
+                                    CustomerOrderFragment customerOrderFragment = CustomerOrderFragment.newInstance(1, order);
 
                                     // display fragment
                                     displayFragment(customerOrderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));

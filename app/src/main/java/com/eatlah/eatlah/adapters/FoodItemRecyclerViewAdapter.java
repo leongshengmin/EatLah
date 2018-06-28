@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.customer;
+package com.eatlah.eatlah.adapters;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -15,11 +15,7 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
-<<<<<<< HEAD:app/src/main/java/com/eatlah/eatlah/adapters/FoodItemRecyclerViewAdapter.java
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment.OnListFragmentInteractionListener;
-=======
-import com.eatlah.eatlah.fragments.customer.FoodItemFragment.OnListFragmentInteractionListener;
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/java/com/eatlah/eatlah/adapters/customer/FoodItemRecyclerViewAdapter.java
 import com.eatlah.eatlah.models.FoodItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

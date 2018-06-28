@@ -9,10 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-<<<<<<< HEAD:app/src/main/res/layout/past_orders_list_fragment.xml
     tools:context=".fragments.General.PastOrdersFragment"
     tools:listitem="@layout/past_orders_viewholder" />
-=======
-    tools:context=".fragments.courier.CourierPastOrdersFragment"
-    tools:listitem="@layout/courier_past_orders_viewholder" />
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/res/layout/courier_past_orders_list_fragment.xml

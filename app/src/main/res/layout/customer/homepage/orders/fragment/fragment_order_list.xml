@@ -3,11 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list"
-<<<<<<< HEAD
     android:name="com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment"
-=======
-    android:name="com.eatlah.eatlah.fragments.customer.OrderFragment"
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"

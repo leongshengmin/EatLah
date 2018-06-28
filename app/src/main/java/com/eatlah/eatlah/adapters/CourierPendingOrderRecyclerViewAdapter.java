@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.courier;
+package com.eatlah.eatlah.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,11 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-<<<<<<< HEAD:app/src/main/java/com/eatlah/eatlah/adapters/CourierPendingOrderRecyclerViewAdapter.java
 import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment.OnListFragmentInteractionListener;
-=======
-import com.eatlah.eatlah.fragments.courier.CourierPendingOrderFragment.OnListFragmentInteractionListener;
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/java/com/eatlah/eatlah/adapters/courier/CourierPendingOrderRecyclerViewAdapter.java
 import com.eatlah.eatlah.models.Order;
 
 import java.util.List;

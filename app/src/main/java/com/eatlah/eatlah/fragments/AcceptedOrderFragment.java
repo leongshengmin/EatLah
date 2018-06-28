@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.customer;
+package com.eatlah.eatlah.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,10 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.customer.HawkerStallRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.models.HawkerCentre;
-import com.eatlah.eatlah.models.HawkerStall;
+import com.eatlah.eatlah.adapters.AcceptedOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.models.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,29 +29,28 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HawkerStallFragment extends Fragment {
+public class AcceptedOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
+    private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance("https://eatlah-fe598.firebaseio.com/");
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<HawkerStall> mHSList;
-    private HawkerStallRecyclerViewAdapter mAdapter;
-    private static HawkerCentre hawkerCentre;
-
-    private FirebaseDatabase mDb;
+    private AcceptedOrderRecyclerViewAdapter mAdapter;
+    List<Order> mOrderList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HawkerStallFragment() {
+    public AcceptedOrderFragment() {
     }
 
+    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static HawkerStallFragment newInstance(int columnCount, HawkerCentre hc) {
-        hawkerCentre = hc;
-        HawkerStallFragment fragment = new HawkerStallFragment();
+    public static AcceptedOrderFragment newInstance(int columnCount) {
+        AcceptedOrderFragment fragment = new AcceptedOrderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -62,18 +60,57 @@ public class HawkerStallFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHSList = new ArrayList<>();
-        mDb = FirebaseDatabase.getInstance();
+        this.mOrderList = new ArrayList<>();
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
     }
 
+    /*
+     * Retrieval of Orders from db for display in recyclerView body
+     */
+    private void retrieveOrders() {
+        DatabaseReference mDbRef = mDb.getReference("Orders");
+        mDbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mOrderList.clear();
+                for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
+                    Order o = fcSnapshot.getValue(Order.class);
+                    mOrderList.add(o);
+                }
+
+                notifyAdapter((Activity) mListener, mOrderList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    /**
+     * Notifies adapter to update recycler view due to change in dataset
+     * @param context context to update view
+     * @param orderList Orders list reference
+     */
+    private void notifyAdapter(Activity context, List<Order> orderList) {
+        mOrderList = orderList;
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.customer_fragment_hawkerstall_list, container, false);
+        View view = inflater.inflate(R.layout.hawker_fragment_acceptedorder_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -84,7 +121,7 @@ public class HawkerStallFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new HawkerStallRecyclerViewAdapter(mHSList, mListener);
+            mAdapter = new AcceptedOrderRecyclerViewAdapter(mOrderList, mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -93,42 +130,7 @@ public class HawkerStallFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        retrieveHawkerStalls();
-    }
-
-    private void retrieveHawkerStalls() {
-        // set database ref to hawkerStalls/:hawkerCentre_id
-        DatabaseReference dbRef = mDb.getReference(getResources().getString(R.string.hawker_stall_ref))
-                .child(hawkerCentre.get_id());
-
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            /**
-             * Retrieve the children nodes of this path.
-             * This will give us the hawkerStalls associated with this hawkerCentre obj
-             */
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("retrieving...");
-                System.out.println("datasnapshot: " + dataSnapshot);
-                mHSList.clear();
-
-                // add all hawker centres in db that have menus to hawkerCentreList
-
-                for (DataSnapshot fcSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println("fc snapshot: " + fcSnapshot);
-                    HawkerStall hs = fcSnapshot.getValue(HawkerStall.class);
-                    if (hs.hasMenu()) mHSList.add(hs);
-                }
-
-                notifyAdapter((Activity) mListener, mHSList);
-                System.out.println("done!");
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
+        retrieveOrders();
     }
 
     @Override
@@ -149,21 +151,6 @@ public class HawkerStallFragment extends Fragment {
     }
 
     /**
-     * Notifies adapter to update recycler view due to change in dataset.
-     * @param context context to update view.
-     */
-    public void notifyAdapter(Activity context, List<HawkerStall> hawkerStallList) {
-        mHSList = hawkerStallList;
-
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
@@ -174,6 +161,11 @@ public class HawkerStallFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(HawkerStall item);
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(Order item);
+    }
+
+    public AcceptedOrderRecyclerViewAdapter getmAdapter() {
+        return mAdapter;
     }
 }

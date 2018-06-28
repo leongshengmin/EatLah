@@ -8,13 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-<<<<<<< HEAD
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
 import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
-=======
-import com.eatlah.eatlah.activities.CustomerHomepage;
-import com.eatlah.eatlah.adapters.customer.OrderRecyclerViewAdapter;
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 

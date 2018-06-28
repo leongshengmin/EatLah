@@ -9,11 +9,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-<<<<<<< HEAD
     tools:context=".fragments.Customer.CustomerFoodItemFragment"
-=======
-    tools:context=".fragments.customer.FoodItemFragment"
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6
     tools:listitem="@layout/customer_view_holder_food_item" >
 
 </android.support.v7.widget.RecyclerView>

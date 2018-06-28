@@ -1,7 +1,6 @@
-package com.eatlah.eatlah.adapters.customer;
+package com.eatlah.eatlah.adapters;
 
 import android.app.Activity;
-import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +13,9 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.GlideApp;
 import com.eatlah.eatlah.R;
-<<<<<<< HEAD:app/src/main/java/com/eatlah/eatlah/adapters/HawkerCentreRecyclerViewAdapter.java
-import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment.OnListFragmentInteractionListener;
-=======
-import com.eatlah.eatlah.fragments.customer.HawkerCentreFragment.OnListFragmentInteractionListener;
->>>>>>> 63c35beb5d095314ca2e4d80e39c8f8013c9acf6:app/src/main/java/com/eatlah/eatlah/adapters/customer/HawkerCentreRecyclerViewAdapter.java
-import com.eatlah.eatlah.models.HawkerCentre;
+import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment.OnListFragmentInteractionListener;
+import com.eatlah.eatlah.models.HawkerStall;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
@@ -31,69 +27,71 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link HawkerCentre} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link HawkerStall} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<HawkerCentreRecyclerViewAdapter.ViewHolder> {
+public class HawkerStallRecyclerViewAdapter extends RecyclerView.Adapter<HawkerStallRecyclerViewAdapter.ViewHolder> {
 
-    private final List<HawkerCentre> mHClist;
-    private final OnListFragmentInteractionListener mListener;
-
-    // typefaces
-    private AssetManager assetManager;
+    // typeface
     private Typeface typefaceRaleway;
 
-    // cloud storage instance to store uploads
+    // fields for setting adapter
+    private List<HawkerStall> mValues;
+    private OnListFragmentInteractionListener mListener;
+
+    // firebase storage instances
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
 
-    public HawkerCentreRecyclerViewAdapter(List<HawkerCentre> mHClist, OnListFragmentInteractionListener listener) {
-        System.out.println("in hc adapter constructor");
-        this.mHClist = mHClist;
+    public HawkerStallRecyclerViewAdapter(List<HawkerStall> mHSlist, CustomerHawkerStallFragment.OnListFragmentInteractionListener listener) {
+        mValues = mHSlist;
         mListener = listener;
 
         Activity context = (Activity) listener;
         // Initialize firebase cloud
         mStorage = FirebaseStorage.getInstance();
-        mStorageRef = mStorage.getReference(context.getResources().getString(R.string.hawker_centre_ref));
+        mStorageRef = mStorage.getReference(context.getResources().getString(R.string.hawker_stall_ref));
 
         // Initialize fonts
         typefaceRaleway = Typeface.createFromAsset(context.getAssets(), "Raleway-Medium.ttf");
     }
 
+    // activity for retrieving resources
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        System.out.println("Creating view holder");
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.customer_view_holder_hawker_centre, parent, false);
-        System.out.println("inflated view holder");
+                .inflate(R.layout.customer_view_holder_hawker_stall, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        System.out.println("binding view holder");
-        final HawkerCentre hc = mHClist.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        HawkerStall hs = mValues.get(position);
+        holder.mHSAddressView.setTypeface(typefaceRaleway);
+        String stallNumberPlaceholder = ((Activity) mListener).getResources().getString(R.string.stall_number);
+        holder.mHSAddressView.setText(String.format(stallNumberPlaceholder, hs.get_id()));
 
-        // set the contents of viewholder
-        if (hc.getImage_path() != null && !hc.getImage_path().isEmpty()) glideImageInto(hc.getImage_path(), holder.mHCImageView);
-        System.out.println("done gliding image");
+        holder.mHSNameView.setTypeface(typefaceRaleway);
+        holder.mHSNameView.setText(hs.getStall_name());
 
-        holder.mHCAddressView.setText(hc.get_id());
-        holder.mHCAddressView.setTypeface(typefaceRaleway);
-
-        holder.mHCNameView.setText(hc.getName());
-        holder.mHCNameView.setTypeface(typefaceRaleway);
+        if (hs.getImage_path() != null && !hs.getImage_path().isEmpty()) glideImageInto(hs.getImage_path(), holder.mHSImageView);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onListFragmentInteraction(hc);
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been selected.
+                    mListener.onListFragmentInteraction(mValues.get(position));
+                }
             }
         });
+    }
 
-        System.out.println("done binding components in hc viewholder");
+    @Override
+    public int getItemCount() {
+        return mValues.size();
     }
 
     /**
@@ -126,21 +124,16 @@ public class HawkerCentreRecyclerViewAdapter extends RecyclerView.Adapter<Hawker
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return mHClist.size();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mHCImageView;
-        private TextView mHCNameView;
-        private TextView mHCAddressView;
+        public ImageView mHSImageView;
+        public TextView mHSNameView;
+        public TextView mHSAddressView;
 
         public ViewHolder(View view) {
             super(view);
-            mHCImageView = view.findViewById(R.id.hcImage);
-            mHCNameView = view.findViewById(R.id.orderName_textView);
-            mHCAddressView = view.findViewById(R.id.orderTime_textView);
+            mHSImageView = (ImageView) view.findViewById(R.id.foodItem_image);
+            mHSNameView = (TextView) view.findViewById(R.id.foodItemName_textView);
+            mHSAddressView = (TextView) view.findViewById(R.id.foodItemDesc_textView);
         }
     }
 }
