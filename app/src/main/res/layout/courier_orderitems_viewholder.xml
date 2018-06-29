@@ -11,91 +11,102 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.constraint.ConstraintLayout
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/orderDesc_textView"
-            app:layout_constraintStart_toEndOf="@+id/orderDesc_textView">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/orderName_textView"
-                android:layout_width="164dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="35dp"
-                android:layout_marginStart="35dp"
-                android:layout_marginTop="16dp"
-                android:editable="false"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name"
-                app:layout_constraintBottom_toTopOf="@+id/orderDesc_textView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/orderQty_textView"
-                android:layout_width="73dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="52dp"
-                android:layout_marginRight="52dp"
-                android:layout_marginTop="12dp"
-                android:inputType="numberDecimal"
-                android:text="TextView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/orderAddress_textView" />
+                <TextView
+                    android:id="@+id/orderName_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="Name"
+                    app:layout_constraintBottom_toTopOf="@+id/orderDesc_textView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/orderAddress_textView"
-                android:layout_width="63dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="60dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="60dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/orderName_textView"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/orderAddress_textView"
+                    android:layout_width="63dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="Address"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/orderName_textView"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/orderDesc_textView"
-                android:layout_width="158dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="65dp"
-                android:layout_marginLeft="35dp"
-                android:layout_marginRight="65dp"
-                android:layout_marginStart="35dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/orderQty_textView"
-                app:layout_constraintHorizontal_bias="0.2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/orderName_textView" />
+            </TableRow>
 
-            <CheckBox
-                android:id="@+id/collectedOrder_checkbox"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/collectedOrder"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.733"
-                app:layout_constraintStart_toEndOf="@+id/orderDesc_textView"
-                app:layout_constraintTop_toBottomOf="@+id/orderQty_textView"
-                app:layout_constraintVertical_bias="0.0" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
 
-        </android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:id="@+id/orderPrice_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="Price"
+                    tools:layout_editor_absoluteX="35dp"
+                    tools:layout_editor_absoluteY="58dp" />
+
+                <TextView
+                    android:id="@+id/orderQty_textView"
+                    android:layout_width="73dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:inputType="numberDecimal"
+                    android:text="Qty"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/orderAddress_textView" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/orderDesc_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="Status"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/orderQty_textView"
+                    app:layout_constraintHorizontal_bias="0.2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/orderName_textView" />
+
+                <CheckBox
+                    android:id="@+id/collectedOrder_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/collectedOrder"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.733"
+                    app:layout_constraintStart_toEndOf="@+id/orderDesc_textView"
+                    app:layout_constraintTop_toBottomOf="@+id/orderQty_textView"
+                    app:layout_constraintVertical_bias="0.0" />
+            </TableRow>
+
+        </TableLayout>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

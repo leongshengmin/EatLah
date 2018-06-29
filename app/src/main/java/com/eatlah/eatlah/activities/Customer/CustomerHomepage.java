@@ -18,7 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
@@ -102,9 +102,13 @@ public class CustomerHomepage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         // set the display name
-        EditText mUserName_editText = (EditText) headerView.findViewById(R.id.userName_editText);
+        TextView mUserName_editText = headerView.findViewById(R.id.userName_editText);
         mUserName_editText.setTypeface(typefaceRaleway);
         mUserName_editText.setText(user.getEmail());
+
+        // Default item selected
+        navigationView.getMenu().getItem(0).setChecked(true);
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
 
         navigationView.setNavigationItemSelectedListener(this);
     }

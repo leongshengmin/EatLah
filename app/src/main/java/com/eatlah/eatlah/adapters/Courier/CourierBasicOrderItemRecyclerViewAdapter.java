@@ -33,8 +33,11 @@ public class CourierBasicOrderItemRecyclerViewAdapter extends RecyclerView.Adapt
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderItem orderItem = mOrderItems.get(position);
         holder.mOrderName.setText(orderItem.getName());
-        holder.mOrderQty.setText(Integer.toString(orderItem.getQty()));
-        holder.mOrderStallId.setText(orderItem.getStall_id());
+        holder.mOrderQty.setText("Qty: " + Integer.toString(orderItem.getQty()));
+        holder.mOrderStallId.setText("Stall " + orderItem.getStall_id());
+        holder.mOrderDesc.setText("Status: " + (orderItem.isComplete() ? "Ready" : "Not ready"));
+        holder.mOrderPrice.setText("Price: " +
+                (Float.parseFloat(orderItem.getPrice()) * (float) orderItem.getQty()));
     }
 
     @Override
@@ -47,7 +50,9 @@ public class CourierBasicOrderItemRecyclerViewAdapter extends RecyclerView.Adapt
         TextView mOrderName;
         TextView mOrderQty;
         TextView mOrderStallId;
+        TextView mOrderDesc;
         CheckBox mCollected_checkbox;
+        TextView mOrderPrice;
 
         public ViewHolder(View view) {
             super(view);
@@ -56,6 +61,8 @@ public class CourierBasicOrderItemRecyclerViewAdapter extends RecyclerView.Adapt
             mOrderName = view.findViewById(R.id.orderName_textView);
             mOrderQty = view.findViewById(R.id.orderQty_textView);
             mOrderStallId = view.findViewById(R.id.orderAddress_textView);
+            mOrderDesc = view.findViewById(R.id.orderDesc_textView);
+            mOrderPrice = view.findViewById(R.id.orderPrice_textView);
         }
     }
 }

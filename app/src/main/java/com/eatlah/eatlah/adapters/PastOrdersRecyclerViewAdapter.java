@@ -38,7 +38,16 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
         holder.item = mValues.get(position);
         holder.orderIdView.setText(mValues.get(position).getTimestamp());
         bindID(holder);
-        holder.timeView.setText(mValues.get(position).getCollectionTime());
+        holder.timeView.setText((holder.item.getCollectionTime() != null && !holder.item.getCollectionTime().isEmpty())
+                                ? mValues.get(position).getCollectionTime()
+                                : "No time specified");
+        holder.customerIdView.setText(holder.item.isTransaction_complete()
+                                      ? "Transaction complete."
+                                      : holder.item.isReady()
+                                        ? holder.item.isCourierAttending()
+                                          ? "Ready for courier pickup"
+                                          : "Ready for pickup"
+                                        : "Not ready yet");
         holder.orderItemsView.setLayoutManager(new LinearLayoutManager((Activity) mListener));
         holder.orderItemsView.setAdapter(new CourierBasicOrderItemRecyclerViewAdapter((Activity)mListener, holder.item.getOrders()));
     }
