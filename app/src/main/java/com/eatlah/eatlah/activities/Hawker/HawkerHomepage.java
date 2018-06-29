@@ -22,6 +22,8 @@ import android.widget.TextView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderItemFragment;
+import com.eatlah.eatlah.fragments.Hawker.CompletedOrderFragment;
+import com.eatlah.eatlah.fragments.Hawker.CompletedOrderItemFragment;
 import com.eatlah.eatlah.fragments.Hawker.MenuItemFragment;
 import com.eatlah.eatlah.fragments.Hawker.ModifyMenuItemFragment;
 import com.eatlah.eatlah.fragments.Hawker.UpdateDetailsFragment;
@@ -42,7 +44,10 @@ public class HawkerHomepage extends AppCompatActivity
         AcceptedOrderFragment.OnListFragmentInteractionListener,
         AcceptedOrderItemFragment.OnListFragmentInteractionListener,
         MenuItemFragment.OnListFragmentInteractionListener,
-        ModifyMenuItemFragment.OnFragmentInteractionListener, UpdateDetailsFragment.OnFragmentInteractionListener {
+        ModifyMenuItemFragment.OnFragmentInteractionListener,
+        UpdateDetailsFragment.OnFragmentInteractionListener,
+        CompletedOrderFragment.OnListFragmentInteractionListener,
+        CompletedOrderItemFragment.OnListFragmentInteractionListener{
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -176,9 +181,11 @@ public class HawkerHomepage extends AppCompatActivity
             sendFab();
             tag = "AcceptedOrderFragment";
         } else if (id == R.id.nav_completed_orders) {
+            fragment = CompletedOrderFragment.newInstance(1);
             setActionBarTitle("Completed Orders");
             hideFab();
             sendFab();
+            tag = "CompletedOrderFragment";
         } else if (id == R.id.nav_admin_page) {
             fragment = MenuItemFragment.newInstance(1);
             setActionBarTitle("Update Menu");
@@ -240,14 +247,20 @@ public class HawkerHomepage extends AppCompatActivity
         fab.setVisibility(FloatingActionButton.VISIBLE);
     }
 
-    // When order is clicked
+    // When order is clicked on acceptedOrderFragment
     @Override
     public void onListFragmentInteraction(Order order) { // For orders pages
         AcceptedOrderItemFragment fragment = AcceptedOrderItemFragment.newInstance(1, order, getFragmentManager());
         displayFragment(fragment, getResources().getString(R.string.acceptedOrderItemFrag));
         showFab();
     }
-
+    // When order is clicked on CompletedOrderFragment
+    @Override
+    public void onListFragmentInteraction(Order order, Boolean isCompletedOrderItem) {
+        CompletedOrderItemFragment fragment = CompletedOrderItemFragment.newInstance(1, order, getFragmentManager());
+        displayFragment(fragment, getResources().getString(R.string.completedOrderItemFrag));
+        showFab();
+    }
 
     @Override
     public void onListFragmentInteraction(OrderItem item) {

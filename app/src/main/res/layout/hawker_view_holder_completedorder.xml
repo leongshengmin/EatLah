@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/acceptedorder_hc_view_holder"
+        android:id="@+id/completedorder_hc_view_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

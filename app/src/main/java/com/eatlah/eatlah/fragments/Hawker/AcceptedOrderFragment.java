@@ -95,7 +95,8 @@ public class AcceptedOrderFragment extends Fragment {
                             break;
                         }
                     }
-                    if (correctUser) mOrderList.add(o);
+                    // Only show accepted orders that are not complete
+                    if (correctUser && !o.isTransaction_complete()) mOrderList.add(o);
                 }
                 notifyAdapter((Activity) mListener, mOrderList);
             }

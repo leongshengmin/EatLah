@@ -1,5 +1,6 @@
-package com.eatlah.eatlah.fragments.hawker;
+package com.eatlah.eatlah.fragments.Hawker;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,9 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.hawker.CompletedOrderItemRecyclerViewAdapter;
-import com.eatlah.eatlah.adapters.hawker.dummy.DummyContent;
-import com.eatlah.eatlah.adapters.hawker.dummy.DummyContent.DummyItem;
+import com.eatlah.eatlah.adapters.Hawker.CompletedOrderItemRecyclerViewAdapter;
+import com.eatlah.eatlah.models.FoodItem;
+import com.eatlah.eatlah.models.Order;
+import com.eatlah.eatlah.models.OrderItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -23,11 +33,14 @@ import com.eatlah.eatlah.adapters.hawker.dummy.DummyContent.DummyItem;
  */
 public class CompletedOrderItemFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
+
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private CompletedOrderItemFragment.OnListFragmentInteractionListener mListener;
+    private List<OrderItem> orderItemList;
+    private CompletedOrderItemRecyclerViewAdapter mAdapter;
+    private static Order order;
+    private static FragmentManager mFragmentManager;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -38,18 +51,19 @@ public class CompletedOrderItemFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static CompletedOrderItemFragment newInstance(int columnCount) {
+    public static CompletedOrderItemFragment newInstance(int columnCount, Order _order, FragmentManager fragmentManager) {
+        order = _order;
         CompletedOrderItemFragment fragment = new CompletedOrderItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+        mFragmentManager = fragmentManager;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -69,7 +83,9 @@ public class CompletedOrderItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new CompletedOrderItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mAdapter = new CompletedOrderItemRecyclerViewAdapter(orderItemList, mListener, mFragmentManager, order);
+
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
@@ -80,9 +96,37 @@ public class CompletedOrderItemFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
+            orderItemList = new ArrayList<>();
+            retrieveOrderItems();;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
+        }
+    }
+
+    private void retrieveOrderItems() {
+        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+        DatabaseReference mDbRef = mDb.getReference(getResources().getString(R.string.food_item_ref));
+
+        orderItemList.clear();
+
+        for (final OrderItem orderItem : order.getOrders()) {
+
+            // I don't know why when I remove this outer bracket down there V the thing breaks.
+            mDbRef.child(orderItem.get_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    FoodItem foodItem = dataSnapshot.getValue(FoodItem.class);
+                    if (orderItem.getStall_id().equals(CompletedOrderFragment.user.get_hawkerId())) {
+                        orderItemList.add(orderItem);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+
         }
     }
 
@@ -90,6 +134,10 @@ public class CompletedOrderItemFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public static Order getOrder() {
+        return order;
     }
 
     /**
@@ -103,7 +151,6 @@ public class CompletedOrderItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(OrderItem item);
     }
 }

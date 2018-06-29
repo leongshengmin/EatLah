@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.fragments.hawker;
+package com.eatlah.eatlah.fragments.Hawker;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.hawker.CompletedOrderRecyclerViewAdapter;
-import com.eatlah.eatlah.fragments.hawker.dummy.DummyContent;
-import com.eatlah.eatlah.fragments.hawker.dummy.DummyContent.DummyItem;
+import com.eatlah.eatlah.adapters.Hawker.CompletedOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
@@ -82,7 +80,7 @@ public class CompletedOrderFragment extends Fragment {
     private void retrieveOrders() {
         DatabaseReference mDbRef = mDb.getReference("Orders");
         System.out.println("Retrieving orders.");
-        final String hawkerId = user.get_hawkerId();`
+        final String hawkerId = user.get_hawkerId();
         mDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,7 +96,8 @@ public class CompletedOrderFragment extends Fragment {
                             break;
                         }
                     }
-                    if (correctUser) mOrderList.add(o);
+                    // Only show completed orders
+                    if (correctUser && o.isTransaction_complete()) mOrderList.add(o);
                 }
                 ((Activity) mListener).runOnUiThread(new Runnable() {
                     @Override
@@ -181,6 +180,6 @@ public class CompletedOrderFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Order item);
+        void onListFragmentInteraction(Order item, Boolean isCompletedOrderItem);
     }
 }

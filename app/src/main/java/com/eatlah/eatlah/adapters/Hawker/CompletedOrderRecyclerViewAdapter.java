@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters.hawker;
+package com.eatlah.eatlah.adapters.Hawker;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,10 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.hawker.AcceptedOrderFragment;
-import com.eatlah.eatlah.fragments.hawker.CompletedOrderFragment;
-import com.eatlah.eatlah.fragments.hawker.CompletedOrderFragment.OnListFragmentInteractionListener;
-import com.eatlah.eatlah.fragments.hawker.dummy.DummyContent.DummyItem;
+import com.eatlah.eatlah.fragments.Hawker.CompletedOrderFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -19,16 +16,16 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link com.eatlah.eatlah.models.OrderItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link CompletedOrderFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class CompletedOrderRecyclerViewAdapter extends RecyclerView.Adapter<CompletedOrderRecyclerViewAdapter.ViewHolder> {
     private static int GREEN = 0xFF00FA9A;
 
     private final List<Order> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final CompletedOrderFragment.OnListFragmentInteractionListener mListener;
 
-    public CompletedOrderRecyclerViewAdapter(List<Order> items, OnListFragmentInteractionListener listener) {
+    public CompletedOrderRecyclerViewAdapter(List<Order> items, CompletedOrderFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -53,7 +50,7 @@ public class CompletedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Comp
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onListFragmentInteraction(order);
+                mListener.onListFragmentInteraction(order, true);
             }
         });
 
