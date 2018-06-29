@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.PastOrdersRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.General.PastOrdersRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class PastOrdersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.courier_past_orders_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.general_fragment_past_orders_list, container, false);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();

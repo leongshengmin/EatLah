@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.General;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;

@@ -33,7 +33,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.courier_orderitems_viewholder, parent, false);
+                .inflate(R.layout.general_view_holder_orderitems, parent, false);
         return new ViewHolder(view);
     }
 

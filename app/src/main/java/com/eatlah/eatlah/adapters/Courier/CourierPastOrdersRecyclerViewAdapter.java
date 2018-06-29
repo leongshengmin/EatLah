@@ -26,7 +26,7 @@ public class CourierPastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<C
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.courier_past_orders_viewholder, parent, false);
+                .inflate(R.layout.general_view_holder_past_orders, parent, false);
         return new ViewHolder(view);
     }
 

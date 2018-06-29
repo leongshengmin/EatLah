@@ -73,7 +73,7 @@ public class CourierReceiptFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.courier_receipt_fragment, container, false);
+        View fragmentView = inflater.inflate(R.layout.courier_fragment_receipt, container, false);
         ((TextView) fragmentView.findViewById(R.id.courierId_textView)).setText("Courier ID: " + order.getCourier_id());
         ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText("Customer ID: " + order.getUser_id());
         ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText("Customer Address: " + customerAddress);

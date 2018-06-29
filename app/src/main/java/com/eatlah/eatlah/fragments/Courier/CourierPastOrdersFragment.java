@@ -61,7 +61,7 @@ public class CourierPastOrdersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.courier_past_orders_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.general_fragment_past_orders_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {

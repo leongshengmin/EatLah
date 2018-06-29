@@ -81,7 +81,7 @@ public class CourierOrderItemsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.courier_fragment_orderitems_list, container, false);
+        View view = inflater.inflate(R.layout.general_fragment_orderitems_list, container, false);
         initAttendToOrderButton(view);
 
         // Set the adapter

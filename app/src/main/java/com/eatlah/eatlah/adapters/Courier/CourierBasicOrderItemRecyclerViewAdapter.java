@@ -25,7 +25,7 @@ public class CourierBasicOrderItemRecyclerViewAdapter extends RecyclerView.Adapt
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mContext.getLayoutInflater().inflate(R.layout.courier_orderitems_viewholder, parent, false);
+        View view = mContext.getLayoutInflater().inflate(R.layout.general_view_holder_orderitems, parent, false);
         return new ViewHolder(view);
     }
 

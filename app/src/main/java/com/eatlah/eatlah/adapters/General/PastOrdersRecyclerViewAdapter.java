@@ -1,4 +1,4 @@
-package com.eatlah.eatlah.adapters;
+package com.eatlah.eatlah.adapters.General;
 
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +29,7 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.courier_past_orders_viewholder, parent, false);
+                .inflate(R.layout.general_view_holder_past_orders, parent, false);
         return new ViewHolder(view);
     }
 

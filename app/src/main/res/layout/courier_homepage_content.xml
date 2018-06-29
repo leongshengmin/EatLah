@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.Courier.CourierHomepage"
-    tools:showIn="@layout/courier_app_bar_homepage">
+    tools:showIn="@layout/courier_homepage_app_bar">
 
     <Button
         android:id="@+id/attendToOrderButton"

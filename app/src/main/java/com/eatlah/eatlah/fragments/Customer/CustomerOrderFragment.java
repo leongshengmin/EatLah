@@ -186,7 +186,7 @@ public class CustomerOrderFragment extends Fragment {
     private void displayPopup() {
         System.out.println("displaying popup");
         final View popupView = LayoutInflater.
-                from(getActivity()).inflate(R.layout.custom_timepicker_dialog_layout, null)
+                from(getActivity()).inflate(R.layout.main_dialog_custom_timepicker_layout, null)
                 .findViewById(R.id.custom_dialog_layout);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         popupView.findViewById(R.id.submit_button)
