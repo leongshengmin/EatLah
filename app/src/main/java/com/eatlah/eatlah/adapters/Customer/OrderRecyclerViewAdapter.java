@@ -1,18 +1,23 @@
 package com.eatlah.eatlah.adapters.Customer;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
 import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
 import com.eatlah.eatlah.listeners.OnSwipeTouchListener;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.List;
 
@@ -70,6 +75,21 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 notifyItemRemoved(position);
             }
         });
+
+        if (orderItem.getImage_path() != null && !orderItem.getImage_path().isEmpty()) {
+            FirebaseStorage
+                    .getInstance()
+                    .getReference("FoodItems")
+                    .child(orderItem.getImage_path())
+                    .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(holder.mImageView.getContext())
+                         .load(uri.toString())
+                         .into(holder.mImageView);
+                }
+            });
+        }
     }
 
     private void calculatePrice(OrderItem orderItem, TextView priceView) {
@@ -89,6 +109,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         private TextView mPrice;
         private TextView mDesc;
         private Button mCancelButton;
+        private ImageView mImageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -97,6 +118,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             mPrice = view.findViewById(R.id.price_textView);
             mDesc = view.findViewById(R.id.orderAddress_textView);
             mCancelButton = view.findViewById(R.id.viewOrders_button);
+            mImageView = view.findViewById(R.id.orderItem_image);
         }
 
     }

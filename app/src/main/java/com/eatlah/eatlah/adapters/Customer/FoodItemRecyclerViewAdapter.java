@@ -74,6 +74,7 @@ public class FoodItemRecyclerViewAdapter extends RecyclerView.Adapter<FoodItemRe
                     if (qty != null && !qty.isEmpty()) {
                         int quantity = Integer.parseInt(qty);
                         mListener.onListFragmentInteraction(foodItem, quantity);
+                        holder.mQtyView.setText("");
                     } else {
                         Toast.makeText((Activity)mListener, "invalid quantity!", Toast.LENGTH_SHORT)
                                 .show();

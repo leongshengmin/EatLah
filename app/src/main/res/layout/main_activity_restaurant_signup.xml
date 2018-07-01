@@ -33,7 +33,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Price of Food Item"
+                android:text="Hawker Centre Id"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_name_editText" />
 
