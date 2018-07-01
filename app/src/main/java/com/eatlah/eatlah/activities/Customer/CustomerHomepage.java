@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.fragments.Customer.CustomerReceiptFragment;
 import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
 import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
@@ -49,7 +50,8 @@ public class CustomerHomepage extends AppCompatActivity
         HawkerCentreFragment.OnListFragmentInteractionListener,
         CustomerHawkerStallFragment.OnListFragmentInteractionListener,
         CustomerFoodItemFragment.OnListFragmentInteractionListener,
-        CustomerOrderFragment.OnListFragmentInteractionListener {
+        CustomerOrderFragment.OnListFragmentInteractionListener,
+        CustomerReceiptFragment.OnFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
@@ -294,13 +296,16 @@ public class CustomerHomepage extends AppCompatActivity
         });
         fab.show();
     }
-
+    
     @Override
     public void onListFragmentInteraction(OrderItem item) {
-        
     }
 
     public Order getOrder() {
         return this.order;
     }
+
+    @Override
+    public void onFragmentInteraction(Order order) {}
+
 }

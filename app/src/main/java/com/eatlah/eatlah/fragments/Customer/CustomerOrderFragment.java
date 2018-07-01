@@ -126,6 +126,7 @@ public class CustomerOrderFragment extends Fragment {
 
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
+        submit_btn.setTooltipText(getButtonDisplayText());
         submit_btn.show();
     }
 
@@ -268,9 +269,8 @@ public class CustomerOrderFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
-
-
+                            Toast.makeText(getContext(), "Submitted order successfully!", Toast.LENGTH_LONG).show();
+                            //Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
                         } else {
                             Log.e("db", task.getException().getMessage());
                         }

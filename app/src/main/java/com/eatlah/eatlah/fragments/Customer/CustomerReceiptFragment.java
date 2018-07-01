@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
-import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -53,7 +52,7 @@ public class CustomerReceiptFragment extends Fragment {
      * @param customerAddress
      * @return A new instance of fragment CourierReceiptFragment.
      */
-    public static CustomerReceiptFragment newInstance(Serializable order, String customerAddress) {
+    public static CustomerReceiptFragment newInstance(Order order, String customerAddress) {
         CustomerReceiptFragment fragment = new CustomerReceiptFragment();
         Bundle args = new Bundle();
         args.putSerializable(ORDER_TAG, order);
@@ -81,7 +80,6 @@ public class CustomerReceiptFragment extends Fragment {
         ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText("Customer Address: " + customerAddress);
         TextView subtotal_textView = fragmentView.findViewById(R.id.amtToCollect_textView);
         setSubtotal(subtotal_textView);
-
         completedOrder_button = fragmentView.findViewById(R.id.completedOrder_button);
         completedOrder_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,13 +105,13 @@ public class CustomerReceiptFragment extends Fragment {
     }
 
     public void onOrderCompletion() {
-        ((CustomerReceiptFragment.OnFragmentInteractionListener) mListener).onFragmentInteraction();
+        ((CustomerReceiptFragment.OnFragmentInteractionListener) mListener).onFragmentInteraction(order);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof CourierReceiptFragment.OnFragmentInteractionListener) {
+        if (context instanceof CustomerReceiptFragment.OnFragmentInteractionListener) {
             mListener = (CustomerReceiptFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
@@ -138,6 +136,6 @@ public class CustomerReceiptFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction();
+        void onFragmentInteraction(Order order);
     }
 }
