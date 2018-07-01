@@ -96,7 +96,14 @@ public class AcceptedOrderFragment extends Fragment {
                         }
                     }
                     // Only show accepted orders that are not complete
-                    if (correctUser && !o.isTransaction_complete()) mOrderList.add(o);
+                    if (correctUser && !o.isTransaction_complete()){
+                        // if self collection, show.
+                        if (o.isSelf_collection())
+                            mOrderList.add(o);
+                        // delivery - MUST HAVE COURIER ATTENDING, or don't show.
+                        else if (o.isCourierAttending())
+                            mOrderList.add(o);
+                    }
                 }
                 notifyAdapter((Activity) mListener, mOrderList);
             }
