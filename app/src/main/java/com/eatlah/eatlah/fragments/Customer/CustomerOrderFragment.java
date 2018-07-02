@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
@@ -126,7 +125,6 @@ public class CustomerOrderFragment extends Fragment {
 
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
-        submit_btn.setTooltipText(getButtonDisplayText());
         submit_btn.show();
     }
 

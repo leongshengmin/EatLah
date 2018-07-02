@@ -50,6 +50,18 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
                                         : "Not ready yet");
         holder.orderItemsView.setLayoutManager(new LinearLayoutManager((Activity) mListener));
         holder.orderItemsView.setAdapter(new CourierBasicOrderItemRecyclerViewAdapter((Activity)mListener, holder.item.getOrders()));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                respond(holder.item);
+            }
+        });
+    }
+
+    private void respond(Order selectedItem) {
+        if (mListener instanceof CustomerHomepage) {
+            ((CustomerHomepage)mListener).displayCustomerReceiptFragment(selectedItem);
+        }
     }
 
     private void bindID(ViewHolder holder) {

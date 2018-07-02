@@ -44,6 +44,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Set;
+
+import static com.eatlah.eatlah.fragments.Hawker.MenuItemFragment.mUser;
 
 public class CustomerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -216,6 +219,34 @@ public class CustomerHomepage extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * displays the customer receipt fragment on click of past order.
+     */
+    public void displayCustomerReceiptFragment(Order orderClicked) {
+        Fragment newFrag = CustomerReceiptFragment.newInstance(orderClicked, retrieveCustomerAddress());
+        displayFragment(newFrag, "customerReceiptFragment");
+    }
+
+    /**
+     * @return customer address associated with this order
+     */
+    private String retrieveCustomerAddress() {
+        if (mUser != null) return mUser.getAddress();
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (Thread thread : threadSet) {
+            if (thread.getName().equals("customerAddress")) {
+                try {
+                    thread.join();
+                    return mUser.getAddress();
+                } catch (InterruptedException e) {
+                    Log.e("customer", e.getLocalizedMessage());
+                }
+            }
+        }
+        return null;
     }
 
     private void displayFragment(Fragment fragment, String tag) {

@@ -17,8 +17,6 @@ import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapt
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
-import java.io.Serializable;
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
