@@ -105,7 +105,7 @@ public class CourierReceiptFragment extends Fragment {
     }
 
     public void onOrderCompletion() {
-        ((OnFragmentInteractionListener) mListener).onFragmentInteraction();
+        ((OnFragmentInteractionListener) mListener).onFragmentInteraction(order, true);
     }
 
     @Override
@@ -136,6 +136,6 @@ public class CourierReceiptFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction();
+        void onFragmentInteraction(Order order, Boolean overloader);
     }
 }

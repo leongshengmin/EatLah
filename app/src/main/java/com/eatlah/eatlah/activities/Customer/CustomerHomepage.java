@@ -353,8 +353,7 @@ public class CustomerHomepage extends AppCompatActivity
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
-                }
-            })
+                }})
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
