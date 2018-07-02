@@ -126,6 +126,7 @@ public class CustomerOrderFragment extends Fragment {
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
         submit_btn.show();
+        getButtonDisplayText();
     }
 
     @Override
