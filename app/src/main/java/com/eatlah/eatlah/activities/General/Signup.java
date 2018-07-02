@@ -44,8 +44,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +93,17 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     private EditText mPasswordView;
     private EditText mPhoneView;
     private EditText mHawkerIdView;
+    private AutoCompleteTextView mHawkerCentreIdView;
     private Spinner mProfileView;
     private EditText mCustomerAddressView;
     private View mProgressView;
     private View mSignupView;
+
+    /**
+     * For the autocomplete view
+     */
+    private ArrayList<String> mHawkerCentres;
+    private String[] mHawkerCentresArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +150,22 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
             }
         });
 
+        // Hawker centre related
         mHawkerIdView = findViewById(R.id.hawkerid_editText);
+        mHawkerCentreIdView = findViewById(R.id.hawkercentreid_editText);
+        mHawkerCentres = new ArrayList<>();
+        DatabaseReference stallsRef = mDb.getReference("HawkerStalls");
+        stallsRef.addValueEventListener(new ValueEventListener() { // get hawkers
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) { // get all hawker centre ids
+                    saveHawkerCentre(ds.getKey());
+                }
+                fixHawkerAdapter();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
 
         mProfileView = (Spinner) findViewById(R.id.profile_spinner);
         mProfileView.setPrompt(getResources().getString(R.string.prompt_profile));
@@ -169,6 +194,21 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 
         mSignupView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    /**
+     * For Autosuggestion of hawker centre keys
+     */
+    private void saveHawkerCentre(String hawkerCentre) {
+        mHawkerCentres.add(hawkerCentre);
+    }
+    /**
+     * Callback to set the autocomplete up
+     */
+    private void fixHawkerAdapter() {
+        mHawkerCentresArray = mHawkerCentres.toArray(new String[0]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, mHawkerCentresArray);
+        mHawkerCentreIdView.setAdapter(adapter);
     }
 
     private void populateAutoComplete() {
@@ -290,14 +330,15 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         if (mProfileView.getSelectedItemPosition() == 0) {  // customer
             String customerAddress = mCustomerAddressView.getText().toString();
 
-            new UserSignupTask(email, password, null, customerAddress)
+            new UserSignupTask(email, password, customerAddress)
                 .execute();
         } else if (mProfileView.getSelectedItemPosition() == 2) {   // hawker
             String hawkerId = mHawkerIdView.getText().toString();
-            new UserSignupTask(email, password, hawkerId)
+            String hawkerCentreId = mHawkerCentreIdView.getText().toString();
+            new UserSignupTask(email, password, hawkerId, hawkerCentreId)
                     .execute();
         } else {
-            new UserSignupTask(email, password, null, null)
+            new UserSignupTask(email, password, null, null, null)
                     .execute();
         }
     }
@@ -461,16 +502,23 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         private final String mPassword;
         private final String mHawkerId;
         private final String mCustomerAddress;
+        private final String mHawkerCentreId;
 
-        UserSignupTask(String email, String password, String hawkerId, String customerAddress) {
+        UserSignupTask(String email, String password, String hawkerId, String hawkerCentreId, String customerAddress) {
             mEmail = email;
             mPassword = password;
             mHawkerId = hawkerId;
+            mHawkerCentreId = hawkerCentreId;
             mCustomerAddress = customerAddress;
+
         }
 
-        UserSignupTask(String email, String password, String hawkerId) {
-            this(email, password, hawkerId, null);
+        UserSignupTask(String email, String password, String customerAddress) {
+            this(email, password, null, null, customerAddress);
+        }
+
+        UserSignupTask(String email, String password, String hawkerId, String hawkerCentreId) {
+            this(email, password, hawkerId, hawkerCentreId, null);
         }
 
         @Override
@@ -509,7 +557,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
             System.out.println("saving user");
             mDbRef
                 .child(mAuth.getUid())  // index by mAuth generated uid
-                .setValue(new User(phone_number, email, mHawkerId, mCustomerAddress))
+                .setValue(new User(phone_number, email, mHawkerId, mHawkerCentreId, mCustomerAddress))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

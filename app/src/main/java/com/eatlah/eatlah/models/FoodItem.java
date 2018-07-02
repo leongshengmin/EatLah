@@ -11,7 +11,7 @@ public class FoodItem implements Serializable {
     private String image_path;
     private String description;
 
-    FoodItem(String _id, String stall_id, String name, String price, String image_path, String description) {
+    public FoodItem(String _id, String stall_id, String name, String price, String image_path, String description) {
         this.image_path = image_path;
         this.stall_id = stall_id;
         this._id = _id;

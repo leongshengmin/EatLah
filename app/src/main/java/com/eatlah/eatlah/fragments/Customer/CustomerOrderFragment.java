@@ -25,7 +25,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Customer.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
@@ -126,6 +126,7 @@ public class CustomerOrderFragment extends Fragment {
 
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
+        submit_btn.setTooltipText(getButtonDisplayText());
         submit_btn.show();
     }
 
@@ -186,7 +187,7 @@ public class CustomerOrderFragment extends Fragment {
     private void displayPopup() {
         System.out.println("displaying popup");
         final View popupView = LayoutInflater.
-                from(getActivity()).inflate(R.layout.custom_timepicker_dialog_layout, null)
+                from(getActivity()).inflate(R.layout.main_dialog_custom_timepicker_layout, null)
                 .findViewById(R.id.custom_dialog_layout);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         popupView.findViewById(R.id.submit_button)
@@ -268,9 +269,8 @@ public class CustomerOrderFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
-
-
+                            Toast.makeText(getContext(), "Submitted order successfully!", Toast.LENGTH_LONG).show();
+                            //Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
                         } else {
                             Log.e("db", task.getException().getMessage());
                         }

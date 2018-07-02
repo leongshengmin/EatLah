@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.eatlah.eatlah.helpers.MyFirebaseMessagingService;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.MessageRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.General.MessageRecyclerViewAdapter;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;

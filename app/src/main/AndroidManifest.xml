@@ -55,7 +55,7 @@
             android:label="@string/title_activity_signup"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.HawkerHomepage"
+            android:name=".activities.Hawker.HawkerHomepage"
             android:label="@string/title_activity_hawker_homepage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -77,6 +77,8 @@
         <activity
             android:name=".activities.Courier.CourierMapsActivity"
             android:label="@string/title_activity_courier_maps" />
+
+        <activity android:name=".activities.General.RestaurantSignup"></activity>
     </application>
 
 </manifest>

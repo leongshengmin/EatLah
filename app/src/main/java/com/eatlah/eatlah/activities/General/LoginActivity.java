@@ -3,8 +3,12 @@ package com.eatlah.eatlah.activities.General;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
@@ -39,7 +43,7 @@ import android.widget.Toast;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
-import com.eatlah.eatlah.activities.HawkerHomepage;
+import com.eatlah.eatlah.activities.Hawker.HawkerHomepage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -150,7 +154,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mSignupFab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectToSignup();
+                HawkerOrUserDialog houd = new HawkerOrUserDialog();
+                houd.show(getFragmentManager().beginTransaction(), "Dialog");
             }
         });
 
@@ -161,8 +166,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Redirects user to signup page.
      */
-    private void redirectToSignup() {
+    void redirectToSignup() {
         startActivity(new Intent(this, Signup.class));
+    }
+
+    /**
+     * Redirects user to restaurant (stall) signup page.
+     */
+    void redirectToRestaurantSignup() {
+        startActivity(new Intent(this, RestaurantSignup.class));
+    }
+
+    /**
+     * Redirects user to HAWKER CENTRE signup page.
+     */
+    void redirectToHawkerCentreSignup() {
+        startActivity(new Intent(this, RestaurantSignup.class));
+    }
+
+    void askIfHawkerExists() {
+        NewCentreOrStall ncos = new NewCentreOrStall();
+        ncos.show(getFragmentManager().beginTransaction(), "HOUD");
     }
 
     @Override
@@ -452,3 +476,53 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 }
 
+
+// Ignore warning.
+class HawkerOrUserDialog extends DialogFragment {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
+        _builder.setMessage("Are you registering as a user account or a restaurant?")
+                .setTitle("Registration Type")
+                .setPositiveButton("User", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((LoginActivity) getActivity()).redirectToSignup();
+                    }})
+                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}})
+                .setNegativeButton("Restaurant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((LoginActivity) getActivity()).askIfHawkerExists();
+                    }
+                });
+        return _builder.create();
+    }
+}
+
+// Ignore warning
+class NewCentreOrStall extends DialogFragment {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder _builder = new AlertDialog.Builder(getActivity());
+        _builder.setMessage("Is the hawker centre you are working for already registered? (Check with admin before registering)")
+                .setTitle("Existing Hawker Centre?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((LoginActivity) getActivity()).redirectToRestaurantSignup();
+                    }})
+                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}})
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((LoginActivity) getActivity()).redirectToHawkerCentreSignup();
+                    }
+                });
+        return _builder.create();
+    }
+}
