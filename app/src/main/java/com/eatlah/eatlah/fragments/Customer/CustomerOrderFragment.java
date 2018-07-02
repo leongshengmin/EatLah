@@ -235,7 +235,7 @@ public class CustomerOrderFragment extends Fragment {
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.remove(CustomerOrderFragment.this);
                         Fragment fragment = CustomerReceiptFragment.newInstance(mOrder, retrieveCustomerAddress());
-                        ft.add(fragment, "customerReceiptFragment");
+                        ft.replace(R.id.frag_container, fragment);
                         ft.commit();
                     }
 
