@@ -176,7 +176,7 @@ public class CourierHomepage extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {  // view past orders
             if (orders != null && !orders.isEmpty()) {
-                fragment = PastOrdersFragment.newInstance(1, orders);
+                fragment = PastOrdersFragment.newInstance(1, orders, PastOrdersFragment.COURIER);
                 tag = getResources().getString(R.string.pastOrdersFragment);
             }
         } else if (id == R.id.nav_send) {   // contact customer

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +35,8 @@ import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,6 +62,7 @@ public class CustomerHomepage extends AppCompatActivity
     // database and authentication instances
     private FirebaseDatabase mDb;
     private FirebaseAuth mAuth;
+
     private FirebaseUser user;
     private DatabaseReference dbRef;
 
@@ -135,9 +139,10 @@ public class CustomerHomepage extends AppCompatActivity
         mDb.getReference(getResources().getString(R.string.order_ref))
                 .orderByChild("user_id")
                 .equalTo(uid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mOrders.clear();
                         System.out.println("datasnapshot contains: " + dataSnapshot);
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             System.out.println("snap: " + snapshot);
@@ -197,7 +202,7 @@ public class CustomerHomepage extends AppCompatActivity
 
         if (id == R.id.receipts_view) {
             if (mOrders != null) {
-                fragment = PastOrdersFragment.newInstance(1, mOrders);
+                fragment = PastOrdersFragment.newInstance(1, mOrders, PastOrdersFragment.CUSTOMER);
                 tag = getResources().getString(R.string.pastOrdersFragment);
             }
         } else if (id == R.id.settings_view) {
@@ -335,8 +340,26 @@ public class CustomerHomepage extends AppCompatActivity
     public Order getOrder() {
         return this.order;
     }
+    public FirebaseUser getUser() { return user; }
+
 
     @Override
-    public void onFragmentInteraction(Order order) {}
-
+    public void onFragmentInteraction(Order order) {
+        mDb .getReference("Orders")
+            .child(order.getTimestamp())
+            .child("transaction_complete")
+            .setValue(true)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
+                }
+            });
+    }
 }
