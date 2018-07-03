@@ -21,19 +21,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.eatlah.eatlah.Cart;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
-import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
+import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -62,7 +61,8 @@ public class CustomerHomepage extends AppCompatActivity
     private Typeface typefaceRaleway;
 
     // current user's order
-    private Order order;
+    //private Order order;
+    Cart cart;
     private ArrayList<Order> mOrders;
 
     // floating action button
@@ -245,12 +245,12 @@ public class CustomerHomepage extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(FoodItem item, int qty) {
-        if (order == null) {    // if no orders in cart yet
+        if (!cart.hasOrder()) {    // if no orders in cart yet
            initializeCart();
         }
 
         // add order to fragment and notify adapter of the update
-        order.addOrder(new OrderItem(item, qty));
+        cart.getContents().addOrder(new OrderItem(item, qty));
         Toast.makeText(this, "added order to cart!", Toast.LENGTH_SHORT)
                 .show();
 
@@ -262,30 +262,15 @@ public class CustomerHomepage extends AppCompatActivity
 
     private void initializeCart() {
         HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
-        dbRef = mDb
-                .getReference(getResources().getString(R.string.order_ref))
-                .push();
+
         String timestamp = dbRef.getKey();
-        order = new Order(timestamp, user.getUid(), hs.getHc_id());
+        cart.makeStartingOrder(new Order(timestamp, user.getUid(), hs.getHc_id()));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // save order to db
-                dbRef.setValue(order)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("db", "successfully saved order");
-                                    CustomerOrderFragment customerOrderFragment = CustomerOrderFragment.newInstance(1, order);
-
-                                    // display fragment
-                                    displayFragment(customerOrderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
-                                } else {
-                                    Log.e("db", task.getException().getMessage());
-                                }
-                            }
-                        });
+                CustomerOrderFragment customerOrderFragment = CustomerOrderFragment.newInstance(1, cart);
+                // display fragment
+                displayFragment(customerOrderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
             }
         });
         fab.show();
@@ -297,6 +282,6 @@ public class CustomerHomepage extends AppCompatActivity
     }
 
     public Order getOrder() {
-        return this.order;
+        return cart.getContents();
     }
 }

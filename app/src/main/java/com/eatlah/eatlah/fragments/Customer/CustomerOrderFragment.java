@@ -24,12 +24,13 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.eatlah.eatlah.Cart;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
-import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,15 +53,16 @@ import java.util.Set;
 public class CustomerOrderFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String CART = "cart";
 
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private OrderRecyclerViewAdapter mAdapter;
     private FloatingActionButton submit_btn;
-    private static Order mOrder;
     private static final FirebaseDatabase mDb = FirebaseDatabase.getInstance();
     private static DatabaseReference databaseReference;
     private User mUser;
+    private Cart cart;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -70,11 +72,11 @@ public class CustomerOrderFragment extends Fragment {
     }
 
     @SuppressWarnings("unused")
-    public static CustomerOrderFragment newInstance(int columnCount, Order order) {
-        mOrder = order;
+    public static CustomerOrderFragment newInstance(int columnCount, Cart cart) {
         CustomerOrderFragment fragment = new CustomerOrderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putSerializable(CART, cart);
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,6 +118,7 @@ public class CustomerOrderFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            cart = (Cart) getArguments().getSerializable(CART);
         }
     }
 
@@ -145,7 +148,7 @@ public class CustomerOrderFragment extends Fragment {
             }
             displayButton();
 
-            mAdapter = new OrderRecyclerViewAdapter(mOrder.getOrders(), mListener);
+            mAdapter = new OrderRecyclerViewAdapter(cart.getContents().getOrders(), mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -164,7 +167,7 @@ public class CustomerOrderFragment extends Fragment {
                     displayPopup();
 
                     // at this stage order is confirmed
-
+                    saveOrderToDB();
                 }
             });
             return ((Activity)mListener).getResources().getString(R.string.order_submit_button);
@@ -178,6 +181,19 @@ public class CustomerOrderFragment extends Fragment {
             }
         });
         return ((Activity)mListener).getResources().getString(R.string.order_cancel_button);
+    }
+
+    private void saveOrderToDB() {
+        DatabaseReference dbRef = mDb
+                .getReference(getResources().getString(R.string.order_ref))
+                .push();
+        dbRef.setValue(cart.getContents())
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("order to db", e.getMessage());
+                    }
+                });
     }
 
     /**
@@ -195,9 +211,9 @@ public class CustomerOrderFragment extends Fragment {
                     private void setDeliveryOption() {
                         Spinner spinner = popupView.findViewById(R.id.deliveryOptions_spinner);
                         if (spinner.getSelectedItemPosition() == 0) {  // self-collection
-                            mOrder.setSelf_collection(true);
+                            cart.getContents().setSelf_collection(true);
                         } else {
-                            mOrder.setSelf_collection(false);
+                            cart.getContents().setSelf_collection(false);
                         }
                     }
 
@@ -205,7 +221,7 @@ public class CustomerOrderFragment extends Fragment {
                     private void setCollectionTime() {
                         TimePicker timePicker = popupView.findViewById(R.id.collectionTime_timePicker);
                         String time = formatTime(timePicker.getHour(), timePicker.getMinute());
-                        mOrder.setCollectionTime(time);
+                        cart.getContents().setCollectionTime(time);
                     }
 
                     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -233,7 +249,7 @@ public class CustomerOrderFragment extends Fragment {
                     private void displayReceiptView() {
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.remove(CustomerOrderFragment.this);
-                        Fragment fragment = CustomerReceiptFragment.newInstance(mOrder, retrieveCustomerAddress());
+                        Fragment fragment = CustomerReceiptFragment.newInstance(cart.getContents(), retrieveCustomerAddress());
                         ft.add(fragment, "customerReceiptFragment");
                         ft.commit();
                     }
@@ -262,8 +278,8 @@ public class CustomerOrderFragment extends Fragment {
     }
 
     private void updateDb() {
-        databaseReference.child(mOrder.getTimestamp())
-                .setValue(mOrder)
+        databaseReference.child(cart.getContents().getTimestamp())
+                .setValue(cart.getContents())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -299,7 +315,7 @@ public class CustomerOrderFragment extends Fragment {
         FirebaseDatabase
                 .getInstance()
                 .getReference(((Activity)mListener).getResources().getString(R.string.order_ref))
-                .child(mOrder.getTimestamp())
+                .child(cart.getContents().getTimestamp())
                 .setValue(null)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -314,7 +330,7 @@ public class CustomerOrderFragment extends Fragment {
     }
 
     private boolean alertCartEmpty() {
-        if (!mOrder.hasOrders()) {
+        if (!cart.hasOrder() || cart.getContents() == null) {
             Toast.makeText((Activity) mListener, "Cart is empty!", Toast.LENGTH_SHORT).show();
             return true;
         }
