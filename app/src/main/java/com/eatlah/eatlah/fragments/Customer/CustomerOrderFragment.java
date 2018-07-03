@@ -190,6 +190,8 @@ public class CustomerOrderFragment extends Fragment {
         DatabaseReference dbRef = mDb
                 .getReference(getResources().getString(R.string.order_ref))
                 .push();
+        cart.getContents().setTimestamp(dbRef.getKey());
+
         dbRef.setValue(cart.getContents())
                 .addOnFailureListener(new OnFailureListener() {
                     @Override

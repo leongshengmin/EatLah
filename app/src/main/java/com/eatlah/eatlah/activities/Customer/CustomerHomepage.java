@@ -70,7 +70,7 @@ public class CustomerHomepage extends AppCompatActivity
 
     // current user's order
     //private Order order;
-    Cart cart;
+    private Cart cart;
     private ArrayList<Order> mOrders;
 
     // floating action button
@@ -81,6 +81,7 @@ public class CustomerHomepage extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_activity_homepage);
 
+        cart = new Cart();
         mDb = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -307,8 +308,7 @@ public class CustomerHomepage extends AppCompatActivity
     private void initializeCart() {
         HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
 
-        String timestamp = dbRef.getKey();
-        cart.makeStartingOrder(new Order(timestamp, user.getUid(), hs.getHc_id()));
+        cart.makeStartingOrder(new Order(null, user.getUid(), hs.getHc_id()));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
