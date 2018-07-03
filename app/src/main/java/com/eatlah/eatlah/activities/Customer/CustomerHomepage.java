@@ -22,18 +22,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.fragments.Customer.CustomerReceiptFragment;
-import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
-import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerReceiptFragment;
+import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,6 +61,7 @@ public class CustomerHomepage extends AppCompatActivity
     // database and authentication instances
     private FirebaseDatabase mDb;
     private FirebaseAuth mAuth;
+
     private FirebaseUser user;
     private DatabaseReference dbRef;
 
@@ -135,9 +138,10 @@ public class CustomerHomepage extends AppCompatActivity
         mDb.getReference(getResources().getString(R.string.order_ref))
                 .orderByChild("user_id")
                 .equalTo(uid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mOrders.clear();
                         System.out.println("datasnapshot contains: " + dataSnapshot);
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             System.out.println("snap: " + snapshot);
@@ -145,7 +149,7 @@ public class CustomerHomepage extends AppCompatActivity
                             mOrders.add(order);
                         }
                         if (display) {
-                            Fragment fragment = PastOrdersFragment.newInstance(1, mOrders);
+                            Fragment fragment = PastOrdersFragment.newInstance(1, mOrders, "CUSTOMER");
                             String tag = getResources().getString(R.string.pastOrdersFragment);
                             displayFragment(fragment, tag);
                         }
@@ -339,8 +343,25 @@ public class CustomerHomepage extends AppCompatActivity
     public Order getOrder() {
         return this.order;
     }
+    public FirebaseUser getUser() { return user; }
+
 
     @Override
-    public void onFragmentInteraction(Order order) {}
-
+    public void onFragmentInteraction(Order order) {
+        mDb .getReference("Orders")
+            .child(order.getTimestamp())
+            .child("transaction_complete")
+            .setValue(true)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
+                }})
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
+                }
+            });
+    }
 }

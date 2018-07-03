@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
@@ -23,6 +24,8 @@ import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -187,7 +190,7 @@ public class CourierHomepage extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {  // view past orders
             if (orders != null && !orders.isEmpty()) {
-                fragment = PastOrdersFragment.newInstance(1, orders);
+                fragment = PastOrdersFragment.newInstance(1, orders, PastOrdersFragment.COURIER);
                 tag = getResources().getString(R.string.pastOrdersFragment);
             }
         } else if (id == R.id.nav_send) {   // contact customer
@@ -243,8 +246,22 @@ public class CourierHomepage extends AppCompatActivity
     /**
      * callback for CourierReceiptFragment
      */
-    public void onFragmentInteraction() {
-        Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
-                .show();
+    public void onFragmentInteraction(Order order, Boolean overloader) {
+        // Set complete
+        mDb.getReference("Orders")
+           .child(order.getTimestamp())
+           .child("transaction_complete")
+           .setValue(true)
+           .addOnSuccessListener(new OnSuccessListener<Void>() {
+               @Override
+               public void onSuccess(Void aVoid) {
+                   Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
+                           .show();
+               }})
+           .addOnFailureListener(new OnFailureListener() {
+               @Override
+               public void onFailure(@NonNull Exception e) {
+                   Toast.makeText(CourierHomepage.this, "Failed: " + e, Toast.LENGTH_SHORT).show();
+               }});
     }
 }

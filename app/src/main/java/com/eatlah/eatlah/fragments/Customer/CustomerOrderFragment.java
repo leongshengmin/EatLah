@@ -129,6 +129,7 @@ public class CustomerOrderFragment extends Fragment {
             submit_btn.setTooltipText(getButtonDisplayText());
         }
         submit_btn.show();
+        getButtonDisplayText();
     }
 
     @Override
