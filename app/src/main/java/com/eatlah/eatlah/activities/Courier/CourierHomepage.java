@@ -67,6 +67,17 @@ public class CourierHomepage extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        setDefaultView();
+    }
+
+    /**
+     * if navigation drawer is not used or a view is not selected,
+     * the default view will be a list of all the pending orders.
+     */
+    private void setDefaultView() {
+        Fragment fragment = CourierPendingOrderFragment.newInstance(1);
+        String tag = getResources().getString(R.string.courierPendingOrderFrag);
+        displayFragment(fragment, tag);
     }
 
     private void retrieveExtras() {

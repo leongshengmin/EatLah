@@ -82,7 +82,6 @@ public class CourierOrderItemsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.general_fragment_orderitems_list, container, false);
-        initAttendToOrderButton(view);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -95,11 +94,14 @@ public class CourierOrderItemsFragment extends Fragment {
             }
             mAdapter = new CourierOrderItemsRecyclerViewAdapter(mOrder.getOrders(), mListener);
             recyclerView.setAdapter(mAdapter);
+            initAttendToOrderButton(view);
         }
         return view;
     }
 
     private void initAttendToOrderButton(final View view) {
+        mAdapter.hasAttendedToOrder = false;    // set visibility of checkboxes to invisible
+
         final Button attendToOrderBtn = ((Activity) mListener).findViewById(R.id.attendToOrderButton);
         attendToOrderBtn.setVisibility(View.VISIBLE);
         attendToOrderBtn.setText(((Activity) mListener).getResources().getString(R.string.attendToOrder));
@@ -136,6 +138,7 @@ public class CourierOrderItemsFragment extends Fragment {
 
             private void initCompletedOrderButton() {
                 if (customerAddress == null) return;
+                mAdapter.hasAttendedToOrder = true;    // set visibility of checkboxes to visible
                 attendToOrderBtn.setVisibility(View.INVISIBLE);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.remove(CourierOrderItemsFragment.this);

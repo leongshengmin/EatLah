@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
@@ -23,11 +24,13 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
     private final List<OrderItem> mValues;
     private final OnListFragmentInteractionListener mListener;
     private int ordersCollected;
+    public boolean hasAttendedToOrder;
 
     public CourierOrderItemsRecyclerViewAdapter(List<OrderItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
         ordersCollected = 0;
+        hasAttendedToOrder = false;
     }
 
     @Override
@@ -80,7 +83,20 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         public ViewHolder(View view) {
             super(view);
             mCollected_checkbox = view.findViewById(R.id.collectedOrder_checkbox);
-            mCollected_checkbox.setVisibility(View.VISIBLE);
+            if (hasAttendedToOrder) {
+                mCollected_checkbox.setVisibility(View.VISIBLE);
+            } else {
+                mCollected_checkbox.setVisibility(View.INVISIBLE);
+            }
+
+            mCollected_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        mCollected_checkbox.setChecked(true);
+                    }
+                }
+            });
             mOrderName = view.findViewById(R.id.orderName_textView);
             mOrderQty = view.findViewById(R.id.orderQty_textView);
             mOrderDesc = view.findViewById(R.id.orderDesc_textView);

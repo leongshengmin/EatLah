@@ -121,13 +121,13 @@ public class CustomerHomepage extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        retrievePastOrders();
+        retrievePastOrders(false);
     }
 
     /**
      * retrieves the most recent past orders corresponding to currently signed in customer
      */
-    private void retrievePastOrders() {
+    private void retrievePastOrders(final boolean display) {
         System.out.println("retrieving past orders");
         String uid = mAuth.getUid();
         mOrders = new ArrayList<>();
@@ -144,6 +144,12 @@ public class CustomerHomepage extends AppCompatActivity
                             Order order = snapshot.getValue(Order.class);
                             mOrders.add(order);
                         }
+                        if (display) {
+                            Fragment fragment = PastOrdersFragment.newInstance(1, mOrders);
+                            String tag = getResources().getString(R.string.pastOrdersFragment);
+                            displayFragment(fragment, tag);
+                        }
+
                     }
 
                     @Override
@@ -196,10 +202,7 @@ public class CustomerHomepage extends AppCompatActivity
         String tag = null;
 
         if (id == R.id.receipts_view) {
-            if (mOrders != null) {
-                fragment = PastOrdersFragment.newInstance(1, mOrders);
-                tag = getResources().getString(R.string.pastOrdersFragment);
-            }
+            retrievePastOrders(true);
         } else if (id == R.id.settings_view) {
             // todo view for user settings
             // includes password reset
@@ -325,7 +328,8 @@ public class CustomerHomepage extends AppCompatActivity
                         });
             }
         });
-        fab.show();
+        fab.setTooltipText("View Cart");
+        fab.show();    // view cart button
     }
     
     @Override

@@ -93,13 +93,13 @@ public class Order implements Serializable {
 
     public void removeOrder(OrderItem orderItem, OrderRecyclerViewAdapter adapter) {
         int idx = orderDict.get(orderItem.get_id());
-        if (orderItem.getQty() == 1) {  // swiping will remove this item from view
+
+        if (orderItem.getQty() == 1) {
+            // swiping will remove this item from view
             System.out.println("removing this item from orders " + orderItem.getName());
             shiftItemsOnRight(idx);
-
-            // notify adapter
-            adapter.notifyItemRangeChanged(idx, orders.size() - idx);
-        } else {    // update quantity
+            adapter.notifyItemRemoved(idx);
+        } else if (orderItem.getQty() > 1) {    // update quantity
             System.out.println("updating quantity of this item " + orderItem.getName());
             orderItem.setQty(orderItem.getQty() - 1);
             orders.set(idx, orderItem);
