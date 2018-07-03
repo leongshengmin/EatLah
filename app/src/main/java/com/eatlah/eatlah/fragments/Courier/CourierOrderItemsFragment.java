@@ -142,6 +142,7 @@ public class CourierOrderItemsFragment extends Fragment {
                 attendToOrderBtn.setVisibility(View.INVISIBLE);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.remove(CourierOrderItemsFragment.this);
+                ft.addToBackStack("courierOrderItemsFragment");
                 ft.commit();
             }
         });

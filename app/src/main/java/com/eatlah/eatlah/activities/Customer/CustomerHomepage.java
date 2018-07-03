@@ -261,7 +261,6 @@ public class CustomerHomepage extends AppCompatActivity
         ft.replace(R.id.frag_container, fragment, tag);
         ft.addToBackStack(getTitle().toString());
         ft.commit();
-        System.out.println("replaced fragment and committed");
     }
 
     /**

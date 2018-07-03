@@ -25,12 +25,15 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.Customer.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -125,11 +128,8 @@ public class CustomerOrderFragment extends Fragment {
 
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            submit_btn.setTooltipText(getButtonDisplayText());
-        }
-        submit_btn.show();
         getButtonDisplayText();
+        submit_btn.show();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class CustomerOrderFragment extends Fragment {
                     displayPopup();
 
                     // at this stage order is confirmed
-
+                    //saveOrderToDB();
                 }
             });
             return ((Activity)mListener).getResources().getString(R.string.order_submit_button);
@@ -181,6 +181,26 @@ public class CustomerOrderFragment extends Fragment {
             }
         });
         return ((Activity)mListener).getResources().getString(R.string.order_cancel_button);
+    }
+
+    private void saveOrderToDB() {
+        HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
+        DatabaseReference dbRef = mDb
+                .getReference(getResources().getString(R.string.order_ref))
+                .push();
+        String timestamp = dbRef.getKey();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Order order = new Order(timestamp, user.getUid(), hs.getHc_id());
+
+        // save order to db
+        dbRef
+                .setValue(order)
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("save order", e.getMessage());
+            }
+        });
     }
 
     /**
@@ -254,9 +274,9 @@ public class CustomerOrderFragment extends Fragment {
      */
     private void displayReceiptView() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.remove(CustomerOrderFragment.this);
         Fragment fragment = CustomerReceiptFragment.newInstance(mOrder, retrieveCustomerAddress());
         ft.replace(R.id.frag_container, fragment);
+        ft.addToBackStack(null);
         ft.commit();
     }
 

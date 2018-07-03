@@ -419,6 +419,8 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
             private void displayFragment(CourierOrderItemsDialogFragment fragment, String tag) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 fragment.show(ft, tag);
+                ft.addToBackStack(fragment.getTag());
+                ft.commit();
             }
         });
     }
