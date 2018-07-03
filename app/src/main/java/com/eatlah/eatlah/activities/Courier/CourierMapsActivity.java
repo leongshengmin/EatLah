@@ -88,7 +88,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.courier_maps_activity);
+        setContentView(R.layout.courier_activity_maps);
         orderDict = new HashMap<>();
 
         startLocationUpdates();

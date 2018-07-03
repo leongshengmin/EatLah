@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.CourierOrderItemsRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Courier.CourierOrderItemsRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -30,7 +30,7 @@ public class CourierOrderItemsDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.courier_fragment_orderitems_list, container, false);
+        View v = inflater.inflate(R.layout.general_fragment_orderitems_list, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.list);
         recyclerView.setAdapter(new CourierOrderItemsRecyclerViewAdapter(orderItemList, context));
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,7 +25,7 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.Cart;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Customer.OrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -129,7 +128,11 @@ public class CustomerOrderFragment extends Fragment {
 
         // displays the button to submit or cancel order
         submit_btn = ((Activity)mListener).findViewById(R.id.submit_or_cancel_button);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            submit_btn.setTooltipText(getButtonDisplayText());
+        }
         submit_btn.show();
+        getButtonDisplayText();
     }
 
     @Override
@@ -202,7 +205,7 @@ public class CustomerOrderFragment extends Fragment {
     private void displayPopup() {
         System.out.println("displaying popup");
         final View popupView = LayoutInflater.
-                from(getActivity()).inflate(R.layout.custom_timepicker_dialog_layout, null)
+                from(getActivity()).inflate(R.layout.main_dialog_custom_timepicker_layout, null)
                 .findViewById(R.id.custom_dialog_layout);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         popupView.findViewById(R.id.submit_button)
@@ -234,6 +237,7 @@ public class CustomerOrderFragment extends Fragment {
                         // customize order
                         setDeliveryOption();
                         setCollectionTime();
+                        System.out.println("setting time and delivery option");
                         updateDb();
 
                         popupWindow.dismiss();
@@ -272,6 +276,7 @@ public class CustomerOrderFragment extends Fragment {
                             }
                         }
                         return null;
+
                     }
                 });
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
@@ -284,14 +289,47 @@ public class CustomerOrderFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
-
-
+                            Toast.makeText(getContext(), "Submitted order successfully!", Toast.LENGTH_LONG).show();
+                            //Snackbar.make(getView(), "Submitted order successfully!", Snackbar.LENGTH_SHORT).show();
+                            // order confirmed and updated
+                            // display receipt
+                            displayReceiptView();
                         } else {
                             Log.e("db", task.getException().getMessage());
                         }
                     }
                 });
+    }
+
+    /**
+     * displays the receipt corresponding to this customer's order
+     */
+    private void displayReceiptView() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.remove(CustomerOrderFragment.this);
+        Fragment fragment = CustomerReceiptFragment.newInstance(cart.getContents(), retrieveCustomerAddress());
+        ft.replace(R.id.frag_container, fragment);
+        ft.commit();
+    }
+
+    /**
+     * @return customer address associated with this order
+     */
+    private String retrieveCustomerAddress() {
+        if (mUser != null) return mUser.getAddress();
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (Thread thread : threadSet) {
+            if (thread.getName().equals("customerAddress")) {
+                try {
+                    thread.join();
+                    return mUser.getAddress();
+                } catch (InterruptedException e) {
+                    Log.e("customer", e.getLocalizedMessage());
+                }
+            }
+        }
+        return null;
     }
 
     /**

@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eatlah.eatlah.adapters.HawkerStallRecyclerViewAdapter;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.adapters.Customer.HawkerStallRecyclerViewAdapter;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.google.firebase.database.DataSnapshot;

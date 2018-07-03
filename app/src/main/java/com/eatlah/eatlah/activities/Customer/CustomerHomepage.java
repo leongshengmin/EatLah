@@ -18,7 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.Cart;
@@ -26,6 +26,7 @@ import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
+import com.eatlah.eatlah.fragments.Customer.CustomerReceiptFragment;
 import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.models.FoodItem;
@@ -33,6 +34,8 @@ import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,17 +45,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Set;
+
+import static com.eatlah.eatlah.fragments.Hawker.MenuItemFragment.mUser;
 
 public class CustomerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HawkerCentreFragment.OnListFragmentInteractionListener,
         CustomerHawkerStallFragment.OnListFragmentInteractionListener,
         CustomerFoodItemFragment.OnListFragmentInteractionListener,
-        CustomerOrderFragment.OnListFragmentInteractionListener {
+        CustomerOrderFragment.OnListFragmentInteractionListener,
+        CustomerReceiptFragment.OnFragmentInteractionListener {
 
     // database and authentication instances
     private FirebaseDatabase mDb;
     private FirebaseAuth mAuth;
+
     private FirebaseUser user;
     private DatabaseReference dbRef;
 
@@ -102,9 +110,13 @@ public class CustomerHomepage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         // set the display name
-        EditText mUserName_editText = (EditText) headerView.findViewById(R.id.userName_editText);
+        TextView mUserName_editText = headerView.findViewById(R.id.userName_editText);
         mUserName_editText.setTypeface(typefaceRaleway);
         mUserName_editText.setText(user.getEmail());
+
+        // Default item selected
+        navigationView.getMenu().getItem(0).setChecked(true);
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
 
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -112,13 +124,13 @@ public class CustomerHomepage extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        retrievePastOrders();
+        retrievePastOrders(false);
     }
 
     /**
      * retrieves the most recent past orders corresponding to currently signed in customer
      */
-    private void retrievePastOrders() {
+    private void retrievePastOrders(final boolean display) {
         System.out.println("retrieving past orders");
         String uid = mAuth.getUid();
         mOrders = new ArrayList<>();
@@ -126,15 +138,22 @@ public class CustomerHomepage extends AppCompatActivity
         mDb.getReference(getResources().getString(R.string.order_ref))
                 .orderByChild("user_id")
                 .equalTo(uid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mOrders.clear();
                         System.out.println("datasnapshot contains: " + dataSnapshot);
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             System.out.println("snap: " + snapshot);
                             Order order = snapshot.getValue(Order.class);
                             mOrders.add(order);
                         }
+                        if (display) {
+                            Fragment fragment = PastOrdersFragment.newInstance(1, mOrders, "CUSTOMER");
+                            String tag = getResources().getString(R.string.pastOrdersFragment);
+                            displayFragment(fragment, tag);
+                        }
+
                     }
 
                     @Override
@@ -187,10 +206,7 @@ public class CustomerHomepage extends AppCompatActivity
         String tag = null;
 
         if (id == R.id.receipts_view) {
-            if (mOrders != null) {
-                fragment = PastOrdersFragment.newInstance(1, mOrders);
-                tag = getResources().getString(R.string.pastOrdersFragment);
-            }
+            retrievePastOrders(true);
         } else if (id == R.id.settings_view) {
             // todo view for user settings
             // includes password reset
@@ -210,6 +226,34 @@ public class CustomerHomepage extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * displays the customer receipt fragment on click of past order.
+     */
+    public void displayCustomerReceiptFragment(Order orderClicked) {
+        Fragment newFrag = CustomerReceiptFragment.newInstance(orderClicked, retrieveCustomerAddress());
+        displayFragment(newFrag, "customerReceiptFragment");
+    }
+
+    /**
+     * @return customer address associated with this order
+     */
+    private String retrieveCustomerAddress() {
+        if (mUser != null) return mUser.getAddress();
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (Thread thread : threadSet) {
+            if (thread.getName().equals("customerAddress")) {
+                try {
+                    thread.join();
+                    return mUser.getAddress();
+                } catch (InterruptedException e) {
+                    Log.e("customer", e.getLocalizedMessage());
+                }
+            }
+        }
+        return null;
     }
 
     private void displayFragment(Fragment fragment, String tag) {
@@ -273,15 +317,36 @@ public class CustomerHomepage extends AppCompatActivity
                 displayFragment(customerOrderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
             }
         });
-        fab.show();
+        fab.setTooltipText("View Cart");
+        fab.show();    // view cart button
     }
-
+    
     @Override
     public void onListFragmentInteraction(OrderItem item) {
-        
     }
 
     public Order getOrder() {
         return cart.getContents();
+    }
+    public FirebaseUser getUser() { return user; }
+
+
+    @Override
+    public void onFragmentInteraction(Order order) {
+        mDb .getReference("Orders")
+            .child(order.getTimestamp())
+            .child("transaction_complete")
+            .setValue(true)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
+                }})
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
+                }
+            });
     }
 }

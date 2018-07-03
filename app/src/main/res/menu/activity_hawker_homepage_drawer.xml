@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_accepted_orders"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_gallery"
             android:title="Accepted Orders" />
         <item
             android:id="@+id/nav_completed_orders"
@@ -15,7 +15,11 @@
         <item
             android:id="@+id/nav_admin_page"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Admin Page" />
+            android:title="Update Menu" />
+        <item
+            android:id="@+id/nav_change_photo"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Update Stall Info" />
     </group>
 
     <item android:title="Communicate">

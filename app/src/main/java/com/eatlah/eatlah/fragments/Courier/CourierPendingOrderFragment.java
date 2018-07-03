@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Courier.CourierMapsActivity;
-import com.eatlah.eatlah.adapters.CourierPendingOrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Courier.CourierPendingOrderRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

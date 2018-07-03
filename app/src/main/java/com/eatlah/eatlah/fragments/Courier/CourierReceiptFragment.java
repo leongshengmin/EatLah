@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.adapters.CourierBasicOrderItemRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 
@@ -73,7 +73,7 @@ public class CourierReceiptFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.courier_receipt_fragment, container, false);
+        View fragmentView = inflater.inflate(R.layout.courier_fragment_receipt, container, false);
         ((TextView) fragmentView.findViewById(R.id.courierId_textView)).setText("Courier ID: " + order.getCourier_id());
         ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText("Customer ID: " + order.getUser_id());
         ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText("Customer Address: " + customerAddress);
@@ -105,7 +105,7 @@ public class CourierReceiptFragment extends Fragment {
     }
 
     public void onOrderCompletion() {
-        ((OnFragmentInteractionListener) mListener).onFragmentInteraction();
+        ((OnFragmentInteractionListener) mListener).onFragmentInteraction(order, true);
     }
 
     @Override
@@ -136,6 +136,6 @@ public class CourierReceiptFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction();
+        void onFragmentInteraction(Order order, Boolean overloader);
     }
 }

@@ -1,9 +1,8 @@
 package com.eatlah.eatlah.models;
 
-import com.eatlah.eatlah.adapters.OrderRecyclerViewAdapter;
+import com.eatlah.eatlah.adapters.Customer.OrderRecyclerViewAdapter;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +19,12 @@ public class Order implements Serializable {
     private String collectionTime;
     private boolean self_collection;
     private boolean ready;  // is the order ready for collection
+    private boolean transaction_complete;
 
     public Order(String timestamp, String user_id,
                  String courier_id, String hawkerCentre_id,
-                 ArrayList<OrderItem> orders, String misc, String collectionTime, boolean self_collection, boolean ready) {
+                 ArrayList<OrderItem> orders, String misc, String collectionTime,
+                 boolean self_collection, boolean ready, boolean transaction_complete) {
         this.orderDict = new HashMap<>();
         this.timestamp = timestamp;
         this.user_id = user_id;
@@ -34,11 +35,12 @@ public class Order implements Serializable {
         this.collectionTime = collectionTime;
         this.self_collection = self_collection;
         this.ready = ready;
+        this.transaction_complete = transaction_complete;
     }
 
     public Order(String timestamp, String user_id, String hawkerCentre_id) {
         this(timestamp, user_id, null, hawkerCentre_id, new ArrayList<OrderItem>(),
-                null, null, true, false);
+                null, null, true, false, false);
     }
 
     public Order() {}
@@ -88,15 +90,16 @@ public class Order implements Serializable {
      * removes an order from orders.
      * @param orderItem
      */
+
     public void removeOrder(OrderItem orderItem, OrderRecyclerViewAdapter adapter) {
         int idx = orderDict.get(orderItem.get_id());
-        if (orderItem.getQty() == 1) {  // swiping will remove this item from view
+
+        if (orderItem.getQty() == 1) {
+            // swiping will remove this item from view
             System.out.println("removing this item from orders " + orderItem.getName());
             shiftItemsOnRight(idx);
-
-            // notify adapter
-            adapter.notifyItemRangeChanged(idx, orders.size() - idx);
-        } else {    // update quantity
+            adapter.notifyItemRemoved(idx);
+        } else if (orderItem.getQty() > 1) {    // update quantity
             System.out.println("updating quantity of this item " + orderItem.getName());
             orderItem.setQty(orderItem.getQty() - 1);
             orders.set(idx, orderItem);
@@ -154,6 +157,10 @@ public class Order implements Serializable {
         ready = true;
         //todo notify courier
     }
+
+    public boolean isTransaction_complete() { return transaction_complete; }
+
+    public void setTransaction_complete(boolean transaction_complete) { this.transaction_complete = transaction_complete; }
 
     public List<OrderItem> getOrders() {
         return orders;
@@ -230,4 +237,6 @@ public class Order implements Serializable {
     public boolean isCourierAttending() {
         return !(courier_id == null || courier_id.isEmpty());
     }
+    // Fake setter to compile properly
+    public void setCourierAttending(boolean b) {}
 }
