@@ -15,13 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
-import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
+import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -83,13 +85,22 @@ public class CourierHomepage extends AppCompatActivity
         displayFragment(fragment, tag);
     }
 
+    private void disableAttendToOrderButton() {
+        Button attendToOrder_btn = findViewById(R.id.attendToOrderButton);
+        System.out.println("disabling attend to order button " + attendToOrder_btn);
+        if (attendToOrder_btn != null) {
+            attendToOrder_btn.setVisibility(View.INVISIBLE);
+            attendToOrder_btn.setClickable(false);
+        }
+    }
+
     private void retrieveExtras() {
         String customerAddress = getIntent().getStringExtra(getString(R.string.customer_address));
         Order order = (Order) getIntent().getSerializableExtra(getString(R.string.order_ref));
         System.out.println("order : " + order + "customer Address: " + customerAddress);
-        if (order != null) {
-            displayCourierReceipt(order, customerAddress);
-        }
+//        if (order != null) {
+//            displayCourierReceipt(order, customerAddress);
+//        }
     }
 
     public void displayCourierReceipt(Order order, String customerAddress) {
@@ -103,18 +114,19 @@ public class CourierHomepage extends AppCompatActivity
     private void displayFragment(android.app.Fragment fragment, String tag) {
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.frag_container, fragment, tag);
-        ft.addToBackStack(null);
+        ft.addToBackStack(tag);
         ft.commit();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        retrievePastOrders();
+        setDefaultView();
     }
 
     /**
      * retrieves the most recent past orders corresponding to currently signed in courier
+     * and displays pastOrders fragment
      */
     private void retrievePastOrders() {
         System.out.println("retrieving past orders");
@@ -133,6 +145,9 @@ public class CourierHomepage extends AppCompatActivity
                             Order order = snapshot.getValue(Order.class);
                             orders.add(order);
                         }
+                        Fragment fragment = PastOrdersFragment.newInstance(1, orders, PastOrdersFragment.COURIER);
+                        String tag = getResources().getString(R.string.pastOrdersFragment);
+                        displayFragment(fragment, tag);
                     }
 
                     @Override
@@ -148,7 +163,16 @@ public class CourierHomepage extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            int count = getFragmentManager().getBackStackEntryCount();
+            disableAttendToOrderButton();
+            System.out.println("backstack contains " + count + " items");
+            if (count > 0) {
+                System.out.println("POPPING fragment backstack");
+                getFragmentManager().popBackStack();
+            } else {
+                System.out.println("super on back pressed called");
+                super.onBackPressed();
+            }
         }
     }
 
@@ -189,10 +213,7 @@ public class CourierHomepage extends AppCompatActivity
         } else if (id == R.id.nav_manage) {   // profile
 
         } else if (id == R.id.nav_share) {  // view past orders
-            if (orders != null && !orders.isEmpty()) {
-                fragment = PastOrdersFragment.newInstance(1, orders, PastOrdersFragment.COURIER);
-                tag = getResources().getString(R.string.pastOrdersFragment);
-            }
+            retrievePastOrders();
         } else if (id == R.id.nav_send) {   // contact customer
 
         }
@@ -207,14 +228,15 @@ public class CourierHomepage extends AppCompatActivity
     private void displayFragment(Fragment fragment, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.frag_container, fragment, tag);
-        ft.addToBackStack(getTitle().toString());
+        ft.addToBackStack(tag);
         ft.commit();
         System.out.println("replaced fragment and committed");
     }
 
     private void hideFab() {
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.hide();
+        fab.setVisibility(View.INVISIBLE);
+        fab.setClickable(false);
     }
 
     @Override

@@ -420,7 +420,6 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 fragment.show(ft, tag);
                 ft.addToBackStack(fragment.getTag());
-                ft.commit();
             }
         });
     }

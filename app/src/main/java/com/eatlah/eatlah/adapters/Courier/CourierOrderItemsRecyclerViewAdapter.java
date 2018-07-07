@@ -63,6 +63,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
     private void recordCollectedOrderItem(OrderItem orderItem) {
         ordersCollected++;
         if (ordersCollected >= mValues.size()) {    // collected all orders
+            System.out.println("Collected all orders");
             mListener.onListFragmentInteraction(orderItem);
         }
     }
