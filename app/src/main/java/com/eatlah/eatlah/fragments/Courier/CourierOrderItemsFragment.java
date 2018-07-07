@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.adapters.Courier.CourierOrderItemsRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
@@ -138,20 +139,23 @@ public class CourierOrderItemsFragment extends Fragment {
             private void initCompletedOrderButton() {
                 if (customerAddress == null) return;
                 mAdapter.hasAttendedToOrder = true;    // set visibility of checkboxes to visible
+                disableAttendToOrderButton();
+                displayReceipt();
+            }
+
+            private void disableAttendToOrderButton() {
                 attendToOrderBtn.setVisibility(View.INVISIBLE);
+                attendToOrderBtn.setClickable(false);
+            }
+
+            private void displayReceipt() {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.remove(getTargetFragment());
                 ft.addToBackStack("courierOrderItemsFragment");
                 ft.commit();
+                ((CourierHomepage)mListener).displayCourierReceipt(mOrder, customerAddress);
             }
         });
     }
-
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        ((CourierHomepage)mListener).displayCourierReceipt(mOrder, customerAddress);
-//    }
 
     /**
      * updates the order in db
