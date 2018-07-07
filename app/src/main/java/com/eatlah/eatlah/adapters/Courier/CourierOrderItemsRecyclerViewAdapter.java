@@ -30,7 +30,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         mValues = items;
         mListener = listener;
         ordersCollected = 0;
-        hasAttendedToOrder = false;
+        hasAttendedToOrder = true;
     }
 
     @Override
@@ -45,9 +45,10 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         final OrderItem orderItem = mValues.get(position);
         System.out.println("order item: " + orderItem.getName() + " " + orderItem.getQty());
         holder.mOrderName.setText(orderItem.getName());
-        holder.mOrderQty.setText("Quantity: "+ Integer.toString(orderItem.getQty()));
+        holder.mOrderQty.setText("Quantity: " + Integer.toString(orderItem.getQty()));
         holder.mOrderDesc.setText(orderItem.getDescription());
-        holder.mOrderStallId.setText("Stall ID: " +orderItem.getStall_id());
+        holder.mOrderStallId.setText("Stall ID: " + orderItem.getStall_id());
+        toggleCheckboxVisibility(holder.mCollected_checkbox);
 
         holder.mCollected_checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +60,15 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         });
 
     }
+
+    public void toggleCheckboxVisibility(CheckBox mCollected_checkbox) {
+        if(hasAttendedToOrder) {
+            mCollected_checkbox.setVisibility(View.VISIBLE);
+        } else {
+            mCollected_checkbox.setVisibility(View.INVISIBLE);
+        }
+    }
+
 
     private void recordCollectedOrderItem(OrderItem orderItem) {
         ordersCollected++;
@@ -84,12 +94,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         public ViewHolder(View view) {
             super(view);
             mCollected_checkbox = view.findViewById(R.id.collectedOrder_checkbox);
-            if (hasAttendedToOrder) {
-                mCollected_checkbox.setVisibility(View.VISIBLE);
-            } else {
-                mCollected_checkbox.setVisibility(View.INVISIBLE);
-            }
-
+            mCollected_checkbox.setVisibility(View.INVISIBLE);
             mCollected_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

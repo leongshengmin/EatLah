@@ -139,6 +139,7 @@ public class CourierOrderItemsFragment extends Fragment {
             private void initCompletedOrderButton() {
                 if (customerAddress == null) return;
                 mAdapter.hasAttendedToOrder = true;    // set visibility of checkboxes to visible
+
                 disableAttendToOrderButton();
                 displayReceipt();
             }
