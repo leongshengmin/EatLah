@@ -171,7 +171,13 @@ public class CustomerHomepage extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            int count = getFragmentManager().getBackStackEntryCount();
+
+            if (count == 0) {
+                super.onBackPressed();
+            } else {
+                getFragmentManager().popBackStack();
+            }
         }
     }
 
@@ -267,6 +273,7 @@ public class CustomerHomepage extends AppCompatActivity
     /**
      * onclick callback when viewholder containing hawkerCentre is clicked.
      * Display all hawker stalls at this hawker centre.
+     *
      * @param hawkerCentre hawkerCentre object associated with viewholder clicked.
      */
     @Override
@@ -290,7 +297,7 @@ public class CustomerHomepage extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(FoodItem item, int qty) {
         if (!cart.hasOrder()) {    // if no orders in cart yet
-           initializeCart();
+            initializeCart();
         }
 
         // add order to fragment and notify adapter of the update
@@ -319,7 +326,7 @@ public class CustomerHomepage extends AppCompatActivity
         fab.setTooltipText("View Cart");
         fab.show();    // view cart button
     }
-    
+
     @Override
     public void onListFragmentInteraction(OrderItem item) {
     }
@@ -327,25 +334,30 @@ public class CustomerHomepage extends AppCompatActivity
     public Order getOrder() {
         return cart.getContents();
     }
-    public FirebaseUser getUser() { return user; }
+
+    public FirebaseUser getUser() {
+        return user;
+    }
 
 
     @Override
     public void onFragmentInteraction(Order order) {
-        mDb .getReference("Orders")
-            .child(order.getTimestamp())
-            .child("transaction_complete")
-            .setValue(true)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
-                }})
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
-                }
-            });
+        mDb.getReference("Orders")
+                .child(order.getTimestamp())
+                .child("transaction_complete")
+                .setValue(true)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
+
 }

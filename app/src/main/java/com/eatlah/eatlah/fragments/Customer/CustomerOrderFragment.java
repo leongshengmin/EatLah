@@ -26,18 +26,12 @@ import android.widget.Toast;
 import com.eatlah.eatlah.Cart;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.Customer.OrderRecyclerViewAdapter;
-<<<<<<< HEAD
-import com.eatlah.eatlah.models.HawkerStall;
-import com.eatlah.eatlah.models.Order;
-=======
->>>>>>> cartView
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +42,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
+
 
 /**
  * A fragment representing a list of Items.
@@ -173,11 +168,7 @@ public class CustomerOrderFragment extends Fragment {
                     displayPopup();
 
                     // at this stage order is confirmed
-<<<<<<< HEAD
-                    //saveOrderToDB();
-=======
                     saveOrderToDB();
->>>>>>> cartView
                 }
             });
             return ((Activity)mListener).getResources().getString(R.string.order_submit_button);
@@ -194,25 +185,6 @@ public class CustomerOrderFragment extends Fragment {
     }
 
     private void saveOrderToDB() {
-<<<<<<< HEAD
-        HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
-        DatabaseReference dbRef = mDb
-                .getReference(getResources().getString(R.string.order_ref))
-                .push();
-        String timestamp = dbRef.getKey();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Order order = new Order(timestamp, user.getUid(), hs.getHc_id());
-
-        // save order to db
-        dbRef
-                .setValue(order)
-                .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("save order", e.getMessage());
-            }
-        });
-=======
         DatabaseReference dbRef = mDb
                 .getReference(getResources().getString(R.string.order_ref))
                 .push();
@@ -225,7 +197,6 @@ public class CustomerOrderFragment extends Fragment {
                         Log.e("order to db", e.getMessage());
                     }
                 });
->>>>>>> cartView
     }
 
     /**
@@ -233,6 +204,10 @@ public class CustomerOrderFragment extends Fragment {
      */
     private void displayPopup() {
         System.out.println("displaying popup");
+        if (getActivity() == null) {
+            hideFAB();  // if back button pressed while in fragment
+            return;
+        }
         final View popupView = LayoutInflater.
                 from(getActivity()).inflate(R.layout.main_dialog_custom_timepicker_layout, null)
                 .findViewById(R.id.custom_dialog_layout);
@@ -267,6 +242,7 @@ public class CustomerOrderFragment extends Fragment {
                         setDeliveryOption();
                         setCollectionTime();
                         System.out.println("setting time and delivery option");
+                        hideFAB();
                         updateDb();
 
                         popupWindow.dismiss();
@@ -330,17 +306,18 @@ public class CustomerOrderFragment extends Fragment {
                 });
     }
 
+    private void hideFAB() {
+        submit_btn.setVisibility(View.INVISIBLE);
+        submit_btn.setClickable(false);
+        System.out.println("FAB IS NOW HIDDEN!");
+    }
+
     /**
      * displays the receipt corresponding to this customer's order
      */
     private void displayReceiptView() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-<<<<<<< HEAD
-        Fragment fragment = CustomerReceiptFragment.newInstance(mOrder, retrieveCustomerAddress());
-=======
-        ft.remove(CustomerOrderFragment.this);
         Fragment fragment = CustomerReceiptFragment.newInstance(cart.getContents(), retrieveCustomerAddress());
->>>>>>> cartView
         ft.replace(R.id.frag_container, fragment);
         ft.addToBackStack(null);
         ft.commit();
