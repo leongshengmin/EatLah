@@ -427,7 +427,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     /**
      * initializes the attend to order button and sets on click listener
      * @param order
-     * @param attendToOrder_button
+         * @param attendToOrder_button
      */
     private void configureAttendToOrderButton(final Order order, final Button attendToOrder_button, final Button viewOrders_button, final Marker marker) {
         System.out.println("marker: " + marker.getTag());
@@ -446,10 +446,10 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 // map out route from current location to pickup location
                 retrieveRouteToPickup();
 
-                attendToOrder_button.setVisibility(View.INVISIBLE);
-
                 // get customer address from customerUID for routing later
                 retrieveCustomerAddress();
+
+                disableAttendToOrderButton();
 
                 Toast.makeText(CourierMapsActivity.this, "Loading directions...", Toast.LENGTH_LONG)
                         .show();
@@ -544,7 +544,6 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         System.out.println("retrieved DIRECTIONS!");
         displayDirections(directions);
 
-        configEndRouteButton();
     }
 
     private void displayDirections(List<String> directions) {
@@ -565,8 +564,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
      * for courier to end navigation upon order completion.
      */
     private void configEndRouteButton() {
-        // reuse attendToOrder button to end navigation
-        Button endRoute_button = findViewById(R.id.attendToOrder_button);
+        Button endRoute_button = findViewById(R.id.endRoute_btn);
         endRoute_button.setText(getResources().getString(R.string.endRouteLabel));
         endRoute_button.setVisibility(View.VISIBLE);
         endRoute_button.setOnClickListener(new View.OnClickListener() {
@@ -579,6 +577,12 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 finish();
             }
         });
+    }
+
+    private void disableAttendToOrderButton() {
+        Button attendToOrder_button = findViewById(R.id.attendToOrder_button);
+        attendToOrder_button.setVisibility(View.INVISIBLE);
+        attendToOrder_button.setClickable(false);
     }
 
     @Override

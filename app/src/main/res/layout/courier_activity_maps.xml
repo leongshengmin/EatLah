@@ -125,6 +125,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/viewOrders_button"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <Button
+                android:id="@+id/endRoute_btn"
+                android:layout_width="153dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/endRouteLabel"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/directions_textView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.741"
+                app:layout_constraintStart_toEndOf="@+id/viewOrders_button"
+                app:layout_constraintTop_toBottomOf="@+id/time_textView"
+                app:layout_constraintVertical_bias="0.0" />
+
         </android.support.constraint.ConstraintLayout>
     </FrameLayout>
 

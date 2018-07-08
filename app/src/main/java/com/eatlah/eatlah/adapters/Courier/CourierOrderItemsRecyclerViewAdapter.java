@@ -1,6 +1,7 @@
 package com.eatlah.eatlah.adapters.Courier;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.collectedOrder_checkbox && ((CheckBox) v).isChecked()) {
+                    holder.mCollected_checkbox.setChecked(true);
                     recordCollectedOrderItem(orderItem);
                 }
             }
@@ -62,6 +64,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
     }
 
     public void toggleCheckboxVisibility(CheckBox mCollected_checkbox) {
+        Log.d("map adapter", "toggling checkbox visibility to " + (hasAttendedToOrder ? "visible" : "invisible"));
         if(hasAttendedToOrder) {
             mCollected_checkbox.setVisibility(View.VISIBLE);
         } else {
@@ -94,7 +97,6 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         public ViewHolder(View view) {
             super(view);
             mCollected_checkbox = view.findViewById(R.id.collectedOrder_checkbox);
-            mCollected_checkbox.setVisibility(View.INVISIBLE);
             mCollected_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
