@@ -542,6 +542,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
      */
     public void onTaskCompleted(List<String> directions) {
         System.out.println("retrieved DIRECTIONS!");
+        configEndRouteButton();
         displayDirections(directions);
 
     }

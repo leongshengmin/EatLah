@@ -1,5 +1,7 @@
 package com.eatlah.eatlah.adapters.Courier;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,14 +96,17 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         private TextView mOrderStallId;
         private CheckBox mCollected_checkbox;
 
+        private static final String KEY = "isChecked";
+
         public ViewHolder(View view) {
             super(view);
             mCollected_checkbox = view.findViewById(R.id.collectedOrder_checkbox);
+            mCollected_checkbox.setChecked(getBooleanFromPreferences(KEY));
             mCollected_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        mCollected_checkbox.setChecked(true);
+                        putBooleanInPreferences(true, KEY);
                     }
                 }
             });
@@ -110,5 +115,18 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
             mOrderDesc = view.findViewById(R.id.orderDesc_textView);
             mOrderStallId = view.findViewById(R.id.orderAddress_textView);
         }
+
+        public void putBooleanInPreferences(boolean isChecked,String key){
+            SharedPreferences sharedPreferences = ((Activity) mListener).getPreferences(Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(key, isChecked);
+            editor.commit();
+        }
+        public boolean getBooleanFromPreferences(String key){
+            SharedPreferences sharedPreferences = ((Activity) mListener).getPreferences(Activity.MODE_PRIVATE);
+            Boolean isChecked = sharedPreferences.getBoolean(key, false);
+            return isChecked;
+        }
+
     }
 }
