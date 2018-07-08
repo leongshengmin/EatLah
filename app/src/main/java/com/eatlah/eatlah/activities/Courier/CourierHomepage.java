@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.activities.Courier;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,9 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.General.LoginActivity;
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
@@ -71,6 +74,7 @@ public class CourierHomepage extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        setUserDisplayInfo(navigationView.getHeaderView(0));
         navigationView.setNavigationItemSelectedListener(this);
         setDefaultView();
     }
@@ -98,9 +102,19 @@ public class CourierHomepage extends AppCompatActivity
         String customerAddress = getIntent().getStringExtra(getString(R.string.customer_address));
         Order order = (Order) getIntent().getSerializableExtra(getString(R.string.order_ref));
         System.out.println("order : " + order + "customer Address: " + customerAddress);
-//        if (order != null) {
-//            displayCourierReceipt(order, customerAddress);
-//        }
+
+        endOfMapsActivity(order, customerAddress);
+    }
+
+    /**
+     * responds to the end of maps activity by displaying the receipt of the order associated if any.
+     * @param order
+     * @param customerAddress
+     */
+    private void endOfMapsActivity(Order order, String customerAddress) {
+        if (order != null && (!customerAddress.isEmpty() || customerAddress == null)) {
+            displayCourierReceipt(order, customerAddress);
+        }
     }
 
     public void displayCourierReceipt(Order order, String customerAddress) {
@@ -183,6 +197,14 @@ public class CourierHomepage extends AppCompatActivity
         return true;
     }
 
+    /**
+     * sets the header of nav view to user's email
+     */
+    private void setUserDisplayInfo(View view) {
+        TextView textView = view.findViewById(R.id.header_text);
+        textView.setText(mAuth.getCurrentUser().getEmail());
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -214,8 +236,8 @@ public class CourierHomepage extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {  // view past orders
             retrievePastOrders();
-        } else if (id == R.id.nav_send) {   // contact customer
-
+        } else if (id == R.id.nav_send) {   // sign out
+            signout();
         }
 
         if (fragment != null) displayFragment(fragment, tag);
@@ -223,6 +245,12 @@ public class CourierHomepage extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void signout() {
+        startActivity(new Intent(CourierHomepage.this, LoginActivity.class));
+        finish();
+        mAuth.signOut();
     }
 
     private void displayFragment(Fragment fragment, String tag) {

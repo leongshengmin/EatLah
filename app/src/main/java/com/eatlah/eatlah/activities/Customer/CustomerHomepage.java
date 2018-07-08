@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.activities.Customer;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.Cart;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
+import com.eatlah.eatlah.activities.General.LoginActivity;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
@@ -218,8 +221,8 @@ public class CustomerHomepage extends AppCompatActivity
             // todo view for user settings
             // includes password reset
 
-        } else if (id == R.id.nav_send) {
-            // todo cloud messaging
+        } else if (id == R.id.nav_send) {   // sign out
+            signout();
         } else {
             System.out.println("order view selected");
             fragment = HawkerCentreFragment.newInstance(1);
@@ -233,6 +236,12 @@ public class CustomerHomepage extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void signout() {
+        startActivity(new Intent(CustomerHomepage.this, LoginActivity.class));
+        finish();
+        mAuth.signOut();
     }
 
     /**

@@ -30,6 +30,8 @@
     <string name="customer_address_empty">Empty Address Field</string>
     <string name="customer_address_invalid">Invalid Address</string>
 
+    <string name="signout_action">Sign Out</string>
+
     <!-- CUSTOMER -->
     <!-- Strings related to customer homepage -->
     <string name="title_activity_customer_homepage">Customer Homepage</string>
@@ -125,6 +127,5 @@
     <string name="hawker_modify_menu_title">Modify Menu Item</string>
     <!-- Strings for argument purposes -->
     <string name="NEW_ITEM">NEW_ITEM</string>
-
 
 </resources>
