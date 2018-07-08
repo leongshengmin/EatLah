@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -372,6 +373,8 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         System.out.println("order: " + order);
         displayOrder(order, marker);
         TextView dir_textView = findViewById(R.id.directions_textView);
+        dir_textView.setMovementMethod(new ScrollingMovementMethod());
+
         setDistanceFromCurrent(getDistanceFrom(marker), dir_textView);
 
         final Button viewOrders_button = findViewById(R.id.viewOrders_button);
@@ -549,6 +552,8 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
 
     private void displayDirections(List<String> directions) {
         TextView directions_textView = findViewById(R.id.directions_textView);
+        directions_textView.setMovementMethod(new ScrollingMovementMethod());
+
         directions_textView.setVisibility(View.VISIBLE);
         System.out.println("size of directions:" + directions.size());
         StringBuilder sb = new StringBuilder();
