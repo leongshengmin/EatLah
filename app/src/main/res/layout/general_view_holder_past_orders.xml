@@ -4,61 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/courierPastOrder_constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
+    android:padding="2dp"
+    tools:layout_editor_absoluteY="81dp">
 
     <TextView
         android:id="@+id/orderId_textView"
-        android:layout_width="177dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="37dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="16dp"
+        android:text="Order ID"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/customerId_textView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/orderTime_textView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/orderTime_textView"
-        android:layout_width="147dp"
-        android:layout_height="21dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="9dp"
+        android:layout_marginEnd="164dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="164dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:inputType="time"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <TextView
-        android:id="@+id/customerId_textView"
-        android:layout_width="205dp"
-        android:layout_height="21dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="12dp"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/orderTime_textView"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/orderItem_recyclerView"
-        android:layout_width="319dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Order Time"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline3"
+        app:layout_constraintEnd_toStartOf="@+id/orderId_textView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="83dp" />
+        app:layout_constraintGuide_begin="51dp" />
+
+    <TextView
+        android:id="@+id/customerId_textView"
+        android:layout_width="149dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="21dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:inputType="text"
+        android:text="Customer ID"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/orderItem_recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderId_textView" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/orderItem_recyclerView"
+        android:layout_width="297dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"
+        android:padding="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/customerId_textView"
+        app:layout_constraintStart_toEndOf="@+id/customerId_textView"
+        app:layout_constraintTop_toBottomOf="@+id/customerId_textView" />
 </android.support.constraint.ConstraintLayout>

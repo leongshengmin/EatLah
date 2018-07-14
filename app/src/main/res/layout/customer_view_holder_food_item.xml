@@ -9,7 +9,11 @@
     <android.support.v7.widget.CardView
         android:id="@+id/fooditem_view_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        app:cardCornerRadius="4dp"
+        app:contentPadding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,7 +54,7 @@
 
                     <TextView
                         android:id="@+id/price_textView"
-                        android:layout_width="wrap_content"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="8dp"
@@ -59,11 +63,12 @@
 
                     <EditText
                         android:id="@+id/orderqty_editText"
-                        android:layout_width="wrap_content"
+                        android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:autoText="false"
                         android:ems="10"
-                        android:hint="Qty"
+                        android:hint="Quantity"
                         android:inputType="textPersonName"
                         android:padding="8dp"
                         android:textSize="14sp" />
@@ -87,8 +92,8 @@
 
                 <Button
                     android:id="@+id/cart_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/add_to_cart" />
             </LinearLayout>
         </LinearLayout>

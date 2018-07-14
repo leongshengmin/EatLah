@@ -9,17 +9,20 @@
     android:layout_centerInParent="true"
     android:layout_centerVertical="true"
     android:background="@android:color/background_light"
+    android:clipToPadding="false"
     tools:layout_editor_absoluteY="81dp">
 
     <TimePicker
         android:id="@+id/collectionTime_timePicker"
-        android:layout_width="270dp"
-        android:layout_height="216dp"
-        android:layout_marginBottom="15dp"
+        style="@android:style/Widget.Material.Light.TimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
         android:timePickerMode="spinner"
         app:layout_constraintBottom_toTopOf="@+id/submit_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,31 +31,35 @@
 
     <Spinner
         android:id="@+id/deliveryOptions_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="16dp"
         android:entries="@array/deliveryOptions"
         android:paddingBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/collectionTime_timePicker"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.129"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/submit_button"
-        android:layout_width="140dp"
-        android:layout_height="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:background="?android:attr/colorAccent"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="@string/order_submit_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/collectionTime_timePicker" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

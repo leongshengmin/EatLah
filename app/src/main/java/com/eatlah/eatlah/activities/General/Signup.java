@@ -1,29 +1,24 @@
 package com.eatlah.eatlah.activities.General;
 
-import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.helpers.Courier.OnTaskCompletedListener;
-import com.eatlah.eatlah.models.User;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,6 +35,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.helpers.Courier.OnTaskCompletedListener;
+import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -153,6 +151,7 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         // Hawker centre related
         mHawkerIdView = findViewById(R.id.hawkerid_editText);
         mHawkerCentreIdView = findViewById(R.id.hawkercentreid_editText);
+        hideHawkerFields();
         mHawkerCentres = new ArrayList<>();
         DatabaseReference stallsRef = mDb.getReference("HawkerStalls");
         stallsRef.addValueEventListener(new ValueEventListener() { // get hawkers
@@ -174,7 +173,6 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // retrieve profileId selected by user
                 /* to be used for changing the visibility of hawkerId, customerAddress views */
-                //todo hawkerId view
                 displayRelevantFields(position);
             }
 
@@ -194,6 +192,11 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 
         mSignupView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void hideHawkerFields() {
+        mHawkerCentreIdView.setVisibility(View.INVISIBLE);
+        mHawkerIdView.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -360,8 +363,13 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         } else if (profile_idx == 1) {  // courier
 
         } else {    // hawker
-
+            revealHawkerFields();
         }
+    }
+
+    private void revealHawkerFields() {
+        mHawkerIdView.setVisibility(View.VISIBLE);
+        mHawkerCentreIdView.setVisibility(View.VISIBLE);
     }
 
     private void checkAddressValidity(String address) {

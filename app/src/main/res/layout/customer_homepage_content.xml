@@ -11,13 +11,15 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/submit_or_cancel_button"
-        android:layout_width="70dp"
-        android:layout_height="96dp"
+        android:layout_width="93dp"
+        android:layout_height="83dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:clickable="true"
+        android:src="@drawable/confirmed_cart"
+        android:tint="@android:color/transparent"
+        app:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_save" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </android.support.constraint.ConstraintLayout>

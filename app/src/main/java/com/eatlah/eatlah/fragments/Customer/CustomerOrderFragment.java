@@ -211,7 +211,7 @@ public class CustomerOrderFragment extends Fragment {
         final View popupView = LayoutInflater.
                 from(getActivity()).inflate(R.layout.main_dialog_custom_timepicker_layout, null)
                 .findViewById(R.id.custom_dialog_layout);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         popupView.findViewById(R.id.submit_button)
                 .setOnClickListener(new View.OnClickListener() {
 
@@ -256,6 +256,7 @@ public class CustomerOrderFragment extends Fragment {
                      * displays the receipt corresponding to this customer's order
                      */
                     private void displayReceiptView() {
+                        System.out.println("displaying customer receipt frag");
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.remove(CustomerOrderFragment.this);
                         Fragment fragment = CustomerReceiptFragment.newInstance(cart.getContents(), retrieveCustomerAddress());
@@ -316,6 +317,7 @@ public class CustomerOrderFragment extends Fragment {
      * displays the receipt corresponding to this customer's order
      */
     private void displayReceiptView() {
+        System.out.println("displaying customer receipt view");
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment fragment = CustomerReceiptFragment.newInstance(cart.getContents(), retrieveCustomerAddress());
         ft.replace(R.id.frag_container, fragment);
