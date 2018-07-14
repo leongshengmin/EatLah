@@ -96,7 +96,7 @@ public class fetchLatLongFromService extends
 
             if (orderDict != null && mMap != null) {
                 String time = String.format("Collection Time: %s", orderDict.get(place).getCollectionTime());
-                pinOnToMap(point, postal, "Collection Location", "Address: " + address + "\nCollection time: " + time);
+                pinOnToMap(point, postal, "Collection Location", address);
             } else if (mMap != null) {
                 pinOnToMap(point, postal, "Delivery Location", address);
             }

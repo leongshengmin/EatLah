@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
@@ -48,24 +47,27 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         final OrderItem orderItem = mValues.get(position);
         System.out.println("order item: " + orderItem.getName() + " " + orderItem.getQty());
         holder.mOrderName.setText(orderItem.getName());
-        holder.mOrderQty.setText("Quantity: " + Integer.toString(orderItem.getQty()));
+        holder.mOrderPrice.setText("$" + orderItem.getPrice());
+        holder.mOrderQty.setText("Qty: " + Integer.toString(orderItem.getQty()));
         holder.mOrderDesc.setText(orderItem.getDescription());
         holder.mOrderStallId.setText("Stall ID: " + orderItem.getStall_id());
-        toggleCheckboxVisibility(holder.mCollected_checkbox);
+        toggleCheckboxVisibility(holder);
 
         holder.mCollected_checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.collectedOrder_checkbox && ((CheckBox) v).isChecked()) {
-                    holder.mCollected_checkbox.setChecked(true);
+                if (((CheckBox) v).isChecked()) {
                     recordCollectedOrderItem(orderItem);
+                    holder.putBooleanInPreferences(true, holder.KEY);
                 }
+                toggleCheckboxVisibility(holder);
             }
         });
 
     }
 
-    public void toggleCheckboxVisibility(CheckBox mCollected_checkbox) {
+    public void toggleCheckboxVisibility(ViewHolder viewHolder) {
+        CheckBox mCollected_checkbox = viewHolder.mCollected_checkbox;
         Log.d("map adapter", "toggling checkbox visibility to " + (hasAttendedToOrder ? "visible" : "invisible"));
         if(hasAttendedToOrder) {
             mCollected_checkbox.setVisibility(View.VISIBLE);
@@ -91,6 +93,7 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mOrderName;
+        private TextView mOrderPrice;
         private TextView mOrderQty;
         private TextView mOrderDesc;
         private TextView mOrderStallId;
@@ -101,16 +104,8 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         public ViewHolder(View view) {
             super(view);
             mCollected_checkbox = view.findViewById(R.id.collectedOrder_checkbox);
-            mCollected_checkbox.setChecked(getBooleanFromPreferences(KEY));
-            mCollected_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        putBooleanInPreferences(true, KEY);
-                    }
-                }
-            });
             mOrderName = view.findViewById(R.id.orderName_textView);
+            mOrderPrice = view.findViewById(R.id.orderPrice_textView);
             mOrderQty = view.findViewById(R.id.orderQty_textView);
             mOrderDesc = view.findViewById(R.id.orderDesc_textView);
             mOrderStallId = view.findViewById(R.id.orderAddress_textView);

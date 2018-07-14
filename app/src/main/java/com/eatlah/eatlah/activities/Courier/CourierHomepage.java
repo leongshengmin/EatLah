@@ -112,7 +112,9 @@ public class CourierHomepage extends AppCompatActivity
      * @param customerAddress
      */
     private void endOfMapsActivity(Order order, String customerAddress) {
-        if (order != null && (!customerAddress.isEmpty() || customerAddress == null)) {
+        boolean displayReceipt = getIntent().getBooleanExtra(getResources().getString(R.string.toDisplayReceiptView), false);
+
+        if (displayReceipt) {
             displayCourierReceipt(order, customerAddress);
         }
     }
@@ -307,7 +309,13 @@ public class CourierHomepage extends AppCompatActivity
                public void onSuccess(Void aVoid) {
                    Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
                            .show();
-               }})
+                   redirectToHome();
+               }
+
+               private void redirectToHome() {
+                   setDefaultView();
+               }
+           })
            .addOnFailureListener(new OnFailureListener() {
                @Override
                public void onFailure(@NonNull Exception e) {

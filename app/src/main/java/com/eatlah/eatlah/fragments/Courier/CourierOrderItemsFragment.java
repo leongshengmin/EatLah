@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
@@ -108,6 +109,9 @@ public class CourierOrderItemsFragment extends Fragment {
         attendToOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Snackbar.make(((Activity) mListener).findViewById(R.id.frag_container), getResources().getString(R.string.attendToOrder), Snackbar.LENGTH_LONG)
+                        .show();
+
                 retrieveCustomerAddress();
                 // update order fields in db
                 // to remove order from global courier view

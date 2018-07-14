@@ -525,7 +525,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     private void displayOrder(Order order, Marker marker) {
         TextView addr_textView = findViewById(R.id.address_textView);
         TextView time_textView = findViewById(R.id.time_textView);
-        addr_textView.setText(marker.getSnippet());
+        addr_textView.setText("Collection Address: " + marker.getSnippet());
         setCollectionTime(order, time_textView);
     }
 
@@ -579,6 +579,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 Intent intent = new Intent(CourierMapsActivity.this, CourierHomepage.class);
                 intent.putExtra(getResources().getString(R.string.order_ref), attendingOrder);
                 intent.putExtra(getResources().getString(R.string.customer_address), customerAddress);
+                intent.putExtra(getResources().getString(R.string.toDisplayReceiptView), true);
                 startActivity(intent);
                 finish();
             }

@@ -38,7 +38,7 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
         holder.item = mValues.get(position);
         holder.orderIdView.setText(mValues.get(position).getTimestamp());
         bindID(holder);
-        holder.timeView.setText((holder.item.getCollectionTime() != null && !holder.item.getCollectionTime().isEmpty())
+        holder.timeView.setText((mValues.get(position).getCollectionTime() != null)
                                 ? mValues.get(position).getCollectionTime()
                                 : "No time specified");
         holder.customerIdView.setText(holder.item.isTransaction_complete()

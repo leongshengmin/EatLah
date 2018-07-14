@@ -122,6 +122,8 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="deliveredOrder_helper">Delivered Order? Click me to confirm.</string>
+    <string name="toDisplayReceiptView">boolean for receipt view to be displayed</string>
+
 
     <!-- Hawker -->
     <!-- Strings related to hawker homepage -->

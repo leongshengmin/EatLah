@@ -101,7 +101,7 @@ public class CourierReceiptFragment extends Fragment {
         for (OrderItem orderItem : order.getOrders()) {
             cost += Double.parseDouble(orderItem.getPrice());
         }
-        subtotal_textView.setText(Double.toString(cost));
+        subtotal_textView.setText("$" + Double.toString(cost));
     }
 
     public void onOrderCompletion() {
