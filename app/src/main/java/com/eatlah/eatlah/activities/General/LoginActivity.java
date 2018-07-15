@@ -2,6 +2,7 @@ package com.eatlah.eatlah.activities.General;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -144,6 +145,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        TextView resetPW_textView = findViewById(R.id.resetPassword_textView);
+        resetPW_textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View container = findViewById(R.id.container);
+                final Snackbar emailPrompt = Snackbar.make(container, "Enter your email for us to send an email to reset your password.", Snackbar.LENGTH_INDEFINITE);
+                emailPrompt.show();
+
+                mEmailView.setError(getString(R.string.prompt_email));
+                mEmailView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (!hasFocus) {
+                            final String email = mEmailView.getText().toString();
+                            if (!TextUtils.isEmpty(email) && isEmailValid(email)) {
+                                mAuth.sendPasswordResetEmail(email)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    emailPrompt.dismiss();
+                                                    mEmailView.setError(null);
+
+                                                    Snackbar.make(container, "Sent password reset email successfully!", Snackbar.LENGTH_LONG)
+                                                            .show();
+                                                    Log.d("password reset", "sent password reset email successfully");
+                                                } else {
+                                                    Log.e("password reset", task.getException().getMessage());
+                                                }
+                                            }
+                                        });
+
+                            } else if (email.isEmpty()) {
+                                mEmailView.setError(getString(R.string.error_field_required));
+                            } else {
+                                mEmailView.setError(getString(R.string.error_invalid_email));
+                            }
+                        }
+                    }
+                });
             }
         });
 
@@ -478,6 +522,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
 // Ignore warning.
+@SuppressLint("ValidFragment")
 class HawkerOrUserDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -503,6 +548,7 @@ class HawkerOrUserDialog extends DialogFragment {
 }
 
 // Ignore warning
+@SuppressLint("ValidFragment")
 class NewCentreOrStall extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

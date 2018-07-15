@@ -113,6 +113,7 @@
     <string name="completedOrderItemFrag">CompletedOrderItemFragment</string>
     <string name="modifyMenuItemFrag">ModifyMenuItemFragment</string>
     <string name="orderFrag">OrderFragment</string>
+    <string name="profileFrag">ProfileFragment</string>
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
     <string name="title_activity_courier_homepage">CourierHomepage</string>
     <string name="title_activity_courier_maps">Map</string>
@@ -131,5 +132,12 @@
     <string name="hawker_modify_menu_title">Modify Menu Item</string>
     <!-- Strings for argument purposes -->
     <string name="NEW_ITEM">NEW_ITEM</string>
+
+
+    <!-- General -->
+    <string name="profilePageTitle">Profile Settings</string>
+    <string name="name">Name</string>
+    <string name="updateDetails">Update</string>
+    <string name="forgotPassword">Forgot Password? Click here to reset.</string>
 
 </resources>

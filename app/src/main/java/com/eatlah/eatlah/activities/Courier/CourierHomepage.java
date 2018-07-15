@@ -27,6 +27,7 @@ import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
+import com.eatlah.eatlah.fragments.General.ProfileFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -235,7 +236,8 @@ public class CourierHomepage extends AppCompatActivity
             fragment = CourierPendingOrderFragment.newInstance(1);
             tag = getResources().getString(R.string.courierPendingOrderFrag);
         } else if (id == R.id.nav_manage) {   // profile
-
+            fragment = ProfileFragment.newInstance();
+            tag = getResources().getString(R.string.profileFrag);
         } else if (id == R.id.nav_share) {  // view past orders
             retrievePastOrders();
         } else if (id == R.id.nav_send) {   // sign out
