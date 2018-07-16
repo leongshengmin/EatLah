@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:background="@color/cardview_light_background"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.General.PastOrdersFragment"
     tools:listitem="@layout/general_view_holder_past_orders" />

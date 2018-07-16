@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_marginBottom="5dp"
     android:layout_marginTop="5dp"
+    android:background="@color/cardview_light_background"
     tools:context=".fragments.General.ProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -45,8 +46,8 @@
             app:layout_constraintStart_toEndOf="@+id/deliveryAddress_editText"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/name_textView"
+        <EditText
+            android:id="@+id/name_editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -71,7 +72,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:hint="Mobile No."
+            android:hint="Phone No."
             android:inputType="phone"
             android:padding="2dp"
             app:layout_constraintBottom_toTopOf="@+id/profileUpdate_btn"
@@ -94,7 +95,7 @@
             app:layout_constraintBottom_toTopOf="@+id/deliveryAddress_editText"
             app:layout_constraintEnd_toEndOf="@+id/deliveryAddress_editText"
             app:layout_constraintStart_toStartOf="@+id/deliveryAddress_editText"
-            app:layout_constraintTop_toBottomOf="@+id/name_textView" />
+            app:layout_constraintTop_toBottomOf="@+id/name_editText" />
 
         <EditText
             android:id="@+id/deliveryAddress_editText"

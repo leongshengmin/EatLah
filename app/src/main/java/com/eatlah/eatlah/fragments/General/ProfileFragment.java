@@ -1,11 +1,16 @@
 package com.eatlah.eatlah.fragments.General;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +18,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,12 +50,20 @@ public class ProfileFragment extends Fragment {
     private final FirebaseAuth mAuth;
     private final FirebaseDatabase mDb;
     private final FirebaseUser mUser;
+    private final FirebaseStorage mStorage;
+    private StorageReference mStorageReference;
+
+    private static final int PICK_IMAGE_REQUEST = 71;
+
+    private Uri filePath;
+    private Snackbar imageUploadPrompt;
 
     public ProfileFragment() {
         // Required empty public constructor
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseDatabase.getInstance();
         mUser = mAuth.getCurrentUser();
+        mStorage = FirebaseStorage.getInstance();
     }
 
     /**
@@ -49,7 +71,6 @@ public class ProfileFragment extends Fragment {
      * this fragment using the provided parameters.
      * @return A new instance of fragment ProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
         return fragment;
@@ -61,8 +82,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        final TextView name_textView = view.findViewById(R.id.name_textView);
-        name_textView.setText(mUser.getEmail().split("@")[0]);
+        final EditText name_editText = view.findViewById(R.id.name_editText);
+        name_editText.setHint(mUser.getEmail().split("@")[0]);
 
         final EditText email_editText = view.findViewById(R.id.email_editText);
         email_editText.setHint(mUser.getEmail());
@@ -77,11 +98,16 @@ public class ProfileFragment extends Fragment {
         img_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // upload image
+                ((CourierHomepage) mListener).clearViewsInContentView();
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_PICK);
+                startActivityForResult(Intent.createChooser(intent, "Update Profile Picture"), PICK_IMAGE_REQUEST);
             }
         });
 
-        Button update_btn = view.findViewById(R.id.profileUpdate_btn);
+        final Button update_btn = view.findViewById(R.id.profileUpdate_btn);
         update_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,17 +117,75 @@ public class ProfileFragment extends Fragment {
             }
 
             private void retrieveUpdatedContent() {
+                retrieveImageUpload(img_imageView);
+
+                String name = name_editText.getText().toString();
                 String address = address_editText.getText().toString();
                 String phone = phone_editText.getText().toString();
                 String email = email_editText.getText().toString();
 
-                // retrieveImage();
-
                 // update database
-                updateDb(address, phone, email);
+                updateDb(name, address, phone, email);
             }
 
-            private void updateDb(final String address, final String phone, final String email) {
+            private void retrieveImageUpload(ImageView imageView) {
+                if (filePath != null) {
+                    String imgName = String.format("%s.png", mUser.getUid());
+                    mStorageReference = mStorage.getReference(mListener.getString(R.string.user_ref));
+                    StorageReference childRef = mStorageReference.child(imgName);
+
+                    UploadTask uploadTask = childRef.putFile(filePath);
+
+                    imageUploadPrompt.dismiss();
+
+                    uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                Snackbar.make(view, "Successfully uploaded image!", Snackbar.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                Log.e("upload img", task.getException().getMessage());
+                            }
+                        }
+                    });
+                } else {
+                    // no existing profile picture
+                    if (mUser.getPhotoUrl() == null) {
+                        imageUploadPrompt = Snackbar.make(view, "Upload an image.", Snackbar.LENGTH_INDEFINITE);
+                        imageUploadPrompt.show();
+                    } else {    // user intentionally left profile img field blank
+                        Glide.with(mListener)
+                                .load(mUser.getPhotoUrl())
+                                .into(img_imageView);
+                    }
+                }
+            }
+
+            /**
+             * @param requestCode
+             * @param resultCode
+             * @param data
+             */
+           protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+                if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+                    filePath = data.getData();
+
+                    try {
+                        //getting image from gallery
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(mListener.getContentResolver(), filePath);
+
+                        //Setting image to ImageView
+                        img_imageView.setImageBitmap(bitmap);
+                        Log.d("set image", "done setting img in imageview");
+
+                    } catch (Exception e) {
+                        Log.e("set image", e.getMessage());
+                    }
+                }
+            }
+
+            private void updateDb(final String name, final String address, final String phone, final String email) {
                 final DatabaseReference databaseReference = mDb.getReference(getString(R.string.user_ref))
                         .child(mUser.getUid());
 
@@ -113,9 +197,17 @@ public class ProfileFragment extends Fragment {
                                 User existingUser = dataSnapshot.getValue(User.class);
 
                                 // update fields
-                                if (!phone.isEmpty()) existingUser.set_id(phone);
-                                if (!address.isEmpty()) existingUser.setAddress(address);
-                                if (!email.isEmpty()) existingUser.setEmail(email);
+                                if (!TextUtils.isEmpty(phone) && TextUtils.isEmpty(phone)) {
+                                    existingUser.set_id(phone);
+                                }
+                                if (!address.isEmpty()) {
+                                    existingUser.setAddress(address);
+                                }
+                                if (!TextUtils.isEmpty(email) && email.contains("@")) {
+                                    existingUser.setEmail(email);
+                                }
+
+                                updateProfile(existingUser);
 
                                 // update db
                                 databaseReference.setValue(existingUser);
@@ -123,6 +215,16 @@ public class ProfileFragment extends Fragment {
                                 Log.d("db", "Updated db profile successfully");
                                 Snackbar.make(view, "Updated Profile Successfully!", Snackbar.LENGTH_SHORT)
                                         .show();
+                            }
+
+                            private void updateProfile(User user) {
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(name)
+                                        .setPhotoUri((filePath == null) ? mUser.getPhotoUrl() : filePath)
+                                        .build();
+                                mUser.updateProfile(profileUpdates);
+                                mUser.updateEmail(user.getEmail());
+
                             }
 
                             @Override
