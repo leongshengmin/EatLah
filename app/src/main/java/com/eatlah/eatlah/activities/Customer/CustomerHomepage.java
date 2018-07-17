@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,7 @@ import com.eatlah.eatlah.fragments.Customer.CustomerOrderFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerReceiptFragment;
 import com.eatlah.eatlah.fragments.Customer.HawkerCentreFragment;
 import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
+import com.eatlah.eatlah.fragments.General.ProfileFragment;
 import com.eatlah.eatlah.models.FoodItem;
 import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
@@ -50,6 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static com.eatlah.eatlah.fragments.General.ProfileFragment.newInstance;
 import static com.eatlah.eatlah.fragments.Hawker.MenuItemFragment.mUser;
 
 public class CustomerHomepage extends AppCompatActivity
@@ -218,9 +221,9 @@ public class CustomerHomepage extends AppCompatActivity
         if (id == R.id.receipts_view) {
             retrievePastOrders(true);
         } else if (id == R.id.settings_view) {
-            // todo view for user settings
-            // includes password reset
-
+            android.app.Fragment profileFrag = ProfileFragment.newInstance();
+            tag = getResources().getString(R.string.profileFrag);
+            displayFragment(profileFrag, tag);
         } else if (id == R.id.nav_send) {   // sign out
             signout();
         } else {
@@ -273,10 +276,25 @@ public class CustomerHomepage extends AppCompatActivity
     }
 
     private void displayFragment(Fragment fragment, String tag) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frag_container, fragment, tag);
-        ft.addToBackStack(getTitle().toString());
-        ft.commit();
+        clearViewsInContentView();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frag_container, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
+    }
+
+    private void displayFragment(android.app.Fragment fragment, String tag) {
+        clearViewsInContentView();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frag_container, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
+    }
+
+    public void clearViewsInContentView() {
+        ((ConstraintLayout) findViewById(R.id.frag_container)).removeAllViews();
     }
 
     /**

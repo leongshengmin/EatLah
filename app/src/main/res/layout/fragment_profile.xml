@@ -16,122 +16,274 @@
         android:id="@+id/header_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:text="@string/profilePageTitle"
         android:textSize="24sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="6dp" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cardView"
-        android:layout_width="0dp"
-        android:layout_height="268dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/scrollContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+
+        android:id="@+id/scrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="44dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_textView"
-        app:layout_constraintVertical_bias="0.0">
+        tools:layout_editor_absoluteX="16dp">
 
-        <ImageView
-            android:id="@+id/profileImg_imageView"
-            android:layout_width="138dp"
-            android:layout_height="124dp"
-            android:src="@android:drawable/sym_def_app_icon"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:isScrollContainer="true"
+            android:minHeight="400dp"
+            app:layout_constraintBottom_toBottomOf="@+id/scrollContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/deliveryAddress_editText"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/name_editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="8dp"
-            android:autoText="false"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:padding="2dp"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/email_editText"
-            app:layout_constraintEnd_toEndOf="@+id/email_editText"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/email_editText"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/phone_editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="Phone No."
-            android:inputType="phone"
-            android:padding="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/profileUpdate_btn"
-            app:layout_constraintEnd_toEndOf="@+id/profileUpdate_btn"
-            app:layout_constraintHorizontal_bias="0.979"
-            app:layout_constraintStart_toStartOf="@+id/profileUpdate_btn"
-            app:layout_constraintTop_toBottomOf="@+id/deliveryAddress_editText"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <EditText
-            android:id="@+id/email_editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/deliveryAddress_editText"
-            app:layout_constraintEnd_toEndOf="@+id/deliveryAddress_editText"
-            app:layout_constraintStart_toStartOf="@+id/deliveryAddress_editText"
-            app:layout_constraintTop_toBottomOf="@+id/name_editText" />
-
-        <EditText
-            android:id="@+id/deliveryAddress_editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="Delivery Address"
-            android:inputType="textMultiLine|textPostalAddress"
-            android:padding="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/phone_editText"
-            app:layout_constraintEnd_toEndOf="@+id/phone_editText"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/phone_editText"
-            app:layout_constraintTop_toBottomOf="@+id/email_editText" />
-
-        <Button
-            android:id="@+id/profileUpdate_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:padding="2dp"
-            android:text="@string/common_google_play_services_update_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.464"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phone_editText" />
-    </android.support.constraint.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <ImageView
+                android:id="@+id/profileImg_imageView"
+                android:layout_width="168dp"
+                android:layout_height="166dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:src="@android:drawable/sym_def_app_icon"
+                app:layout_constraintBottom_toTopOf="@+id/name_editText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <EditText
+                android:id="@+id/name_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:padding="2dp"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/email_editText"
+                app:layout_constraintEnd_toEndOf="@+id/email_editText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/email_editText"
+                app:layout_constraintTop_toBottomOf="@+id/profileImg_imageView" />
+
+            <EditText
+                android:id="@+id/phone_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginRight="100dp"
+                android:ems="10"
+                android:inputType="phone"
+                android:padding="2dp"
+                app:layout_constraintBottom_toTopOf="@+id/hawkerFields_cardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/deliveryAddress_editText" />
+
+            <EditText
+                android:id="@+id/email_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:padding="2dp"
+                app:layout_constraintBottom_toTopOf="@+id/deliveryAddress_editText"
+                app:layout_constraintEnd_toEndOf="@+id/deliveryAddress_editText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/deliveryAddress_editText"
+                app:layout_constraintTop_toBottomOf="@+id/name_editText" />
+
+            <EditText
+                android:id="@+id/deliveryAddress_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:inputType="textMultiLine|textPostalAddress"
+                android:padding="2dp"
+                app:layout_constraintBottom_toTopOf="@+id/phone_editText"
+                app:layout_constraintEnd_toEndOf="@+id/phone_editText"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/phone_editText"
+                app:layout_constraintTop_toBottomOf="@+id/email_editText" />
+
+            <TextView
+                android:id="@+id/name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
+                android:text="Name"
+                app:layout_constraintBottom_toTopOf="@+id/email_textView"
+                app:layout_constraintEnd_toEndOf="@+id/email_textView"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/email_textView"
+                app:layout_constraintTop_toBottomOf="@id/profileImg_imageView" />
+
+            <TextView
+                android:id="@+id/email_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="4dp"
+                android:text="Email"
+                app:layout_constraintBottom_toTopOf="@+id/addr_textView"
+                app:layout_constraintEnd_toStartOf="@+id/email_editText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/addr_textView"
+                app:layout_constraintTop_toBottomOf="@+id/name_textView" />
+
+            <TextView
+                android:id="@+id/addr_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:text="Address"
+                app:layout_constraintBottom_toTopOf="@+id/phone_textView"
+                app:layout_constraintEnd_toEndOf="@+id/phone_textView"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/phone_textView"
+                app:layout_constraintTop_toBottomOf="@+id/email_textView" />
+
+            <TextView
+                android:id="@+id/phone_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="4dp"
+                android:text="Mobile"
+                app:layout_constraintBottom_toTopOf="@+id/hawkerFields_cardView"
+                app:layout_constraintEnd_toStartOf="@+id/phone_editText"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addr_textView" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/hawkerFields_cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/profileUpdate_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/phone_editText">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#14000000">
+
+                    <TextView
+                        android:id="@+id/hcID_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:lines="2"
+                        android:text="Hawker Centre\nPostal Code"
+                        app:layout_constraintLeft_toLeftOf="@+id/hsID_textView"
+                        app:layout_constraintRight_toRightOf="@+id/hsID_textView"
+                        app:layout_constraintStart_toStartOf="@+id/hsID_textView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/hcID_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:ems="10"
+                        android:inputType="textPostalAddress"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintLeft_toLeftOf="@+id/hsID_editText"
+                        app:layout_constraintRight_toRightOf="@+id/hsID_editText"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/hsID_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="32dp"
+                        android:text="Hawker Stall Address"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/hsID_editText"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/hcID_textView"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <EditText
+                        android:id="@+id/hsID_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:ems="10"
+                        android:inputType="textPostalAddress"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/hcID_editText" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <Button
+                android:id="@+id/profileUpdate_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:padding="2dp"
+                android:text="@string/common_google_play_services_update_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hawkerFields_cardView" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

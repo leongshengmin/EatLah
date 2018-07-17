@@ -9,7 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.Courier.CourierHomepage;
+import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
+import com.eatlah.eatlah.activities.Hawker.HawkerHomepage;
 import com.eatlah.eatlah.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,6 +61,7 @@ public class ProfileFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 71;
 
     private Uri filePath;
+    private CardView hawkerFields_cardView;
     private Snackbar imageUploadPrompt;
 
     public ProfileFragment() {
@@ -76,6 +82,29 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+    private void hideHawkerFields() {
+        hawkerFields_cardView.setVisibility(View.INVISIBLE);
+        hawkerFields_cardView.setEnabled(false);
+        hawkerFields_cardView.setClickable(false);
+        hawkerFields_cardView.setContextClickable(false);
+    }
+
+    private void displayRelevantFields(View view) {
+        // hide hawker fields and reformat layout accordingly
+        if (!(mListener instanceof HawkerHomepage)) {
+            hideHawkerFields();
+            adjustConstraints(view);
+        }
+    }
+
+    private void adjustConstraints(View view) {
+        ConstraintLayout constraintLayout = view.findViewById(R.id.cardView);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(R.id.profileUpdate_btn, ConstraintSet.TOP, R.id.phone_editText, ConstraintSet.BOTTOM);
+        constraintSet.connect(R.id.phone_editText, ConstraintSet.BOTTOM, R.id.profileUpdate_btn, ConstraintSet.TOP);
+        constraintSet.connect(R.id.phone_textView, ConstraintSet.BOTTOM, R.id.profileUpdate_btn, ConstraintSet.TOP);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,17 +122,29 @@ public class ProfileFragment extends Fragment {
         final EditText phone_editText = view.findViewById(R.id.phone_editText);
         phone_editText.setHint(mUser.getPhoneNumber());
 
+        hawkerFields_cardView = view.findViewById(R.id.hawkerFields_cardView);
+
         final ImageView img_imageView = view.findViewById(R.id.profileImg_imageView);
 
         img_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((CourierHomepage) mListener).clearViewsInContentView();
+                clearViewsInContentView(mListener);
 
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
                 startActivityForResult(Intent.createChooser(intent, "Update Profile Picture"), PICK_IMAGE_REQUEST);
+            }
+
+            private void clearViewsInContentView(Activity activity) {
+                if (activity instanceof  CourierHomepage) {
+                    ((CourierHomepage) activity).clearViewsInContentView();
+                } else if (activity instanceof CustomerHomepage) {
+                    ((CustomerHomepage) activity).clearViewsInContentView();
+                } else if (activity instanceof HawkerHomepage) {
+                    //todo implement clearViewsInContentView();
+                }
             }
         });
 
@@ -224,7 +265,6 @@ public class ProfileFragment extends Fragment {
                                         .build();
                                 mUser.updateProfile(profileUpdates);
                                 mUser.updateEmail(user.getEmail());
-
                             }
 
                             @Override
@@ -234,6 +274,9 @@ public class ProfileFragment extends Fragment {
                         });
             }
         });
+
+        // display additional fields and format layout accordingly if user is a hawker
+        displayRelevantFields(view);
 
         return view;
     }
