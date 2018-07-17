@@ -9,6 +9,9 @@
     <android.support.v7.widget.CardView
         android:id="@+id/completedorder_hc_view_holder"
         android:layout_width="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="4dp"
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
