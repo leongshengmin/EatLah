@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.activities.Customer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -10,7 +11,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.eatlah.eatlah.Cart;
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.activities.General.LoginActivity;
 import com.eatlah.eatlah.fragments.Customer.CustomerFoodItemFragment;
 import com.eatlah.eatlah.fragments.Customer.CustomerHawkerStallFragment;
@@ -39,8 +38,10 @@ import com.eatlah.eatlah.models.HawkerCentre;
 import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,11 +49,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
 import java.util.Set;
 
-import static com.eatlah.eatlah.fragments.General.ProfileFragment.newInstance;
 import static com.eatlah.eatlah.fragments.Hawker.MenuItemFragment.mUser;
 
 public class CustomerHomepage extends AppCompatActivity
@@ -276,7 +278,6 @@ public class CustomerHomepage extends AppCompatActivity
     }
 
     private void displayFragment(Fragment fragment, String tag) {
-        clearViewsInContentView();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frag_container, fragment, tag)
@@ -285,7 +286,6 @@ public class CustomerHomepage extends AppCompatActivity
     }
 
     private void displayFragment(android.app.Fragment fragment, String tag) {
-        clearViewsInContentView();
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frag_container, fragment, tag)
@@ -338,6 +338,7 @@ public class CustomerHomepage extends AppCompatActivity
         fab.show();
     }
 
+    @SuppressLint("NewApi")
     private void initializeCart() {
         HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
 
@@ -352,6 +353,51 @@ public class CustomerHomepage extends AppCompatActivity
         });
         fab.setTooltipText("View Cart");
         fab.show();    // view cart button
+    }
+
+    // todo sending remoteMessage
+    private void sendMessage(String message, String messageType) {
+        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+        RemoteMessage remoteMessage = new RemoteMessage.Builder(message)
+                .setMessageId(mAuth.getUid())
+                .setMessageType(messageType)
+                .build();
+        firebaseMessaging.send(remoteMessage);
+    }
+
+    // todo topic subscription
+    private void subscribeToTopic(final String topic) {
+        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+        firebaseMessaging.subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("topic subscription", "Successfully subscribed to " + topic);
+                        } else {
+                            Log.e("topic subscription", task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    // todo topic subscription
+    private void unsubscribeFromTopic(final String topic) {
+        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+        firebaseMessaging.unsubscribeFromTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("topic subscription", "Successfully unsubscribed from " + topic);
+                        } else {
+                            Log.e("topic subscription", task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     @Override

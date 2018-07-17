@@ -139,5 +139,6 @@
     <string name="name">Name</string>
     <string name="updateDetails">Update</string>
     <string name="forgotPassword">Forgot Password? Click here to reset.</string>
+    <string name="title_activity_notifications_view">NotificationsViewActivity</string>
 
 </resources>

@@ -131,8 +131,6 @@ public class CourierHomepage extends AppCompatActivity
     }
 
     private void displayFragment(android.app.Fragment fragment, String tag) {
-        clearViewsInContentView();
-
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.frag_container, fragment, tag);
         ft.addToBackStack(tag);

@@ -22,16 +22,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <service android:name=".helpers.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".helpers.FirebaseRegistrationToken">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
@@ -77,8 +75,11 @@
         <activity
             android:name=".activities.Courier.CourierMapsActivity"
             android:label="@string/title_activity_courier_maps" />
-
-        <activity android:name=".activities.General.RestaurantSignup"></activity>
+        <activity android:name=".activities.General.RestaurantSignup" />
+        <activity
+            android:name=".activities.NotificationsViewActivity"
+            android:label="@string/title_activity_notifications_view"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
