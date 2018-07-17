@@ -133,7 +133,21 @@ public class CustomerHomepage extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        // load past orders in the background without displaying
         retrievePastOrders(false);
+
+        // displays the default view fragment
+        setDefaultView();
+    }
+
+    /**
+     * loads the default fragment into fragContainer if no fragment is specified.
+     */
+    private void setDefaultView() {
+        Fragment fragment = HawkerCentreFragment.newInstance(1);
+        String tag = getResources().getString(R.string.hawkerCentreFrag);
+        displayFragment(fragment, tag);
     }
 
     /**
