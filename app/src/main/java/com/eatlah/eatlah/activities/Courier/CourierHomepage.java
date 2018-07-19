@@ -43,7 +43,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -181,6 +183,19 @@ public class CourierHomepage extends AppCompatActivity
                         }
                     }
                 });
+    }
+
+    public void sendMessage(Order order, String title, String body) {
+        Date date = new Date();
+        long time = date.getTime();
+        Timestamp timestamp = new Timestamp(time);
+
+        // sends message to customer
+        sendMessage(order.getUser_id(),
+                String.format("\"%s\"", title),
+                String.format("\"%s\"", body),
+                false,
+                String.format("\"%s\"", timestamp.toString()));
     }
 
     public void subscribeToTopic() {

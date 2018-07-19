@@ -75,7 +75,7 @@ public class NotificationUtils {
 
         Notification notification;
         mBuilder
-                .setAutoCancel(false)
+                .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentIntent(resultPendingIntent)
                 .setSound(alarmSound)
@@ -91,7 +91,7 @@ public class NotificationUtils {
             Log.d(TAG, "creating channel");
             final String CHANNEL_ID = "channel0";
             final CharSequence CHANNEL_NAME = "channel_ver26up";
-            final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+            final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
             notificationChannel.enableVibration(true);
             notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400});

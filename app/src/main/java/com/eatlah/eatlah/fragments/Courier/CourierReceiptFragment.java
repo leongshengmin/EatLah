@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
@@ -105,6 +106,8 @@ public class CourierReceiptFragment extends Fragment {
     }
 
     public void onOrderCompletion() {
+        ((CourierHomepage) mListener).sendMessage(order, "order completed", "Order has been delivered and received.");
+
         ((OnFragmentInteractionListener) mListener).onFragmentInteraction(order, true);
     }
 

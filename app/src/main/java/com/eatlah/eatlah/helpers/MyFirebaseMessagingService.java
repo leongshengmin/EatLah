@@ -139,7 +139,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final String CHANNEL_ID = "channel_ver26up";
-            final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_LOW;
+            final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, CHANNEL_IMPORTANCE);
             notificationChannel.enableVibration(true);
             notificationChannel.setVibrationPattern(new long[] {100, 200, 300, 400});

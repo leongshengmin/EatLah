@@ -134,11 +134,9 @@ public class CourierOrderItemsFragment extends Fragment {
                 Timestamp timestamp = new Timestamp(time);
 
                 // sends message to customer
-                ((CourierHomepage)mListener).sendMessage(mOrder.getUser_id(),
-                        "\"attended to order\"",
-                        "\"Courier " + mAuth.getUid() + " is now attending to your order \"",
-                        false,
-                        String.format("\"%s\"", timestamp.toString()));
+                ((CourierHomepage)mListener).sendMessage(mOrder,
+                        "attended to order",
+                        "Courier " + mAuth.getUid() + " is now attending to your order.");
             }
 
             private void retrieveCustomerAddress() {

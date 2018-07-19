@@ -46,9 +46,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
@@ -59,10 +62,13 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CourierMapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, CourierOrderItemsFragment.OnListFragmentInteractionListener,
@@ -514,6 +520,8 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
             mMap.clear();
             new FetchDirectionsFromService(mCurrentLocation, customerAddress, mMap, CourierMapsActivity.this)
                     .execute();
+
+            sendMessage("collected all orders", "Courier has collected all your orders from the hawker centre.");
         }
     }
 
@@ -580,6 +588,9 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 intent.putExtra(getResources().getString(R.string.order_ref), attendingOrder);
                 intent.putExtra(getResources().getString(R.string.customer_address), customerAddress);
                 intent.putExtra(getResources().getString(R.string.toDisplayReceiptView), true);
+
+                sendMessage("delivered order", "Courier has arrived at delivery location specified.");
+
                 startActivity(intent);
                 finish();
             }
@@ -590,6 +601,47 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         Button attendToOrder_button = findViewById(R.id.attendToOrder_button);
         attendToOrder_button.setVisibility(View.INVISIBLE);
         attendToOrder_button.setClickable(false);
+
+        sendMessage("attended to order", "Courier " + FirebaseAuth.getInstance().getUid() + " is now attending to your order.");
+    }
+
+    // saves message to db under notificationRequests/:uid/:pushid/notification
+    public void sendMessage(String target_uid, String title, String body, boolean is_background, String timestamp) {
+        Log.d("fcm", "attempting to send message to " + target_uid + " with title: " + title + " and body: " + body);
+        DatabaseReference dbRef = mDb
+                .getReference(getString(R.string.notificationRequests));
+
+        Map notification = new HashMap<>();
+        notification.put(getString(R.string.user_id), target_uid);
+        notification.put(getString(R.string.message_title), title);
+        notification.put(getString(R.string.message_body), body);
+        notification.put(getString(R.string.is_background), is_background);
+        notification.put(getString(R.string.timestamp), timestamp);
+
+        dbRef.push().setValue(notification)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("fcm", "message successfully sent");
+                        } else {
+                            Log.e("fcm", task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void sendMessage(String title, String body) {
+        Date date = new Date();
+        long time = date.getTime();
+        Timestamp timestamp = new Timestamp(time);
+
+        // sends message to customer
+        sendMessage(attendingOrder.getUser_id(),
+                String.format("\"%s\"", title),
+                String.format("\"%s\"", body),
+                false,
+                String.format("\"%s\"", timestamp.toString()));
     }
 
     @Override
