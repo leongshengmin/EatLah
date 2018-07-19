@@ -24,8 +24,10 @@ function listenForNotificationRequests() {
       request.is_background,
       request.timestamp,
       function() {
-        console.log(requestSnapshot + " onSuccess");
-        //requestSnapshot.ref.remove();
+        // remove the pushed notification upon completion.
+        console.log(JSON.stringify(requestSnapshot) + " onSuccess");
+        requests.child(requestSnapshot.key).remove();
+        console.log("removed requestSnapshot from db successfully");
       }
     );
   }, function(err) {

@@ -53,8 +53,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // check if message contains a data payload
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            Log.d(TAG, "sent time: " + remoteMessage.getSentTime());
+            System.out.println("parsing data message");
+            Log.d(TAG, "Message data : " + remoteMessage.getData());
 
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
@@ -64,11 +64,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
-            handleNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
-        }
     }
     private void handleNotification(String message_title, String message_body) {
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
@@ -92,23 +87,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void handleDataMessage(JSONObject json) {
-        Log.e(TAG, "push json: " + json.toString());
+        System.out.println("handling data message");
+        Log.d(TAG, "push json: " + json.toString());
 
         try {
-            JSONObject data = json.getJSONObject("data");
+            String title = json.getString(MSG_TITLE);
+            String body = json.getString(MSG_BODY);
+            boolean isBackground = json.getBoolean("is_background");
+            String timestamp = json.getString("timestamp");
+            JSONObject payload = json.getJSONObject("payload");
 
-            String title = data.getString(MSG_TITLE);
-            String body = data.getString(MSG_BODY);
-            boolean isBackground = data.getBoolean("is_background");
-            String timestamp = data.getString("timestamp");
-            JSONObject payload = data.getJSONObject("payload");
+            Log.d(TAG, "title: " + title);
+            Log.d(TAG, "message: " + body);
+            Log.d(TAG, "isBackground: " + isBackground);
+            Log.d(TAG, "payload: " + payload);
+            Log.d(TAG, "timestamp: " + timestamp);
+            Log.d(TAG, "Handling data message and retrieving notif from payload");
 
-            Log.e(TAG, "title: " + title);
-            Log.e(TAG, "message: " + body);
-            Log.e(TAG, "isBackground: " + isBackground);
-            Log.e(TAG, "payload: " + payload.toString());
-            Log.e(TAG, "timestamp: " + timestamp);
+            // Check if message contains a notification payload.
+            JSONObject notification = payload.has("notification") ? payload.getJSONObject("notification") : null;
 
+            if (notification != null) {
+                Log.d(TAG, "Notification Body: " + notification);
+                String notif_title = notification.getString("title");
+                String notif_body = notification.getString("body");
+
+                handleNotification(notif_title, notif_body);
+            }
 
             if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message

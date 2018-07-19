@@ -135,10 +135,10 @@ public class CourierOrderItemsFragment extends Fragment {
 
                 // sends message to customer
                 ((CourierHomepage)mListener).sendMessage(mOrder.getUser_id(),
-                        "attended to order",
-                        "Courier " + mAuth.getUid() + " is now attending to your order.",
+                        "\"attended to order\"",
+                        "\"Courier " + mAuth.getUid() + " is now attending to your order \"",
                         false,
-                        timestamp.toString());
+                        String.format("\"%s\"", timestamp.toString()));
             }
 
             private void retrieveCustomerAddress() {
