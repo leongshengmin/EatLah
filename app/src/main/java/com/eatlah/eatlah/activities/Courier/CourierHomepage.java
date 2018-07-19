@@ -156,7 +156,12 @@ public class CourierHomepage extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        setDefaultView();
+        Fragment ft = getSupportFragmentManager().findFragmentByTag(getString(R.string.courier_receipt_fragment));
+        if (ft==null) {
+            setDefaultView();
+        } else {
+          getSupportFragmentManager().beginTransaction().show(ft).commit();
+        }
     }
 
     // saves message to db under notificationRequests/:uid/:pushid/notification
