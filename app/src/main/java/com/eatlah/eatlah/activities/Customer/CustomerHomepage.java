@@ -50,9 +50,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static com.eatlah.eatlah.fragments.Hawker.MenuItemFragment.mUser;
@@ -68,6 +69,7 @@ public class CustomerHomepage extends AppCompatActivity
     // database and authentication instances
     private FirebaseDatabase mDb;
     private FirebaseAuth mAuth;
+    private final FirebaseMessaging mMessaging = FirebaseMessaging.getInstance();
 
     private FirebaseUser user;
     private DatabaseReference dbRef;
@@ -128,6 +130,7 @@ public class CustomerHomepage extends AppCompatActivity
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
 
         navigationView.setNavigationItemSelectedListener(this);
+        subscribeToTopic();
     }
 
     @Override
@@ -369,27 +372,28 @@ public class CustomerHomepage extends AppCompatActivity
         fab.show();    // view cart button
     }
 
-    // todo sending remoteMessage
-    private void sendMessage(String message, String messageType) {
-        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+    // saves message to db under notificationRequests/:uid/:pushid/notification
+    private void sendMessage(String target_uid, String title, String body) {
+        DatabaseReference dbRef = mDb
+                .getReference(getString(R.string.notificationRequests))
+                .child(target_uid);
 
-        RemoteMessage remoteMessage = new RemoteMessage.Builder(message)
-                .setMessageId(mAuth.getUid())
-                .setMessageType(messageType)
-                .build();
-        firebaseMessaging.send(remoteMessage);
+        Map notification = new HashMap<>();
+        notification.put(getString(R.string.user_id), target_uid);
+        notification.put(getString(R.string.message_title), title);
+        notification.put(getString(R.string.message_body), body);
+
+        dbRef.push().setValue(notification);
     }
 
-    // todo topic subscription
-    private void subscribeToTopic(final String topic) {
-        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
-
-        firebaseMessaging.subscribeToTopic(topic)
+    private void subscribeToTopic() {
+        /* use a topic that uniquely identifies user to ensure we get all messages for this user. */
+        mMessaging.subscribeToTopic(mAuth.getUid())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Log.d("topic subscription", "Successfully subscribed to " + topic);
+                            Log.d("topic subscription", "Successfully subscribed to " + mAuth.getUid());
                         } else {
                             Log.e("topic subscription", task.getException().getMessage());
                         }
@@ -397,16 +401,13 @@ public class CustomerHomepage extends AppCompatActivity
                 });
     }
 
-    // todo topic subscription
-    private void unsubscribeFromTopic(final String topic) {
-        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
-
-        firebaseMessaging.unsubscribeFromTopic(topic)
+    private void unsubscribeFromTopic() {
+        mMessaging.unsubscribeFromTopic(mAuth.getUid())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Log.d("topic subscription", "Successfully unsubscribed from " + topic);
+                            Log.d("topic subscription", "Successfully unsubscribed from " + mAuth.getUid());
                         } else {
                             Log.e("topic subscription", task.getException().getMessage());
                         }

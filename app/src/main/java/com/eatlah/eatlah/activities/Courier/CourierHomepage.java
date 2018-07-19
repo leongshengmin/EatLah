@@ -31,15 +31,21 @@ import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.General.ProfileFragment;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CourierHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -49,12 +55,14 @@ public class CourierHomepage extends AppCompatActivity
 
     private final FirebaseAuth mAuth;
     private final FirebaseDatabase mDb;
+    private final FirebaseMessaging mMessaging;
 
     private ArrayList<Order> orders;
 
     public CourierHomepage() {
         mAuth = FirebaseAuth.getInstance();
-        mDb = FirebaseDatabase.getInstance();
+        mDb = FirebaseDatabase.getInstance("https://eatlah-fe598.firebaseio.com/");
+        mMessaging = FirebaseMessaging.getInstance();
     }
 
     @Override
@@ -79,6 +87,8 @@ public class CourierHomepage extends AppCompatActivity
         setUserDisplayInfo(navigationView.getHeaderView(0));
         navigationView.setNavigationItemSelectedListener(this);
         setDefaultView();
+
+        subscribeToTopic();
     }
 
     /**
@@ -145,6 +155,61 @@ public class CourierHomepage extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         setDefaultView();
+    }
+
+    // saves message to db under notificationRequests/:uid/:pushid/notification
+    public void sendMessage(String target_uid, String title, String body, boolean is_background, String timestamp) {
+        Log.d("fcm", "attempting to send message to " + target_uid + " with title: " + title + " and body: " + body);
+        DatabaseReference dbRef = mDb
+                .getReference(getString(R.string.notificationRequests));
+
+        Map notification = new HashMap<>();
+        notification.put(getString(R.string.user_id), target_uid);
+        notification.put(getString(R.string.message_title), title);
+        notification.put(getString(R.string.message_body), body);
+        notification.put(getString(R.string.is_background), is_background);
+        notification.put(getString(R.string.timestamp), timestamp);
+
+        dbRef.push().setValue(notification)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("fcm", "message successfully sent");
+                        } else {
+                            Log.e("fcm", task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    public void subscribeToTopic() {
+        /* use a topic that uniquely identifies user to ensure we get all messages for this user. */
+        mMessaging.subscribeToTopic(mAuth.getUid())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("topic subscription", "Successfully subscribed to " + mAuth.getUid());
+                        } else {
+                            Log.e("topic subscription", task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    public void unsubscribeFromTopic() {
+        mMessaging.unsubscribeFromTopic(mAuth.getUid())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("topic subscription", "Successfully unsubscribed from " + mAuth.getUid());
+                        } else {
+                            Log.e("topic subscription", task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     @Override

@@ -100,6 +100,12 @@
     <string name="collectionTimeRef">collectionTime</string>
     <string name="fcmTokenRef">fcmTokens</string>
     <string name="messagesRef">Messages</string>
+    <string name="notificationRequests">notificationRequests</string>
+    <string name="user_id">uid</string>
+    <string name="message_body">messageBody</string>
+    <string name="message_title">messageTitle</string>
+    <string name="is_background">is_background</string>
+    <string name="timestamp">timestamp</string>
 
     <!-- Strings related to courierReceiptFragment -->
     <string name="completedOrder">Completed Order</string>

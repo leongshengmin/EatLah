@@ -1,13 +1,13 @@
 package com.eatlah.eatlah.helpers;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.eatlah.eatlah.R;
+import com.eatlah.eatlah.Config;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * On initial startup of your app,
@@ -69,9 +69,14 @@ public class FirebaseRegistrationToken extends FirebaseInstanceIdService {
      * @param token
      */
     private void sendRegistrationToServer(String token) {
-        // token is saved as fcmTokens/:token
-        mDb.getReference(getResources().getString(R.string.fcmTokenRef))
-                .child(token);
+
     }
 
+
+    private void storeRegIdInPref(String token) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("regId", token);
+        editor.commit();
+    }
 }

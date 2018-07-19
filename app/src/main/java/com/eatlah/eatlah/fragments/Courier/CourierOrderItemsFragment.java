@@ -28,6 +28,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -112,12 +115,30 @@ public class CourierOrderItemsFragment extends Fragment {
                 Snackbar.make(((Activity) mListener).findViewById(R.id.frag_container), getResources().getString(R.string.attendToOrder), Snackbar.LENGTH_LONG)
                         .show();
 
+                // UI changes
+                disableAttendToOrderButton();
+                displayReceipt();
+                initCompletedOrderButton();
+
                 retrieveCustomerAddress();
+
                 // update order fields in db
                 // to remove order from global courier view
                 updateOrder();
 
-                initCompletedOrderButton();
+            }
+
+            private void sendMessage() {
+                Date date = new Date();
+                long time = date.getTime();
+                Timestamp timestamp = new Timestamp(time);
+
+                // sends message to customer
+                ((CourierHomepage)mListener).sendMessage(mOrder.getUser_id(),
+                        "attended to order",
+                        "Courier " + mAuth.getUid() + " is now attending to your order.",
+                        false,
+                        timestamp.toString());
             }
 
             private void retrieveCustomerAddress() {
@@ -143,9 +164,6 @@ public class CourierOrderItemsFragment extends Fragment {
             private void initCompletedOrderButton() {
                 if (customerAddress == null) return;
                 mAdapter.hasAttendedToOrder = true;    // set visibility of checkboxes to visible
-
-                disableAttendToOrderButton();
-                displayReceipt();
             }
 
             private void disableAttendToOrderButton() {
@@ -158,6 +176,9 @@ public class CourierOrderItemsFragment extends Fragment {
                 ft.addToBackStack("courierOrderItemsFragment");
                 ft.commit();
                 ((CourierHomepage)mListener).displayCourierReceipt(mOrder, customerAddress);
+
+                // sends a message to customer for notification purposes
+                sendMessage();
             }
         });
     }

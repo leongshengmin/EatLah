@@ -1,0 +1,22 @@
+{
+  "name": "eatlah",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leongshengmin/EatLah.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leongshengmin/EatLah/issues"
+  },
+  "homepage": "https://github.com/leongshengmin/EatLah#readme",
+  "dependencies": {
+    "firebase-admin": "^5.13.0"
+  }
+}
