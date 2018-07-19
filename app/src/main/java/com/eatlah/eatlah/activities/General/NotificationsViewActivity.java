@@ -4,12 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +16,6 @@ import com.eatlah.eatlah.Config;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.helpers.MyFirebaseMessagingService;
 import com.eatlah.eatlah.helpers.NotificationUtils;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class NotificationsViewActivity extends AppCompatActivity {
 
@@ -33,8 +30,11 @@ public class NotificationsViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Log.d(TAG, "on create called");
+
         txtTitle = (TextView) findViewById(R.id.txtTitle_textView);
         txtBody = (TextView) findViewById(R.id.txtBody_textView);
+        setTextFields();
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -53,6 +53,12 @@ public class NotificationsViewActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    private void setTextFields() {
+        Intent intent = getIntent();
+        txtTitle.setText(intent.getStringExtra(MyFirebaseMessagingService.MSG_TITLE));
+        txtBody.setText(intent.getStringExtra(MyFirebaseMessagingService.MSG_BODY));
     }
 
     @Override

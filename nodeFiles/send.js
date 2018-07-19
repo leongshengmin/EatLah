@@ -51,6 +51,7 @@ function sendNotificationToUser(user_id, message_title, message_body, _is_backgr
         messageTitle: message_title,
         messageBody: message_body,
         is_background: _is_background,
+        to_uid: user_id,
         timestamp: _timestamp,
         payload: {
           notification: {

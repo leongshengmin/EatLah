@@ -2,18 +2,18 @@ package com.eatlah.eatlah.helpers;
 
 import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.eatlah.eatlah.Config;
 import com.eatlah.eatlah.R;
@@ -37,6 +37,8 @@ public class NotificationUtils {
     }
 
     public void showNotificationMessage(final String title, final String message, final String timeStamp, Intent intent, String imageUrl) {
+        Log.d(TAG, "showing notification message " + message);
+
         // Check for empty push message
         if (TextUtils.isEmpty(message))
             return;
@@ -57,8 +59,7 @@ public class NotificationUtils {
         final Notification.Builder mBuilder = new Notification.Builder(
                 mContext);
 
-        final Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                + "://" + mContext.getPackageName() + "/raw/notification");
+        final Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
         playNotificationSound();
@@ -66,25 +67,41 @@ public class NotificationUtils {
 
 
     private void showSmallNotification(Notification.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
+        Log.d(TAG, "showing small notif");
 
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
 
         inboxStyle.addLine(message);
 
         Notification notification;
-        notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
-                .setAutoCancel(true)
+        mBuilder
+                .setAutoCancel(false)
                 .setContentTitle(title)
                 .setContentIntent(resultPendingIntent)
                 .setSound(alarmSound)
                 .setStyle(inboxStyle)
                 .setWhen(getTimeMilliSec(timeStamp))
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
-                .setContentText(message)
-                .build();
+                .setContentText(message);
+
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(TAG, "creating channel");
+            final String CHANNEL_ID = "channel0";
+            final CharSequence CHANNEL_NAME = "channel_ver26up";
+            final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400});
+            notificationChannel.setShowBadge(false);
+            notificationManager.createNotificationChannel(notificationChannel);
+            mBuilder.setChannelId(CHANNEL_ID);
+        }
+        notification = mBuilder.build();
+
+        Log.d(TAG, "notificationManager.notify() called");
         notificationManager.notify(Config.NOTIFICATION_ID, notification);
     }
 
