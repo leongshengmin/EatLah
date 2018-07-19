@@ -35,6 +35,9 @@ import java.util.List;
 public class CompletedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<CompletedOrderItemRecyclerViewAdapter.ViewHolder> {
     private static int GREEN = 0xFF00FA9A;
     private static int RED = 0xFFFFC0CB;
+    private static int CYAN = 0xFF6BD6D6;
+    private static int SAND = 0xFFEDDEA4;
+    private static int SUNSET = 0xFFF7A072;
 
     private final List<OrderItem> mValues;
     private final CompletedOrderItemFragment.OnListFragmentInteractionListener mListener;
@@ -67,7 +70,7 @@ public class CompletedOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.mPriceView.setText(orderItem.getPrice());
         holder.mDescView.setText(orderItem.getDescription());
         holder.mQtyView.setText("" + orderItem.getQty()); // qty is int, cast to string
-        holder.mCardView.setCardBackgroundColor(orderItem.isComplete() ? GREEN : RED);
+        holder.mCardView.setCardBackgroundColor(orderItem.isComplete() ? CYAN : SUNSET);
     }
 
     private void glideImageInto(String file_name, final ImageView imageView) {

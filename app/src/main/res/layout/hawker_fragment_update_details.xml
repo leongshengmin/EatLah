@@ -5,6 +5,7 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/stone"
     tools:context=".fragments.Hawker.ModifyMenuItemFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,6 +27,7 @@
                 android:layout_marginTop="24dp"
                 android:gravity="center_horizontal"
                 android:text="Update Details"
+                android:textColor="@color/dark_turquoise"
                 android:textColorLink="@android:color/black"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -41,6 +43,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Display Picture of Stall (Click to add/modify)"
+                android:textColor="@color/dark_cyan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updateDetails_textview" />
 
@@ -66,6 +69,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Name of Stall"
+                android:textColor="@color/dark_cyan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_picture_imageView" />
 
@@ -80,9 +84,11 @@
                 android:ems="10"
                 android:hint="Name"
                 android:inputType="textPersonName"
+                android:textColor="@color/darker_cyan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_name_textview" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,20 +99,25 @@
                     android:id="@+id/hawker_updatedetails_back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:text="Back" />
+                    android:background="@color/turquoise"
+                    android:text="Back"
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/hawker_updatedetails_save_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:text="Save Changes" />
+                    android:background="@color/turquoise"
+                    android:text="Save Changes"
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 
 
 </android.support.constraint.ConstraintLayout>

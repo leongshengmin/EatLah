@@ -5,6 +5,7 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/stone"
     tools:context=".fragments.Hawker.ModifyMenuItemFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,7 +27,7 @@
                 android:layout_marginTop="24dp"
                 android:gravity="center_horizontal"
                 android:text="@string/hawker_modify_menu_title"
-                android:textColorLink="@android:color/black"
+                android:textColor="@color/dark_turquoise"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -41,6 +42,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Picture of Food Item (Click to add/modify)"
+                android:textColor="@color/dark_cyan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updateDetails_textview" />
 
@@ -66,6 +68,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Name of Food Item"
+                android:textColor="@color/dark_cyan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_picture_imageView" />
 
@@ -80,6 +83,7 @@
                 android:ems="10"
                 android:hint="Name"
                 android:inputType="textPersonName"
+                android:textColor="@color/darker_cyan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_name_textview" />
@@ -92,6 +96,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Price of Food Item"
+                android:textColor="@color/dark_cyan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_updatedetails_name_editText" />
 
@@ -106,6 +111,7 @@
                 android:ems="10"
                 android:hint="Price"
                 android:inputType="textPersonName"
+                android:textColor="@color/darker_cyan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_modmenuitem_price_textview" />
@@ -118,6 +124,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Description"
+                android:textColor="@color/dark_cyan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawker_mmi_price_editText" />
 
@@ -132,6 +139,7 @@
                 android:ems="10"
                 android:hint="Description"
                 android:inputType="textCapSentences|textMultiLine"
+                android:textColor="@color/darker_cyan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hawkerOwner_guide" />
@@ -145,15 +153,21 @@
                     android:id="@+id/hawker_mmi_back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:text="Back" />
+                    android:background="@color/turquoise"
+                    android:text="Back"
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/hawker_mmi_save_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:text="Save Changes" />
+                    android:background="@color/turquoise"
+                    android:text="Save Changes"
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 
