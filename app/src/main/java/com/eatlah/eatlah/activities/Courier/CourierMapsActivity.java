@@ -588,9 +588,6 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
                 intent.putExtra(getResources().getString(R.string.order_ref), attendingOrder);
                 intent.putExtra(getResources().getString(R.string.customer_address), customerAddress);
                 intent.putExtra(getResources().getString(R.string.toDisplayReceiptView), true);
-
-                sendMessage("delivered order", "Courier has arrived at delivery location specified.");
-
                 startActivity(intent);
                 finish();
             }

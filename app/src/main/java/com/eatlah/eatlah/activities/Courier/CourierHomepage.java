@@ -135,6 +135,8 @@ public class CourierHomepage extends AppCompatActivity
     }
 
     public void displayCourierReceipt(Order order, String customerAddress) {
+        sendMessage(order, "delivered order", "Courier has arrived at delivery location specified.");
+
         // create foodItems fragment and pass in Order containing list of foodItems as arg
         Fragment fragment = CourierReceiptFragment.newInstance(order, customerAddress);
 

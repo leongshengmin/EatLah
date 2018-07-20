@@ -197,6 +197,13 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     private void hideHawkerFields() {
         mHawkerCentreIdView.setVisibility(View.INVISIBLE);
         mHawkerIdView.setVisibility(View.INVISIBLE);
+        mHawkerCentreIdView.setEnabled(false);
+        mHawkerIdView.setEnabled(false);
+        mHawkerCentreIdView.setClickable(false);
+        mHawkerIdView.setClickable(false);
+
+        findViewById(R.id.hawkerid_inputLayout).setVisibility(View.INVISIBLE);
+        findViewById(R.id.hcid_inputLayout).setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -370,6 +377,13 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     private void revealHawkerFields() {
         mHawkerIdView.setVisibility(View.VISIBLE);
         mHawkerCentreIdView.setVisibility(View.VISIBLE);
+        mHawkerCentreIdView.setEnabled(true);
+        mHawkerIdView.setEnabled(true);
+        mHawkerCentreIdView.setClickable(true);
+        mHawkerIdView.setClickable(true);
+
+        findViewById(R.id.hawkerid_inputLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.hcid_inputLayout).setVisibility(View.VISIBLE);
     }
 
     private void checkAddressValidity(String address) {
