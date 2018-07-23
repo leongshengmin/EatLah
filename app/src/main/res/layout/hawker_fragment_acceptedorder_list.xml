@@ -6,8 +6,9 @@
     android:name="com.eatlah.eatlah.fragments.AcceptedOrderFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@color/stone"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.Hawker.AcceptedOrderFragment"
     tools:listitem="@layout/hawker_view_holder_acceptedorder" />

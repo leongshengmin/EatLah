@@ -15,7 +15,7 @@
             android:id="@+id/hawker_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/turquoise"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -28,6 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:background="@android:color/white"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/turquoise"
+        app:srcCompat="@mipmap/plus_round" />
 
 </android.support.design.widget.CoordinatorLayout>

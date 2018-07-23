@@ -6,8 +6,9 @@
     android:name="com.eatlah.eatlah.MenuItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@color/stone"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.Hawker.MenuItemFragment"
     tools:listitem="@layout/hawker_view_holder_menuitem" />

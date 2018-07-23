@@ -7,4 +7,20 @@
     <!-- text colors for login page -->
     <color name="textColor">#fff</color>
     <color name="login_btn_textColor">#000</color>
+
+    <!-- Theme colors -->
+    <color name="turquoise">#0FA3B1</color>
+    <color name="dark_turquoise">#063c41</color>
+    <color name="cyan">#b5e2fa</color>
+    <color name="dark_cyan">#637C89</color>
+    <color name="stone">#F9F7F3</color>
+    <color name="dark_stone">#cccbc7</color>
+    <color name="sand">#eddea4</color>
+    <color name="dark_sand">#6C654B</color>
+    <color name="sunset">#F7A072</color>
+    <color name="dark_sunset">#714934</color>
+    <color name="darker_cyan">#4d606a</color>
+    <color name="light_cyan">#c6cbebf3</color>
+    <color name="light_sand">#efe8cb</color>
+    <color name="greenish_white">#b8edfe</color>
 </resources>

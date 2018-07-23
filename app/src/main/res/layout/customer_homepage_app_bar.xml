@@ -9,13 +9,14 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/sunset"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/sunset"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -28,8 +29,8 @@
         android:layout_height="91dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:tint="@android:color/transparent"
-        app:backgroundTint="@android:color/transparent"
+        android:tint="@color/stone"
+        app:backgroundTint="@color/sunset"
         app:srcCompat="@drawable/shopping_cart" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -14,6 +14,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:padding="5dp"
+        app:cardBackgroundColor="@color/light_sand"
         app:cardCornerRadius="4dp">
 
         <TableLayout

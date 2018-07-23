@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
+        app:cardBackgroundColor="@color/light_sand"
         app:cardCornerRadius="4dp">
 
         <LinearLayout
@@ -34,6 +35,7 @@
                     android:maxLines="100"
                     android:padding="8dp"
                     android:text="Name"
+                    android:textColor="@color/dark_sand"
                     android:textSize="17sp" />
 
                 <TextView
@@ -44,7 +46,8 @@
                     android:paddingBottom="8dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:text="Description" />
+                    android:text="Description"
+                    android:textColor="@color/dark_sand" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -58,7 +61,8 @@
                         android:layout_weight="1"
                         android:padding="8dp"
                         android:paddingLeft="8dp"
-                        android:text="Price" />
+                        android:text="Price"
+                        android:textColor="@color/dark_sand" />
 
                     <TextView
                         android:id="@+id/orderQty_textView"
@@ -67,6 +71,7 @@
                         android:layout_weight="1"
                         android:padding="8dp"
                         android:text="Qty"
+                        android:textColor="@color/dark_sand"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -84,13 +89,17 @@
                     android:id="@+id/orderItem_image"
                     android:layout_width="126dp"
                     android:layout_height="126dp"
+                    android:padding="10dp"
                     app:srcCompat="@android:drawable/sym_def_app_icon" />
 
                 <Button
                     android:id="@+id/viewOrders_button"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:text="@string/add_to_cart" />
+                    android:layout_margin="10dp"
+                    android:background="@color/sunset"
+                    android:text="@string/add_to_cart"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
         </LinearLayout>
 
