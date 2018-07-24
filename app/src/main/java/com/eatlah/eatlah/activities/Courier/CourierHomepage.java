@@ -1,7 +1,9 @@
 package com.eatlah.eatlah.activities.Courier;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -12,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.activities.General.LoginActivity;
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment;
@@ -30,6 +32,7 @@ import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment;
 import com.eatlah.eatlah.fragments.Courier.CourierReceiptFragment;
 import com.eatlah.eatlah.fragments.General.PastOrdersFragment;
 import com.eatlah.eatlah.fragments.General.ProfileFragment;
+import com.eatlah.eatlah.helpers.QRCodeDecoderActivity;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,11 +46,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -59,7 +57,8 @@ public class CourierHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         CourierPendingOrderFragment.OnListFragmentInteractionListener,
         CourierOrderItemsFragment.OnListFragmentInteractionListener,
-        CourierReceiptFragment.OnFragmentInteractionListener {
+        CourierReceiptFragment.OnFragmentInteractionListener,
+        QRCodeReaderView.OnQRCodeReadListener {
 
     private final String TAG = CourierHomepage.class.getSimpleName();
 
@@ -247,43 +246,54 @@ public class CourierHomepage extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ProfileFragment.PICK_IMAGE_REQUEST) {
             handleRequestForProfileFrag(requestCode, resultCode, data);
-        } else {
+        } else if (requestCode == QRCodeDecoderActivity.QRCODE_DECODER_REQUEST_CODE) {
             handleRequestForQRCode(requestCode, resultCode, data);
-        }
-    }
-
-    private void handleRequestForQRCode(int requestCode, int resultCode, Intent data) {
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        // if activity result is meant for qrcode
-        if (intentResult != null) {
-            // if no content in qr code
-            if (intentResult.getContents() == null) {
-                Log.d(TAG, "qr code contains no content");
-            } else {
-                // if qr code contains data
-                Log.d(TAG, "parsing content in qr code");
-
-                try {
-                    JSONObject jsonObject = new JSONObject(intentResult.getContents());
-
-                    Log.d(TAG, jsonObject.toString());
-
-                    // display alert message
-                    new AlertDialog.Builder(this)
-                            .setTitle("Completed Order")
-                            .setCancelable(true)
-                            .setMessage(null)
-                            .show();
-
-                } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
         } else {
             Log.d(TAG, "super.onActivityResult called");
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void handleRequestForQRCode(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "handling request for qr code");
+        Order order = (Order) data.getSerializableExtra(QRCodeDecoderActivity.ORDER);
+
+        if (resultCode == RESULT_OK) {
+            Log.d(TAG, "camera permissions granted");
+            String message = data.getStringExtra(QRCodeDecoderActivity.DECODED_MESSAGE);
+            PointF[] pointFS = (PointF[]) data.getParcelableArrayExtra(QRCodeDecoderActivity.DECODED_POINTS);
+
+            onQRCodeRead(message, pointFS);
+        } else {
+            Log.d(TAG, "camera permissions denied");
+            displayOrderCompletedDialog("Order has been marked as complete.");
+        }
+
+        onOrderCompletion(order);
+    }
+
+    // Called when a QR is decoded
+    // "text" : the text encoded in QR
+    // "points" : points where QR control points are placed in View
+    @Override
+    public void onQRCodeRead(String text, PointF[] points) {
+        Log.d(TAG, "qr code scanned successfully");
+        Log.d(TAG, text);
+        displayOrderCompletedDialog(text);
+    }
+
+    private void displayOrderCompletedDialog(String text) {
+        new AlertDialog.Builder(this)
+                .setTitle("Completed Order")
+                .setMessage(text)
+                .setCancelable(true)
+                .show();
+    }
+
+    private void onOrderCompletion(Order order) {
+        Log.d(TAG, "on order completion called");
+        sendMessage(order, "order completed", "Order has been delivered and received.");
+        onFragmentInteraction(order, true);
     }
 
     private void handleRequestForProfileFrag(int requestCode, int resultCode, Intent data) {
@@ -462,7 +472,7 @@ public class CourierHomepage extends AppCompatActivity
                public void onSuccess(Void aVoid) {
                    Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
                            .show();
-//                   redirectToHome();
+                   redirectToHome();
                }
 
                private void redirectToHome() {

@@ -147,5 +147,6 @@
     <string name="forgotPassword">Forgot Password? Click here to reset.</string>
     <string name="title_activity_notifications_view">NotificationsViewActivity</string>
     <string name="promptText_profile">To update profile settings, fill in only the relevant fields.</string>
+    <string name="title_activity_qrcode_decoder">QRCodeDecoderActivity</string>
 
 </resources>

@@ -54,7 +54,6 @@ dependencies {
     // location play services
     implementation 'com.google.android.gms:play-services-location:15.0.1'
 
-
     // dexter runtime permissions
     implementation 'com.karumi:dexter:4.2.0'
 
@@ -64,7 +63,11 @@ dependencies {
     // FireBase ui
     implementation 'com.firebaseui:firebase-ui-storage:3.2.1'
 
-    implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+    implementation('com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.3@aar') {
+        transitive = true
+    }
+
+    //implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.7.1'

@@ -2,6 +2,7 @@ package com.eatlah.eatlah.fragments.Courier;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,11 +15,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
-import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
+import com.eatlah.eatlah.helpers.QRCodeDecoderActivity;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
-import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -41,8 +41,6 @@ public class CourierReceiptFragment extends Fragment {
 
     private CourierBasicOrderItemRecyclerViewAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
-
-    private IntentIntegrator qrScanner;
 
     private Button completedOrder_button;
 
@@ -71,17 +69,17 @@ public class CourierReceiptFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            this.qrScanner = new IntentIntegrator((Activity) mListener);
             this.order = (Order) getArguments().getSerializable(ORDER_TAG);
             this.customerAddress = getArguments().getString(CUSTOMER_ADDRESS_TAG);
             System.out.println("On create fragment, order : " + order );
         }
     }
 
+    /**
+     * starts qr code scanner activity
+     */
     private void scanQRCode() {
-        qrScanner.setPrompt("Please hold your phone steady while we detect the QR code")
-                .setOrientationLocked(true)
-                .initiateScan();
+        startActivityForResult(new Intent((Activity) mListener, QRCodeDecoderActivity.class), QRCodeDecoderActivity.QRCODE_DECODER_REQUEST_CODE);
     }
 
     @Override
@@ -103,7 +101,6 @@ public class CourierReceiptFragment extends Fragment {
                 // order is marked as complete
                 Log.d(TAG, "scanning qr code");
                 scanQRCode();
-                onOrderCompletion();
             }
         });
 
@@ -122,12 +119,6 @@ public class CourierReceiptFragment extends Fragment {
         }
         DecimalFormat df = new DecimalFormat("##.##");
         subtotal_textView.setText(String.format("$%s", df.format(cost)));
-    }
-
-    public void onOrderCompletion() {
-        ((CourierHomepage) mListener).sendMessage(order, "order completed", "Order has been delivered and received.");
-
-        ((OnFragmentInteractionListener) mListener).onFragmentInteraction(order, true);
     }
 
     @Override
