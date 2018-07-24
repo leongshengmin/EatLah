@@ -134,7 +134,7 @@ public class CustomerReceiptFragment extends Fragment {
         for (OrderItem orderItem : order.getOrders()) {
             cost += Double.parseDouble(orderItem.getPrice());
         }
-        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat df = new DecimalFormat("##.##");
         subtotal_textView.setText(String.format("$%s", df.format(cost)));
     }
 

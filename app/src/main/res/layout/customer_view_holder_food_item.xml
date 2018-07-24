@@ -23,7 +23,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="180dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
@@ -57,22 +57,22 @@
 
                     <TextView
                         android:id="@+id/price_textView"
-                        android:layout_width="120dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:hint="price "
                         android:padding="8dp"
                         android:paddingLeft="8dp"
-                        android:text="Price"
                         android:textColor="@color/dark_sand" />
 
                     <EditText
                         android:id="@+id/orderqty_editText"
-                        android:layout_width="130dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:autoText="false"
                         android:ems="10"
-                        android:hint="Quantity"
+                        android:hint="Qty"
                         android:inputType="textPersonName"
                         android:padding="8dp"
                         android:textColor="@color/dark_sand"
@@ -82,7 +82,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:baselineAligned="false"
@@ -91,8 +91,8 @@
 
                 <ImageView
                     android:id="@+id/foodItem_image"
-                    android:layout_width="126dp"
-                    android:layout_height="126dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:padding="10dp"
                     app:srcCompat="@android:drawable/sym_def_app_icon" />
 
