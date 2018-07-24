@@ -97,11 +97,30 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.courier_activity_maps);
         orderDict = new HashMap<>();
+        hideCardView();
+        hideDirectionsView();
 
         startLocationUpdates();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         loadMap();
+    }
+
+    /**
+     * before user clicks on pin, map view takes up the whole screen
+     * and cardView is not visible.
+     */
+    private void hideCardView() {
+        View cardView = findViewById(R.id.frameView);
+        cardView.setVisibility(View.GONE);
+    }
+
+    /**
+     * triggered after user clicks on pin
+     */
+    private void displayCardView() {
+        View cardView = findViewById(R.id.frameView);
+        cardView.setVisibility(View.VISIBLE);
     }
 
 
@@ -335,6 +354,9 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
             System.out.println("order not found for " + postalCode);
             return false;
         }
+
+        // reveal card view to display pending order info
+        displayCardView();
         displayPendingOrderInfo(order, marker);
         return false;
     }
@@ -394,8 +416,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
 
     private void setCollectionTime(final Order order, final TextView time_textView) {
         System.out.println("setting collection time:" + order + " timeview: " + time_textView);
-        String time = String.format("Collection Time: %s", order.getCollectionTime());
-        time_textView.setText(time);
+        time_textView.setText(order.getCollectionTime());
     }
 
     private void setDistanceFromCurrent(final float dist, final TextView distance_textView) {
@@ -533,7 +554,7 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
     private void displayOrder(Order order, Marker marker) {
         TextView addr_textView = findViewById(R.id.address_textView);
         TextView time_textView = findViewById(R.id.time_textView);
-        addr_textView.setText("Collection Address: " + marker.getSnippet());
+        addr_textView.setText(marker.getSnippet());
         setCollectionTime(order, time_textView);
     }
 
@@ -558,8 +579,14 @@ public class CourierMapsActivity extends AppCompatActivity implements OnMapReady
 
     }
 
+    private void hideDirectionsView() {
+        TextView directions_textView = findViewById(R.id.directions_textView);
+        directions_textView.setVisibility(View.GONE);
+    }
+
     private void displayDirections(List<String> directions) {
         TextView directions_textView = findViewById(R.id.directions_textView);
+        directions_textView.setVisibility(View.VISIBLE);
         directions_textView.setMovementMethod(new ScrollingMovementMethod());
 
         directions_textView.setVisibility(View.VISIBLE);

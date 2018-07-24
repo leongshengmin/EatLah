@@ -58,7 +58,7 @@ public class FoodItemRecyclerViewAdapter extends RecyclerView.Adapter<FoodItemRe
             glideImageInto(foodItem.getImage_path(), holder.mImageView);
         }
         holder.mNameView.setText(foodItem.getName());
-        holder.mPriceView.setText(foodItem.getPrice());
+        holder.mPriceView.setText(String.format("$%s", foodItem.getPrice()));
         holder.mDescView.setText(foodItem.getDescription());
         System.out.println("done binding " + foodItem.getName() + " to view holder");
 

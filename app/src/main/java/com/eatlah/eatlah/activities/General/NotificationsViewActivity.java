@@ -28,6 +28,7 @@ public class NotificationsViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Order Progress Notifications Page");
         setSupportActionBar(toolbar);
 
         Log.d(TAG, "on create called");

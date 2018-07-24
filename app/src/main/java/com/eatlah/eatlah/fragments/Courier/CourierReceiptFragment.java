@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,12 @@ import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+
+import static android.support.constraint.Constraints.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +41,8 @@ public class CourierReceiptFragment extends Fragment {
 
     private CourierBasicOrderItemRecyclerViewAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
+
+    private IntentIntegrator qrScanner;
 
     private Button completedOrder_button;
 
@@ -64,10 +71,17 @@ public class CourierReceiptFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            this.qrScanner = new IntentIntegrator((Activity) mListener);
             this.order = (Order) getArguments().getSerializable(ORDER_TAG);
             this.customerAddress = getArguments().getString(CUSTOMER_ADDRESS_TAG);
             System.out.println("On create fragment, order : " + order );
         }
+    }
+
+    private void scanQRCode() {
+        qrScanner.setPrompt("Please hold your phone steady while we detect the QR code")
+                .setOrientationLocked(true)
+                .initiateScan();
     }
 
     @Override
@@ -75,9 +89,9 @@ public class CourierReceiptFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.courier_fragment_receipt, container, false);
-        ((TextView) fragmentView.findViewById(R.id.courierId_textView)).setText("Courier ID: " + order.getCourier_id());
-        ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText("Customer ID: " + order.getUser_id());
-        ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText("Customer Address: " + customerAddress);
+        ((TextView) fragmentView.findViewById(R.id.courierId_textView)).setText(order.getCourier_id());
+        ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText(order.getUser_id());
+        ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText(customerAddress);
         TextView subtotal_textView = fragmentView.findViewById(R.id.amtToCollect_textView);
         setSubtotal(subtotal_textView);
 
@@ -85,6 +99,10 @@ public class CourierReceiptFragment extends Fragment {
         completedOrder_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // after qrcode is scanned
+                // order is marked as complete
+                Log.d(TAG, "scanning qr code");
+                scanQRCode();
                 onOrderCompletion();
             }
         });
@@ -102,7 +120,8 @@ public class CourierReceiptFragment extends Fragment {
         for (OrderItem orderItem : order.getOrders()) {
             cost += Double.parseDouble(orderItem.getPrice());
         }
-        subtotal_textView.setText("$" + Double.toString(cost));
+        DecimalFormat df = new DecimalFormat("##.##");
+        subtotal_textView.setText(String.format("$%s", df.format(cost)));
     }
 
     public void onOrderCompletion() {

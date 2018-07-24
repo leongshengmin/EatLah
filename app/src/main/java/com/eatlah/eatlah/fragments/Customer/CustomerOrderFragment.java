@@ -200,6 +200,29 @@ public class CustomerOrderFragment extends Fragment {
                 });
     }
 
+    private void dimBackground(PopupWindow popupWindow) {
+        View container;
+        if (popupWindow.getBackground() == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                container = (View) popupWindow.getContentView().getParent();
+            } else {
+                container = popupWindow.getContentView();
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                container = (View) popupWindow.getContentView().getParent().getParent();
+            } else {
+                container = (View) popupWindow.getContentView().getParent();
+            }
+        }
+        Context context = popupWindow.getContentView().getContext();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams p = (WindowManager.LayoutParams) container.getLayoutParams();
+        p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        p.dimAmount = 0.4f;
+        wm.updateViewLayout(container, p);
+    }
+
     /**
      * displays popup for customer to set delivery/collection time
      */
@@ -239,6 +262,8 @@ public class CustomerOrderFragment extends Fragment {
                      * collection/delivery time.
                      */
                     public void onClick(View v) {
+                        dimBackground(popupWindow);
+
                         // customize order
                         setDeliveryOption();
                         setCollectionTime();

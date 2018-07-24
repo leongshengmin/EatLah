@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,6 +43,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -54,6 +60,8 @@ public class CourierHomepage extends AppCompatActivity
         CourierPendingOrderFragment.OnListFragmentInteractionListener,
         CourierOrderItemsFragment.OnListFragmentInteractionListener,
         CourierReceiptFragment.OnFragmentInteractionListener {
+
+    private final String TAG = CourierHomepage.class.getSimpleName();
 
     private final FirebaseAuth mAuth;
     private final FirebaseDatabase mDb;
@@ -88,7 +96,6 @@ public class CourierHomepage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserDisplayInfo(navigationView.getHeaderView(0));
         navigationView.setNavigationItemSelectedListener(this);
-        setDefaultView();
 
         subscribeToTopic();
     }
@@ -131,6 +138,8 @@ public class CourierHomepage extends AppCompatActivity
 
         if (displayReceipt) {
             displayCourierReceipt(order, customerAddress);
+        } else {
+            setDefaultView();
         }
     }
 
@@ -236,7 +245,48 @@ public class CourierHomepage extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ProfileFragment.PICK_IMAGE_REQUEST) {
+            handleRequestForProfileFrag(requestCode, resultCode, data);
+        } else {
+            handleRequestForQRCode(requestCode, resultCode, data);
+        }
+    }
+
+    private void handleRequestForQRCode(int requestCode, int resultCode, Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
+        // if activity result is meant for qrcode
+        if (intentResult != null) {
+            // if no content in qr code
+            if (intentResult.getContents() == null) {
+                Log.d(TAG, "qr code contains no content");
+            } else {
+                // if qr code contains data
+                Log.d(TAG, "parsing content in qr code");
+
+                try {
+                    JSONObject jsonObject = new JSONObject(intentResult.getContents());
+
+                    Log.d(TAG, jsonObject.toString());
+
+                    // display alert message
+                    new AlertDialog.Builder(this)
+                            .setTitle("Completed Order")
+                            .setCancelable(true)
+                            .setMessage(null)
+                            .show();
+
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        } else {
+            Log.d(TAG, "super.onActivityResult called");
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void handleRequestForProfileFrag(int requestCode, int resultCode, Intent data) {
         ProfileFragment profileFragment = (ProfileFragment) getFragmentManager()
                 .findFragmentByTag(getString(R.string.profileFrag));
         profileFragment.onActivityResult(requestCode, resultCode, data);
@@ -337,6 +387,7 @@ public class CourierHomepage extends AppCompatActivity
             tag = getResources().getString(R.string.courierPendingOrderFrag);
             displayFragment(fragment, tag);
         } else if (id == R.id.nav_manage) {   // profile
+            clearViewsInContentView();
             android.app.Fragment fragment = ProfileFragment.newInstance();
             tag = getResources().getString(R.string.profileFrag);
             displayFragment(fragment, tag);
@@ -411,7 +462,7 @@ public class CourierHomepage extends AppCompatActivity
                public void onSuccess(Void aVoid) {
                    Snackbar.make(findViewById(R.id.frag_container), getResources().getString(R.string.completedOrder), Snackbar.LENGTH_LONG)
                            .show();
-                   redirectToHome();
+//                   redirectToHome();
                }
 
                private void redirectToHome() {

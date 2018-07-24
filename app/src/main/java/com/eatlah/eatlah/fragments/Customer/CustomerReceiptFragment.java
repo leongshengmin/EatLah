@@ -2,20 +2,29 @@ package com.eatlah.eatlah.fragments.Customer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
+import com.eatlah.eatlah.helpers.QRCodeGenerator;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+
+import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,11 +36,13 @@ import com.eatlah.eatlah.models.OrderItem;
  */
 public class CustomerReceiptFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String TAG = CustomerReceiptFragment.class.getSimpleName();
     private static final String ORDER_TAG = "order";
     private static final String CUSTOMER_ADDRESS_TAG = "customerAddress";
 
     private Order order;
     private String customerAddress;
+    private QRCodeGenerator qrCodeGenerator;
 
     private CourierBasicOrderItemRecyclerViewAdapter mAdapter;
     private CustomerReceiptFragment.OnFragmentInteractionListener mListener;
@@ -59,33 +70,42 @@ public class CustomerReceiptFragment extends Fragment {
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.order = (Order) getArguments().getSerializable(ORDER_TAG);
             this.customerAddress = getArguments().getString(CUSTOMER_ADDRESS_TAG);
-            System.out.println("On create fragment, order : " + order );
+            this.qrCodeGenerator = new QRCodeGenerator(String.format("Order %s has been marked as complete.", order.getTimestamp()));
+            qrCodeGenerator.execute();
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.customer_fragment_receipt, container, false);
-        ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText("Customer ID: " + order.getUser_id());
-        ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText("Customer Address: " + customerAddress);
+        ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText(order.getUser_id());
+        ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText(customerAddress);
         TextView subtotal_textView = fragmentView.findViewById(R.id.amtToCollect_textView);
         setSubtotal(subtotal_textView);
 
         completedOrder_button = fragmentView.findViewById(R.id.completedOrder_button);
-        completedOrder_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOrderCompletion();
-            }
-        });
+        completedOrder_button.setVisibility(View.GONE);
+//        completedOrder_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onOrderCompletion();
+//            }
+//        });
+
+        // qr code generated on customerReceiptView to be scanned by courier
+        // upon scanning qr code, order marked as complete
+        getQRCode(fragmentView);
+
 
         RecyclerView orderItemsRecyclerView = fragmentView.findViewById(R.id.orderItems_recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager((Activity) mListener);
@@ -95,12 +115,27 @@ public class CustomerReceiptFragment extends Fragment {
         return fragmentView;
     }
 
+    private void getQRCode(View fragmentView) {
+        try {
+            Log.d(TAG, "getting qr code from generator");
+            Bitmap qrCode = qrCodeGenerator.get();
+            ((ImageView) fragmentView.findViewById(R.id.qrcode_imageView))
+                    .setImageBitmap(qrCode);
+            Log.d(TAG, "set imageview as qrcode");
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        } catch (ExecutionException e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+    }
+
     private void setSubtotal(TextView subtotal_textView) {
         double cost = 0;
         for (OrderItem orderItem : order.getOrders()) {
             cost += Double.parseDouble(orderItem.getPrice());
         }
-        subtotal_textView.setText(Double.toString(cost));
+        DecimalFormat df = new DecimalFormat("#.##");
+        subtotal_textView.setText(String.format("$%s", df.format(cost)));
     }
 
     public void onOrderCompletion() {

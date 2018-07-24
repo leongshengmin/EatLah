@@ -19,6 +19,7 @@ import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -95,7 +96,8 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     private void calculatePrice(OrderItem orderItem, TextView priceView) {
         System.out.println("ordered item: " + orderItem);
         double price = orderItem.getQty() * Double.parseDouble(orderItem.getPrice());
-        priceView.setText(Double.toString(price));
+        DecimalFormat df = new DecimalFormat("##.##");
+        priceView.setText(String.format("$%s", df.format(price)));
     }
 
     @Override

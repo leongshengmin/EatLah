@@ -5,8 +5,8 @@
     <string name="login_page_title">Login</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="prompt_hawkercentreid">Hawker Centre ID (blank if not a hawker)</string>
-    <string name="prompt_hawkerid">Hawker Stall ID (blank if not a hawker)</string>
+    <string name="prompt_hawkercentreid">Hawker Centre ID</string>
+    <string name="prompt_hawkerid">Hawker Stall ID</string>
     <string name="action_sign_in">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -146,5 +146,6 @@
     <string name="updateDetails">Update</string>
     <string name="forgotPassword">Forgot Password? Click here to reset.</string>
     <string name="title_activity_notifications_view">NotificationsViewActivity</string>
+    <string name="promptText_profile">To update profile settings, fill in only the relevant fields.</string>
 
 </resources>

@@ -9,37 +9,79 @@
     tools:context=".fragments.Courier.CourierReceiptFragment">
 
     <TextView
+        android:id="@+id/courierID_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Courier ID"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/courierId_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/courierId_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="2dp"
         android:hint="Courier ID"
         android:padding="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.058"
+        app:layout_constraintBottom_toTopOf="@+id/customerID_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/courierID_text" />
+
+    <TextView
+        android:id="@+id/customerID_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="2dp"
+        android:text="Customer Id"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/customerId_textView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/courierId_textView" />
 
     <TextView
         android:id="@+id/customerId_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="2dp"
         android:hint="Customer ID"
         android:padding="2dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customerID_text" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/id_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.061"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/courierId_textView" />
+        app:layout_constraintGuide_begin="108dp"
+        app:layout_constraintGuide_end="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/customerId_textView" />
+
+    <TextView
+        android:id="@+id/customerAddress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="2dp"
+        android:text="Delivery Address"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/customerAddress_textView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id_guideline" />
 
     <TextView
         android:id="@+id/customerAddress_textView"
@@ -49,60 +91,65 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="2dp"
         android:hint="Customer Address"
         android:inputType="textMultiLine"
         android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.071"
+        app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customerId_textView" />
+        app:layout_constraintTop_toBottomOf="@id/customerAddress_text" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/menu_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="164dp"
+        app:layout_constraintGuide_end="100dp" />
+
+    <TextView
+        android:id="@+id/menu_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:text="Ordered Items"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/orderItems_recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menu_guideline" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/orderItems_recyclerView"
         android:layout_width="329dp"
-        android:layout_height="200dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="195dp"
         android:layout_marginEnd="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:padding="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customerAddress_textView"
-        app:layout_constraintVertical_bias="0.105" />
+        app:layout_constraintTop_toBottomOf="@+id/menu_text">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/subtotal_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="395dp"
-        app:layout_constraintTop_toBottomOf="parent" />
-
-    <Button
-        android:id="@+id/completedOrder_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/completedOrder"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="287dp" />
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="8dp"
+        android:text="subtotal"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toTopOf="@id/amtToCollect_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtotal_guideline" />
 
     <TextView
         android:id="@+id/amtToCollect_textView"
@@ -112,16 +159,23 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="156dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
         android:hint="@string/amountToCollect"
         android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+        app:layout_constraintTop_toBottomOf="@+id/subtotal_text" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/footer_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="446dp"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/completedOrder_text"
         android:layout_width="137dp"
         android:layout_height="54dp"
         android:layout_margin="5dp"
@@ -138,6 +192,30 @@
         app:layout_constraintEnd_toStartOf="@+id/completedOrder_button"
         app:layout_constraintHorizontal_bias="0.171"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/footer_guideline" />
+
+    <Button
+        android:id="@+id/completedOrder_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/completedOrder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/footer_guideline"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/subtotal_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="288dp"
+        android:layout_marginRight="288dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="388dp"
+        app:layout_constraintGuide_end="169dp" />
 
 </android.support.constraint.ConstraintLayout>

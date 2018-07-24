@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -58,11 +56,17 @@ public class ProfileFragment extends Fragment {
     private final FirebaseStorage mStorage;
     private StorageReference mStorageReference;
 
-    private static final int PICK_IMAGE_REQUEST = 71;
+    private User dbUser;
+
+    private static final String TAG = ProfileFragment.class.getSimpleName();
+    public static final int PICK_IMAGE_REQUEST = 71;
 
     private Uri filePath;
     private CardView hawkerFields_cardView;
     private Snackbar imageUploadPrompt;
+    private Snackbar promptText;
+    private EditText address_editText;
+    private EditText phone_editText;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -70,6 +74,31 @@ public class ProfileFragment extends Fragment {
         mDb = FirebaseDatabase.getInstance();
         mUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
+    }
+
+    private void retrieveUserFromDB() {
+        FirebaseDatabase.getInstance()
+                .getReference((mListener).getString(R.string.user_ref))
+                .child(mAuth.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dbUser = dataSnapshot.getValue(User.class);
+                Log.d(TAG, "retrieved database user " + dbUser);
+
+                populateFields();
+            }
+
+            private void populateFields() {
+                address_editText.setHint(dbUser.getAddress());
+                phone_editText.setHint(dbUser.get_id());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage());
+            }
+        });
     }
 
     /**
@@ -82,28 +111,19 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
-    private void hideHawkerFields() {
-        hawkerFields_cardView.setVisibility(View.INVISIBLE);
-        hawkerFields_cardView.setEnabled(false);
-        hawkerFields_cardView.setClickable(false);
-        hawkerFields_cardView.setContextClickable(false);
+    private void hideHawkerFields(View view) {
+        hawkerFields_cardView.setVisibility(View.GONE);
+        view.findViewById(R.id.hcID_editText).setVisibility(View.GONE);
+        view.findViewById(R.id.hcID_textView).setVisibility(View.GONE);
+        view.findViewById(R.id.hsID_editText).setVisibility(View.GONE);
+        view.findViewById(R.id.hsID_textView).setVisibility(View.GONE);
     }
 
     private void displayRelevantFields(View view) {
         // hide hawker fields and reformat layout accordingly
         if (!(mListener instanceof HawkerHomepage)) {
-            hideHawkerFields();
-            adjustConstraints(view);
+            hideHawkerFields(view);
         }
-    }
-
-    private void adjustConstraints(View view) {
-        ConstraintLayout constraintLayout = view.findViewById(R.id.cardView);
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(constraintLayout);
-        constraintSet.connect(R.id.profileUpdate_btn, ConstraintSet.TOP, R.id.phone_editText, ConstraintSet.BOTTOM);
-        constraintSet.connect(R.id.phone_editText, ConstraintSet.BOTTOM, R.id.profileUpdate_btn, ConstraintSet.TOP);
-        constraintSet.connect(R.id.phone_textView, ConstraintSet.BOTTOM, R.id.profileUpdate_btn, ConstraintSet.TOP);
     }
 
     @Override
@@ -117,14 +137,14 @@ public class ProfileFragment extends Fragment {
         final EditText email_editText = view.findViewById(R.id.email_editText);
         email_editText.setHint(mUser.getEmail());
 
-        final EditText address_editText = view.findViewById(R.id.deliveryAddress_editText);
+        address_editText = view.findViewById(R.id.deliveryAddress_editText);
 
-        final EditText phone_editText = view.findViewById(R.id.phone_editText);
-        phone_editText.setHint(mUser.getPhoneNumber());
+        phone_editText = view.findViewById(R.id.phone_editText);
 
         hawkerFields_cardView = view.findViewById(R.id.hawkerFields_cardView);
 
         final ImageView img_imageView = view.findViewById(R.id.profileImg_imageView);
+        displayRelevantFields(view);
 
         img_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +174,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 // retrieve details
                 retrieveUpdatedContent();
-
+                promptText.dismiss();
             }
 
             private void retrieveUpdatedContent() {
@@ -275,9 +295,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // display additional fields and format layout accordingly if user is a hawker
-        displayRelevantFields(view);
-
         return view;
     }
 
@@ -287,6 +304,8 @@ public class ProfileFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (Activity) context;
+
+        retrieveUserFromDB();
     }
 
     @Override

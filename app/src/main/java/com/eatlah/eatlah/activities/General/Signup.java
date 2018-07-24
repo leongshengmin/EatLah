@@ -189,21 +189,23 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         });
 
         mCustomerAddressView = findViewById(R.id.customerAddr);
+        hideCustomerFields();
 
         mSignupView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void hideHawkerFields() {
-        mHawkerCentreIdView.setVisibility(View.INVISIBLE);
-        mHawkerIdView.setVisibility(View.INVISIBLE);
-        mHawkerCentreIdView.setEnabled(false);
-        mHawkerIdView.setEnabled(false);
-        mHawkerCentreIdView.setClickable(false);
-        mHawkerIdView.setClickable(false);
+    private void hideCustomerFields() {
+        findViewById(R.id.customerAddr).setVisibility(View.GONE);
+        findViewById(R.id.customerAddr_inputLayout).setVisibility(View.GONE);
+    }
 
-        findViewById(R.id.hawkerid_inputLayout).setVisibility(View.INVISIBLE);
-        findViewById(R.id.hcid_inputLayout).setVisibility(View.INVISIBLE);
+    private void hideHawkerFields() {
+        mHawkerCentreIdView.setVisibility(View.GONE);
+        mHawkerIdView.setVisibility(View.GONE);
+
+        findViewById(R.id.hawkerid_inputLayout).setVisibility(View.GONE);
+        findViewById(R.id.hcid_inputLayout).setVisibility(View.GONE);
     }
 
     /**
@@ -363,24 +365,27 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
         System.out.println("profile selected: " + profile_idx);
         if (profile_idx == 0) { // customer
             // display customerAddress view
-            findViewById(R.id.customerAddr_inputLayout).setVisibility(View.VISIBLE);
-            mCustomerAddressView.setVisibility(View.VISIBLE);
-            mCustomerAddressView.setHint(getResources().getString(R.string.customer_address));
-            checkAddressValidity(mCustomerAddressView.getText().toString());
+            revealCustomerFields();
+            hideHawkerFields();
         } else if (profile_idx == 1) {  // courier
-
+            hideHawkerFields();
+            hideCustomerFields();
         } else {    // hawker
             revealHawkerFields();
+            hideCustomerFields();
         }
+    }
+
+    private void revealCustomerFields() {
+        findViewById(R.id.customerAddr_inputLayout).setVisibility(View.VISIBLE);
+        mCustomerAddressView.setVisibility(View.VISIBLE);
+        mCustomerAddressView.setHint(getResources().getString(R.string.customer_address));
+        checkAddressValidity(mCustomerAddressView.getText().toString());
     }
 
     private void revealHawkerFields() {
         mHawkerIdView.setVisibility(View.VISIBLE);
         mHawkerCentreIdView.setVisibility(View.VISIBLE);
-        mHawkerCentreIdView.setEnabled(true);
-        mHawkerIdView.setEnabled(true);
-        mHawkerCentreIdView.setClickable(true);
-        mHawkerIdView.setClickable(true);
 
         findViewById(R.id.hawkerid_inputLayout).setVisibility(View.VISIBLE);
         findViewById(R.id.hcid_inputLayout).setVisibility(View.VISIBLE);

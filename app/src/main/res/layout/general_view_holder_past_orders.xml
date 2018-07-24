@@ -13,75 +13,126 @@
     tools:layout_editor_absoluteY="81dp">
 
     <TextView
-        android:id="@+id/orderId_textView"
+        android:id="@+id/orderTime_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="37dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="16dp"
-        android:text="Order ID"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@+id/customerId_textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/orderTime_textView"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Time of order"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/orderTime_textView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/orderTime_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="150dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="150dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="2dp"
         android:inputType="text"
         android:padding="2dp"
         android:text="Order Time"
         android:textSize="16sp"
         android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline3"
-        app:layout_constraintEnd_toStartOf="@+id/orderId_textView"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderTime_text" />
+
+    <TextView
+        android:id="@+id/orderId_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="8dp"
+        android:text="Order ID"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/orderId_textView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/orderId_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="2dp"
+        android:text="Order ID"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderId_text" />
+
     <android.support.constraint.Guideline
-        android:id="@+id/guideline3"
+        android:id="@+id/customerID_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="51dp" />
+        app:layout_constraintGuide_begin="80dp" />
+
+    <TextView
+        android:id="@+id/customerId_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:text="order status"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/customerId_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customerID_guideline" />
 
     <TextView
         android:id="@+id/customerId_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="21dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginStart="16dp"
         android:inputType="text"
         android:text="Customer ID"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/orderItem_recyclerView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderId_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/customerId_text" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/orderedItems_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="138dp" />
+
+    <TextView
+        android:id="@+id/orderedItems_text"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="2dp"
+        android:text="ordered items"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/orderItem_recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderedItems_guideline" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/orderItem_recyclerView"
-        android:layout_width="297dp"
+        android:layout_width="294dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
         android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.156"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customerId_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/orderedItems_text">
+
+    </android.support.v7.widget.RecyclerView>
 </android.support.constraint.ConstraintLayout>
