@@ -92,10 +92,10 @@
                 android:id="@+id/completedOrder_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/sunset"
+                android:background="@color/sand"
                 android:padding="10dp"
                 android:text="@string/completedOrder"
-                android:textColor="@android:color/white"
+                android:textColor="@color/dark_sand"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         </LinearLayout>
