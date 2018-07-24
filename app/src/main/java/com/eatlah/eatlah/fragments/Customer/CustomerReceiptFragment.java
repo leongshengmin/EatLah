@@ -119,7 +119,7 @@ public class CustomerReceiptFragment extends Fragment {
         try {
             Log.d(TAG, "getting qr code from generator");
             Bitmap qrCode = qrCodeGenerator.get();
-            ((ImageView) fragmentView.findViewById(R.id.qrcode_imageView))
+            ((ImageView) fragmentView.findViewById(R.id.qrCode_imageView))
                     .setImageBitmap(qrCode);
             Log.d(TAG, "set imageview as qrcode");
         } catch (InterruptedException e) {
