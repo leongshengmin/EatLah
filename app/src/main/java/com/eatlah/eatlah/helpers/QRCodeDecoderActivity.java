@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.eatlah.eatlah.R;
@@ -32,14 +29,6 @@ public class QRCodeDecoderActivity extends Activity implements QRCodeReaderView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode_decoder);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrcodeReaderView);
         requestPermissions();
 

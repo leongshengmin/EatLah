@@ -106,14 +106,14 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/upper">
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="245dp"
+            android:layout_height="68dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:padding="3dp"
@@ -130,9 +130,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
             android:background="@color/sand"
             android:padding="10dp"
-            android:text="@string/completedOrder"
+            android:text="@string/scanQR"
             android:textColor="@color/dark_sand"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
