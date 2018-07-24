@@ -116,9 +116,9 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 
         // Login page animation
         LinearLayout container = (LinearLayout) findViewById(R.id.container);
-        anim = (AnimationDrawable) container.getBackground();
-        anim.setEnterFadeDuration(100);
-        anim.setEnterFadeDuration(1000);
+//        anim = (AnimationDrawable) container.getBackground();
+//        anim.setEnterFadeDuration(100);
+//        anim.setEnterFadeDuration(1000);
 
         // Initialize fonts
         typefaceRaleway = Typeface.createFromAsset(getAssets(), "Raleway-Medium.ttf");

@@ -4,19 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/sand"
     tools:context=".activities.Courier.CourierHomepage">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/sand"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:background="@color/sand"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:subtitleTextColor="@android:color/black"
+            app:titleTextColor="@color/dark_sand" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -30,7 +34,9 @@
         android:layout_height="84dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@android:color/transparent"
+        android:background="@color/sand"
+        android:tint="@color/dark_sand"
+        app:backgroundTint="@color/sand"
         app:srcCompat="@drawable/map" />
 
 </android.support.design.widget.CoordinatorLayout>

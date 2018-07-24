@@ -17,8 +17,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderFragment;
 import com.eatlah.eatlah.fragments.Hawker.AcceptedOrderItemFragment;
@@ -28,9 +30,11 @@ import com.eatlah.eatlah.fragments.Hawker.MenuItemFragment;
 import com.eatlah.eatlah.fragments.Hawker.ModifyMenuItemFragment;
 import com.eatlah.eatlah.fragments.Hawker.UpdateDetailsFragment;
 import com.eatlah.eatlah.models.FoodItem;
+import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.eatlah.eatlah.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class HawkerHomepage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -59,6 +64,10 @@ public class HawkerHomepage extends AppCompatActivity
     private FloatingActionButton fab;
     private NavigationView navigationView;
 
+    // Stall icon
+    private ImageView imageView;
+    private String iconPath;
+
     // Fields
     public static User mUser;
 
@@ -77,17 +86,13 @@ public class HawkerHomepage extends AppCompatActivity
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User u = dataSnapshot.getValue(User.class);
-                        saveUser(u);
+                        mUser = u;
+                        initializeComponents();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
 
-        initializeComponents();
-    }
-
-    private void saveUser(User _user) {
-        mUser = _user;
     }
 
     private void initializeComponents() {
@@ -121,6 +126,41 @@ public class HawkerHomepage extends AppCompatActivity
         onNavigationItemSelected(navigationView.getMenu().getItem(2)); // Default select admin
 
         setActionBarTitle("Admin Page");
+
+        imageView = findViewById(R.id.hawker_imageView);
+        if (mUser.get_hawkerId() != null && !mUser.get_hawkerId().isEmpty()) {
+            mDb .getReference("HawkerStalls")
+                .child(mUser.get_hawkerCentreId())
+                .child(mUser.get_hawkerId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        HawkerStall hs = dataSnapshot.getValue(HawkerStall.class);
+                        iconPath = hs.getImage_path();
+                        glideImage();
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+        }
+
+    }
+
+    private void glideImage() {
+        if (iconPath != null && !iconPath.isEmpty()) {
+            FirebaseStorage.getInstance()
+                    .getReference("HawkerStalls")
+                    .child(iconPath)
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(imageView.getContext())
+                                    .load(uri.toString())
+                                    .into(imageView);
+                        }
+                    });
+        }
     }
 
     @Override

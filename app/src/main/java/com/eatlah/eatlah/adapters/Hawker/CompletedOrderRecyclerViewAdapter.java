@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class CompletedOrderRecyclerViewAdapter extends RecyclerView.Adapter<CompletedOrderRecyclerViewAdapter.ViewHolder> {
     private static int GREEN = 0xFF00FA9A;
+    private static int CYAN = 0xFF6BD6D6;
+    private static int SAND = 0xFFEDDEA4;
+    private static int SUNSET = 0xFFF7A072;
 
     private final List<Order> mValues;
     private final CompletedOrderFragment.OnListFragmentInteractionListener mListener;
@@ -55,7 +58,7 @@ public class CompletedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Comp
         });
 
         holder  .mCardView
-                .setCardBackgroundColor(GREEN);
+                .setCardBackgroundColor(CYAN);
     }
 
     private void calculatePrice(Order order, TextView priceView, String hawkerId) {

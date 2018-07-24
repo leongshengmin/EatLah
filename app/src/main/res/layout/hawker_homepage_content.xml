@@ -5,6 +5,7 @@
     android:id="@+id/hawker_frag_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/stone"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.Hawker.HawkerHomepage"
     tools:showIn="@layout/hawker_homepage_app_bar">

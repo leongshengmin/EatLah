@@ -27,6 +27,8 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
     private static int GREEN = 0xFF00FA9A;
     private static int RED = 0xFFFFC0CB;
     private static int CYAN = 0xFF6BD6D6;
+    private static int SAND = 0xFFEDDEA4;
+    private static int SUNSET = 0xFFF7A072;
 
     private final List<Order> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -68,10 +70,10 @@ public class AcceptedOrderRecyclerViewAdapter extends RecyclerView.Adapter<Accep
         holder  .mCardView
                 .setCardBackgroundColor(
                         order.isReady()
-                        ? GREEN
+                        ? CYAN
                         : isItReadyForThisHawker(order)
-                          ? CYAN
-                          : RED);
+                          ? SAND
+                          : SUNSET);
     }
 
     private boolean isItReadyForThisHawker(Order order) {
