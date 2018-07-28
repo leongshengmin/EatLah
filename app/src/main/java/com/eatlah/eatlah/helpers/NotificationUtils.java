@@ -15,7 +15,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.eatlah.eatlah.Config;
+import com.eatlah.eatlah.setup.Config;
 import com.eatlah.eatlah.R;
 
 import java.text.ParseException;
@@ -76,7 +76,7 @@ public class NotificationUtils {
         Notification notification;
         mBuilder
                 .setAutoCancel(true)
-                .setContentTitle(title)
+                .setContentTitle(title.split("@")[1])
                 .setContentIntent(resultPendingIntent)
                 .setSound(alarmSound)
                 .setStyle(inboxStyle)

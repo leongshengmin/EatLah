@@ -3,7 +3,7 @@ package com.eatlah.eatlah.helpers;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.eatlah.eatlah.Config;
+import com.eatlah.eatlah.setup.Config;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;

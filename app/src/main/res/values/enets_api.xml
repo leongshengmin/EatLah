@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enets_api_key" templateMergeStrategy="preserve" translatable="false">a12b8b8e-c165-44c8-a39f-975f4ee8152d</string>
+    <string name="enets_secret">d6839fbc-014e-46c0-bf9a-01c42f9dd602</string>
+</resources>

@@ -17,10 +17,11 @@
     <color name="dark_stone">#cccbc7</color>
     <color name="sand">#eddea4</color>
     <color name="dark_sand">#6C654B</color>
-    <color name="sunset">#F7A072</color>
+    <color name="sunset">#ffd180</color>
     <color name="dark_sunset">#714934</color>
     <color name="darker_cyan">#4d606a</color>
     <color name="light_cyan">#c6cbebf3</color>
     <color name="light_sand">#efe8cb</color>
     <color name="greenish_white">#b8edfe</color>
+    <color name="translucent_sunset">#64ffd180</color>
 </resources>

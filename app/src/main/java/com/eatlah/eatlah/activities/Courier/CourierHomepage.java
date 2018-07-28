@@ -143,7 +143,7 @@ public class CourierHomepage extends AppCompatActivity
     }
 
     public void displayCourierReceipt(Order order, String customerAddress) {
-        sendMessage(order, "delivered order", "Courier has arrived at delivery location specified.");
+        sendMessage(order, "2@Delivered order", String.format("Courier %s has arrived at delivery location specified. Please collect your order.", order.getCourier_id()));
 
         // create foodItems fragment and pass in Order containing list of foodItems as arg
         Fragment fragment = CourierReceiptFragment.newInstance(order, customerAddress);
@@ -292,7 +292,7 @@ public class CourierHomepage extends AppCompatActivity
 
     private void onOrderCompletion(Order order) {
         Log.d(TAG, "on order completion called");
-        sendMessage(order, "order completed", "Order has been delivered and received.");
+        sendMessage(order, "3@Order completed", "Your order has been delivered and received.");
         onFragmentInteraction(order, true);
     }
 

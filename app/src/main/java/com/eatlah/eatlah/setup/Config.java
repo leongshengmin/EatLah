@@ -1,4 +1,4 @@
-package com.eatlah.eatlah;
+package com.eatlah.eatlah.setup;
 
 public class Config {
     // broadcast receiver intent filters

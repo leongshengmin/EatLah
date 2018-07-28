@@ -28,9 +28,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -129,13 +126,9 @@ public class CourierOrderItemsFragment extends Fragment {
             }
 
             private void sendMessage() {
-                Date date = new Date();
-                long time = date.getTime();
-                Timestamp timestamp = new Timestamp(time);
-
                 // sends message to customer
                 ((CourierHomepage)mListener).sendMessage(mOrder,
-                        "attended to order",
+                        "1@Attended to order",
                         "Courier " + mAuth.getUid() + " is now attending to your order.");
             }
 
