@@ -321,7 +321,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // checks if user attempting to login matches profile on spinner
         if (mProfileView.getSelectedItemPosition() == 2) {  // if user chooses hawker
             checkIfUserIsAHawker(email);
-            cancel = mProfileView.isFocused();
         }
 
         // Check for a valid password, if the user entered one.
@@ -355,34 +354,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private void checkIfUserIsAHawker(String email) {
+    private void checkIfUserIsAHawker(final String email) {
         Log.d(TAG, "checking if " + email + " is a hawker.");
         FirebaseDatabase.getInstance()
                 .getReference(getString(R.string.user_ref))
-                .orderByChild("email")
-                .equalTo(email)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d(TAG, dataSnapshot.toString());
-                        User user = dataSnapshot.getValue(User.class);
-                        if (!isUserAHawker(user)) { // if user is not a hawker
-                            mProfileView.requestFocus();
-                            Log.d(TAG, "cancelling login task");
-                            if (mAuthTask != null) {
-                                mAuthTask.cancel(true);
-                                TextView errorView = (TextView) mProfileView.getSelectedView();
-                                errorView.setError("You are not registered as a hawker.");
-                                errorView.setTextColor(Color.RED);
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Log.d(TAG, data.toString());
+                            User user = data.getValue(User.class);
+                            Log.d(TAG, "iterated user's email: " + user.getEmail());
+                            if (user.getEmail().equalsIgnoreCase(email)) {
+                                Log.d(TAG, "found user");
+                                if (!isUserAHawker(user)) { // if user is not a hawker
+                                    Log.d(TAG, "cancelling login task");
+                                    if (mAuthTask != null) {
+                                        mAuthTask.cancel(true);
+                                        TextView errorView = (TextView) mProfileView.getSelectedView();
+                                        errorView.setError("You are not registered as a hawker.");
+                                        errorView.setTextColor(Color.RED);
+                                    }
+                                } else {
+                                    Log.d(TAG, "user is a hawker");
+                                }
+                                return;
                             }
-                        } else {
-                            Log.d(TAG, "user is a hawker");
-                            mProfileView.clearFocus();
                         }
                     }
 
                     private boolean isUserAHawker(User user) {
-                        return user.get_hawkerCentreId() != null && user.get_hawkerId() != null;
+                        Log.d(TAG, user.getEmail());
+                        System.out.println(user.getAddress());
+                        return user.get_hawkerCentreId() != null || user.get_hawkerId() != null;
                     }
 
                     @Override
