@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.view.View.GONE;
 
 /**
  * A login screen that offers login via email/password.
@@ -147,7 +148,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProfileView.setPrompt(getResources().getString(R.string.prompt_profile));
         mProfileView.clearFocus();
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setTypeface(typefaceRaleway);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -160,39 +161,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         resetPW_textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideViewsOnResetPw();
+
                 final View container = findViewById(R.id.container);
                 final Snackbar emailPrompt = Snackbar.make(container, "Enter your email for us to send an email to reset your password.", Snackbar.LENGTH_INDEFINITE);
                 emailPrompt.show();
 
                 mEmailView.setError(getString(R.string.prompt_email));
-                mEmailView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                Button resetPw_button = findViewById(R.id.resetPw_button);
+                resetPw_button.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (!hasFocus) {
-                            final String email = mEmailView.getText().toString();
-                            if (!TextUtils.isEmpty(email) && isEmailValid(email)) {
-                                mAuth.sendPasswordResetEmail(email)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    emailPrompt.dismiss();
-                                                    mEmailView.setError(null);
+                    public void onClick(View v) {
+                        final String email = mEmailView.getText().toString();
+                        if (!TextUtils.isEmpty(email) && isEmailValid(email)) {
+                            mAuth.sendPasswordResetEmail(email)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                emailPrompt.dismiss();
+                                                mEmailView.setError(null);
 
-                                                    Snackbar.make(container, "Sent password reset email successfully!", Snackbar.LENGTH_LONG)
-                                                            .show();
-                                                    Log.d("password reset", "sent password reset email successfully");
-                                                } else {
-                                                    Log.e("password reset", task.getException().getMessage());
-                                                }
+                                                Snackbar.make(container, "Sent password reset email successfully!", Snackbar.LENGTH_LONG)
+                                                        .show();
+                                                Log.d("password reset", "sent password reset email successfully");
+                                                onBackPressed();
+                                            } else {
+                                                Snackbar.make(container, "Failed to send password reset email", Snackbar.LENGTH_LONG)
+                                                        .show();
+                                                Log.e("password reset", task.getException().getMessage());
                                             }
-                                        });
+                                        }
+                                    });
 
-                            } else if (email.isEmpty()) {
-                                mEmailView.setError(getString(R.string.error_field_required));
-                            } else {
-                                mEmailView.setError(getString(R.string.error_invalid_email));
-                            }
+                        } else if (email.isEmpty()) {
+                            mEmailView.setError(getString(R.string.error_field_required));
+                        } else {
+                            mEmailView.setError(getString(R.string.error_invalid_email));
                         }
                     }
                 });
@@ -213,6 +219,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void hideViewsOnResetPw() {
+        mPasswordView.setVisibility(GONE);
+        findViewById(R.id.password_textInputLayout).setVisibility(GONE);
+        findViewById(R.id.resetPassword_textView).setVisibility(GONE);
+        mProfileView.setVisibility(GONE);
+        findViewById(R.id.email_sign_in_button).setVisibility(GONE);
+
+        Button resetPw_button = findViewById(R.id.resetPw_button);
+        resetPw_button.setVisibility(View.VISIBLE);
+    }
+
+    private void showViewsOnResetPw() {
+        mPasswordView.setVisibility(View.VISIBLE);
+        findViewById(R.id.password_textInputLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.resetPassword_textView).setVisibility(View.VISIBLE);
+        mProfileView.setVisibility(View.VISIBLE);
+        findViewById(R.id.email_sign_in_button).setVisibility(View.VISIBLE);
+
+        Button resetPw_button = findViewById(R.id.resetPw_button);
+        resetPw_button.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // if user pressed the password reset button and wants to go back
+        if (mPasswordView.getVisibility() == GONE || mProfileView.getVisibility() == GONE) {
+            // toggle visibility
+            showViewsOnResetPw();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -417,28 +456,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.setVisibility(show ? GONE : View.VISIBLE);
             mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mLoginFormView.setVisibility(show ? GONE : View.VISIBLE);
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mProgressView.setVisibility(show ? View.VISIBLE : GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mProgressView.setVisibility(show ? View.VISIBLE : GONE);
+            mLoginFormView.setVisibility(show ? GONE : View.VISIBLE);
         }
     }
 

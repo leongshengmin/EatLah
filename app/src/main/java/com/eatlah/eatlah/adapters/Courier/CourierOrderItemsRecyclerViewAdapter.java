@@ -49,7 +49,8 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         System.out.println("order item: " + orderItem.getName() + " " + orderItem.getQty());
         holder.mOrderName.setText(orderItem.getName());
         DecimalFormat df = new DecimalFormat("##.00");
-        holder.mOrderPrice.setText("$" + df.format(orderItem.getPrice()));
+        double price = Double.parseDouble(orderItem.getPrice());
+        holder.mOrderPrice.setText("$" + df.format(price));
         holder.mOrderQty.setText("Qty: " + Integer.toString(orderItem.getQty()));
         holder.mOrderDesc.setText(orderItem.getDescription());
         holder.mOrderStallId.setText("Stall ID: " + orderItem.getStall_id());
