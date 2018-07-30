@@ -94,18 +94,7 @@ public class CustomerReceiptFragment extends Fragment {
         setSubtotal(subtotal_textView);
 
         completedOrder_button = fragmentView.findViewById(R.id.completedOrder_button);
-        completedOrder_button.setVisibility(View.GONE);
-//        completedOrder_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onOrderCompletion();
-//            }
-//        });
-
-        // qr code generated on customerReceiptView to be scanned by courier
-        // upon scanning qr code, order marked as complete
-        getQRCode(fragmentView);
-
+        displayRelevantFields(fragmentView);
 
         RecyclerView orderItemsRecyclerView = fragmentView.findViewById(R.id.orderItems_recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager((Activity) mListener);
@@ -113,6 +102,35 @@ public class CustomerReceiptFragment extends Fragment {
         mAdapter = new CourierBasicOrderItemRecyclerViewAdapter((Activity)mListener, order.getOrders());
         orderItemsRecyclerView.setAdapter(mAdapter);
         return fragmentView;
+    }
+
+    private void displayRelevantFields(View fragmentView) {
+        if (order.isSelf_collection()) {
+            Log.d(TAG, "displaying fields for self collection");
+            displayFieldsForSelfCollection(fragmentView);
+        } else {
+            Log.d(TAG, "displaying fields for courier delivery");
+            displayFieldsForCourierDelivery(fragmentView);
+        }
+    }
+
+    private void displayFieldsForCourierDelivery(View fragmentView) {
+        completedOrder_button.setVisibility(View.GONE);
+        // qr code generated on customerReceiptView to be scanned by courier
+        // upon scanning qr code, order marked as complete
+        getQRCode(fragmentView);
+    }
+
+    private void displayFieldsForSelfCollection(View fragmentView) {
+        fragmentView.findViewById(R.id.qrCode_imageView)
+                .setVisibility(View.GONE);
+
+        completedOrder_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOrderCompletion();
+            }
+        });
     }
 
     private void getQRCode(View fragmentView) {
@@ -132,14 +150,14 @@ public class CustomerReceiptFragment extends Fragment {
     private void setSubtotal(TextView subtotal_textView) {
         double cost = 0;
         for (OrderItem orderItem : order.getOrders()) {
-            cost += Double.parseDouble(orderItem.getPrice());
+            cost += (Double.parseDouble(orderItem.getPrice()) * orderItem.getQty());
         }
-        DecimalFormat df = new DecimalFormat("##.##");
+        DecimalFormat df = new DecimalFormat("##.00");
         subtotal_textView.setText(String.format("$%s", df.format(cost)));
     }
 
     public void onOrderCompletion() {
-        ((CustomerReceiptFragment.OnFragmentInteractionListener) mListener).onFragmentInteraction(order);
+        mListener.onFragmentInteraction(order);
     }
 
     @Override

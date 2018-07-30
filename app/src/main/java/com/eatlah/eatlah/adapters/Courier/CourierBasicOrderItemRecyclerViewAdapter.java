@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.models.OrderItem;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class CourierBasicOrderItemRecyclerViewAdapter extends RecyclerView.Adapter<CourierBasicOrderItemRecyclerViewAdapter.ViewHolder> {
@@ -33,11 +34,12 @@ public class CourierBasicOrderItemRecyclerViewAdapter extends RecyclerView.Adapt
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderItem orderItem = mOrderItems.get(position);
         holder.mOrderName.setText(orderItem.getName());
-        holder.mOrderQty.setText("Qty: " + Integer.toString(orderItem.getQty()));
+        DecimalFormat df = new DecimalFormat("##.00");
+        holder.mOrderQty.setText(String.format("Quantity: %d", orderItem.getQty()));
         holder.mOrderStallId.setText("Stall " + orderItem.getStall_id());
         holder.mOrderDesc.setText("Status: " + (orderItem.isComplete() ? "Ready" : "Not ready"));
-        holder.mOrderPrice.setText("Price: " +
-                (Float.parseFloat(orderItem.getPrice()) * (float) orderItem.getQty()));
+        holder.mOrderPrice.setText("Price: $" +
+                df.format(Float.parseFloat(orderItem.getPrice()) * (float) orderItem.getQty()));
     }
 
     @Override

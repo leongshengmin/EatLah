@@ -25,6 +25,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -58,7 +59,10 @@ public class FoodItemRecyclerViewAdapter extends RecyclerView.Adapter<FoodItemRe
             glideImageInto(foodItem.getImage_path(), holder.mImageView);
         }
         holder.mNameView.setText(foodItem.getName());
-        holder.mPriceView.setText(String.format("$%s", foodItem.getPrice()));
+
+        DecimalFormat df = new DecimalFormat("##.00");
+        double price = Double.parseDouble(foodItem.getPrice());
+        holder.mPriceView.setText(String.format("$%s", df.format(price)));
         holder.mDescView.setText(foodItem.getDescription());
         System.out.println("done binding " + foodItem.getName() + " to view holder");
 

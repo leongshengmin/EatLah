@@ -39,6 +39,8 @@ import com.eatlah.eatlah.models.HawkerStall;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -434,22 +436,22 @@ public class CustomerHomepage extends AppCompatActivity
          * order will be marked as complete once courier successfully scans qr code on customer's receipt
          * using the mtd call Courier.onFragInteraction(..)
          */
-        //        mDb.getReference("Orders")
-//                .child(order.getTimestamp())
-//                .child("transaction_complete")
-//                .setValue(true)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
-//                    }
-//                });
+                mDb.getReference("Orders")
+                .child(order.getTimestamp())
+                .child("transaction_complete")
+                .setValue(true)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CustomerHomepage.this, "Transaction marked as complete!", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CustomerHomepage.this, "Failed to mark as complete, try again later.", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
 }

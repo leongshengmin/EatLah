@@ -115,9 +115,9 @@ public class CourierReceiptFragment extends Fragment {
     private void setSubtotal(TextView subtotal_textView) {
         double cost = 0;
         for (OrderItem orderItem : order.getOrders()) {
-            cost += Double.parseDouble(orderItem.getPrice());
+            cost += (Double.parseDouble(orderItem.getPrice()) * orderItem.getQty());
         }
-        DecimalFormat df = new DecimalFormat("##.##");
+        DecimalFormat df = new DecimalFormat("##.00");
         subtotal_textView.setText(String.format("$%s", df.format(cost)));
     }
 

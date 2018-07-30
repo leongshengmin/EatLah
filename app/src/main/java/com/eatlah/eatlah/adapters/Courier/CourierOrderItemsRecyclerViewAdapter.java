@@ -14,6 +14,7 @@ import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Courier.CourierOrderItemsFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.OrderItem;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -47,7 +48,8 @@ public class CourierOrderItemsRecyclerViewAdapter extends RecyclerView.Adapter<C
         final OrderItem orderItem = mValues.get(position);
         System.out.println("order item: " + orderItem.getName() + " " + orderItem.getQty());
         holder.mOrderName.setText(orderItem.getName());
-        holder.mOrderPrice.setText("$" + orderItem.getPrice());
+        DecimalFormat df = new DecimalFormat("##.00");
+        holder.mOrderPrice.setText("$" + df.format(orderItem.getPrice()));
         holder.mOrderQty.setText("Qty: " + Integer.toString(orderItem.getQty()));
         holder.mOrderDesc.setText(orderItem.getDescription());
         holder.mOrderStallId.setText("Stall ID: " + orderItem.getStall_id());

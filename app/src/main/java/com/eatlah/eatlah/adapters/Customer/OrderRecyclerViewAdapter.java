@@ -96,7 +96,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     private void calculatePrice(OrderItem orderItem, TextView priceView) {
         System.out.println("ordered item: " + orderItem);
         double price = orderItem.getQty() * Double.parseDouble(orderItem.getPrice());
-        DecimalFormat df = new DecimalFormat("##.##");
+        DecimalFormat df = new DecimalFormat("##.00");
         priceView.setText(String.format("$%s", df.format(price)));
     }
 
