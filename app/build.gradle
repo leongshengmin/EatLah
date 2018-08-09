@@ -20,6 +20,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -76,6 +77,9 @@ dependencies {
     // Spinner design
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
     implementation(name: 'enets', ext: 'aar')
+
+    implementation 'com.android.support:multidex:1.0.3'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
