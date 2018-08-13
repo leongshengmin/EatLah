@@ -19,31 +19,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:timePickerMode="spinner"
         app:layout_constraintBottom_toTopOf="@+id/submit_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deliveryOptions_spinner" />
-
-    <Spinner
-        android:id="@+id/deliveryOptions_spinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/deliveryOptions"
-        android:paddingBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/collectionTime_timePicker"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.129"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/deliveryCheckbox" />
 
     <Button
         android:id="@+id/submit_button"
@@ -61,5 +43,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/deliveryCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Request Delivery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

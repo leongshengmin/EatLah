@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -240,8 +241,8 @@ public class CustomerOrderFragment extends Fragment {
                 .setOnClickListener(new View.OnClickListener() {
 
                     private void setDeliveryOption() {
-                        Spinner spinner = popupView.findViewById(R.id.deliveryOptions_spinner);
-                        if (spinner.getSelectedItemPosition() == 0) {  // self-collection
+                        CheckBox checkbox = popupView.findViewById(R.id.deliveryCheckbox);
+                        if (!checkbox.isChecked()) {  // self-collection
                             cart.getContents().setSelf_collection(true);
                         } else {
                             cart.getContents().setSelf_collection(false);

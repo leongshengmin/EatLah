@@ -52,6 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -174,6 +175,9 @@ public class CustomerHomepage extends AppCompatActivity
                             Order order = snapshot.getValue(Order.class);
                             mOrders.add(order);
                         }
+                        System.out.println(mOrders);
+                        Collections.reverse(mOrders); // Reverse the list to sort by latest first
+                        System.out.println(mOrders);
                         if (display) {
                             Fragment fragment = PastOrdersFragment.newInstance(1, mOrders, "CUSTOMER");
                             String tag = getResources().getString(R.string.pastOrdersFragment);

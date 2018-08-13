@@ -198,8 +198,9 @@ class ConfirmChangeStatus extends DialogFragment {
 
                                 // Local gui changes
                                 CardView cv = holder.getmCardView();
+                                System.out.println(cv.getCardBackgroundColor().getDefaultColor());
                                 cv.setCardBackgroundColor( // If green, make red, otherwise green.
-                                        cv.getCardBackgroundColor().getDefaultColor() == GREENCOLOR ? SUNSET : CYAN
+                                        cv.getCardBackgroundColor().getDefaultColor() == -9709866 ? SUNSET : CYAN
                                 );
 
                                 // Update Order status

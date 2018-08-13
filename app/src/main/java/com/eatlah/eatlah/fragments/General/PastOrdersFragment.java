@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,6 +90,7 @@ public class PastOrdersFragment extends Fragment {
                                 Order order = snapshot.getValue(Order.class);
                                 mPastOrders.add(order);
                             }
+                            Collections.reverse(mPastOrders);
                             if (mListener == null) mListener = getActivity();
                             if (mListener != null) {
                                 mListener.runOnUiThread(new Runnable() {
