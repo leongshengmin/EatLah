@@ -79,6 +79,10 @@ dependencies {
     implementation(name: 'enets', ext: 'aar')
 
     implementation 'com.android.support:multidex:1.0.3'
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 }
 
 apply plugin: 'com.google.gms.google-services'

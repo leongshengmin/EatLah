@@ -1,6 +1,5 @@
 package com.eatlah.eatlah.activities.Customer;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -360,7 +359,6 @@ public class CustomerHomepage extends AppCompatActivity
         fab.show();
     }
 
-    @SuppressLint("NewApi")
     private void initializeCart() {
         HawkerStall hs = CustomerFoodItemFragment.getHawkerStall();
 
@@ -373,7 +371,9 @@ public class CustomerHomepage extends AppCompatActivity
                 displayFragment(customerOrderFragment, CustomerHomepage.this.getResources().getString(R.string.orderFrag));
             }
         });
-        fab.setTooltipText("View Cart");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            fab.setTooltipText("View Cart");
+        }
         fab.show();    // view cart button
     }
 
