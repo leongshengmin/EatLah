@@ -77,7 +77,7 @@ public class CustomerReceiptFragment extends Fragment {
         if (getArguments() != null) {
             this.order = (Order) getArguments().getSerializable(ORDER_TAG);
             this.customerAddress = getArguments().getString(CUSTOMER_ADDRESS_TAG);
-            this.qrCodeGenerator = new QRCodeGenerator(String.format("Order %s has been marked as complete.", order.getTimestamp()));
+            this.qrCodeGenerator = new QRCodeGenerator(order.getTimestamp());
             qrCodeGenerator.execute();
         }
     }

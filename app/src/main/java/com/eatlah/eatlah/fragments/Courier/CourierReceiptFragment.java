@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.helpers.QRCodeDecoderActivity;
+import com.eatlah.eatlah.helpers.barcode.BarcodeCaptureActivity;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -32,6 +42,8 @@ import static android.support.constraint.Constraints.TAG;
  * create an instance of this fragment.
  */
 public class CourierReceiptFragment extends Fragment {
+    private int BARCODE_READER_REQUEST_CODE = 1;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ORDER_TAG = "order";
     private static final String CUSTOMER_ADDRESS_TAG = "customerAddress";
@@ -79,7 +91,43 @@ public class CourierReceiptFragment extends Fragment {
      * starts qr code scanner activity
      */
     private void scanQRCode() {
-        startActivityForResult(new Intent((Activity) mListener, QRCodeDecoderActivity.class), QRCodeDecoderActivity.QRCODE_DECODER_REQUEST_CODE);
+        //startActivityForResult(new Intent((Activity) mListener, QRCodeDecoderActivity.class), QRCodeDecoderActivity.QRCODE_DECODER_REQUEST_CODE);
+
+        Intent intent = new Intent((Activity) mListener, BarcodeCaptureActivity.class);
+        startActivityForResult(intent, BARCODE_READER_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BARCODE_READER_REQUEST_CODE) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    final Barcode qr = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                    Toast.makeText(getContext(), qr.displayValue, Toast.LENGTH_SHORT).show();
+                    System.out.println(qr.displayValue);
+                    FirebaseDatabase dB = FirebaseDatabase.getInstance();
+                    final DatabaseReference orderRef = dB.getReference("Orders")
+                                                    .child(qr.displayValue);
+                    orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Order o = dataSnapshot.getValue(Order.class);
+                            o.setTransaction_complete(true);
+                            orderRef.setValue(o);
+                            Toast.makeText(getContext(), "Transaction" + qr.displayValue + " marked as complete!", Toast.LENGTH_SHORT).show();
+
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    });
+                } else {
+                    System.out.println("No QR code read.");
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

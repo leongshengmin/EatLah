@@ -13,7 +13,7 @@
     <uses-permission
         android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
         android:protectionLevel="normal"
-        tools:ignore="ProtectedPermissions" />//>>
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="com.nets.netspay.QR_TRANSACTION"/>
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -88,6 +88,7 @@
             android:name=".activities.Courier.CourierMapsActivity"
             android:label="@string/title_activity_courier_maps" />
         <activity android:name=".activities.General.RestaurantSignup" />
+        <activity android:name=".helpers.barcode.BarcodeCaptureActivity" />
         <activity
             android:name=".activities.General.NotificationsViewActivity"
             android:label="@string/title_activity_notifications_view"
@@ -95,7 +96,7 @@
         <activity
             android:name=".helpers.QRCodeDecoderActivity"
             android:label="@string/title_activity_qrcode_decoder"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
