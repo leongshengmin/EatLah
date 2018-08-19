@@ -1,6 +1,7 @@
 package com.eatlah.eatlah.adapters.General;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,10 @@ import com.eatlah.eatlah.activities.Courier.CourierHomepage;
 import com.eatlah.eatlah.activities.Customer.CustomerHomepage;
 import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapter;
 import com.eatlah.eatlah.models.Order;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -20,6 +25,7 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
 
     private final List<Order> mValues;
     private final Activity mListener;
+    private String mAddress;
 
     public PastOrdersRecyclerViewAdapter(List<Order> items, Activity listener) {
         mValues = items;
@@ -56,11 +62,30 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
                 respond(holder.item);
             }
         });
+
+        String userId = mValues.get(position).getUser_id();
+        FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userId)
+                .child("address")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String address = (String) dataSnapshot.getValue();
+                        holder.orderAdress_textView.setText(address);
+                        mAddress = address;
+                        System.out.println("THIS IS THE PLACE");
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
     }
 
     private void respond(Order selectedItem) {
         if (mListener instanceof CustomerHomepage) {
             ((CustomerHomepage)mListener).displayCustomerReceiptFragment(selectedItem);
+        } else {
+            ((CourierHomepage)mListener).displayCourierReceipt(selectedItem, mAddress);
         }
     }
 
@@ -83,10 +108,12 @@ public class PastOrdersRecyclerViewAdapter extends RecyclerView.Adapter<PastOrde
         TextView timeView;
         RecyclerView orderItemsView;
         Order item;
+        TextView orderAdress_textView;
 
         public ViewHolder(View view) {
             super(view);
             orderIdView = view.findViewById(R.id.orderId_textView);
+            orderAdress_textView = view.findViewById(R.id.orderAdress_textView);
             customerIdView = view.findViewById(R.id.customerId_textView);
             timeView = view.findViewById(R.id.orderTime_textView);
             orderItemsView = view.findViewById(R.id.orderItem_recyclerView);

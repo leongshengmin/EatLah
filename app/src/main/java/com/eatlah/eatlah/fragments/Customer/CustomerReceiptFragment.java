@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,10 @@ import com.eatlah.eatlah.adapters.Courier.CourierBasicOrderItemRecyclerViewAdapt
 import com.eatlah.eatlah.helpers.QRCodeGenerator;
 import com.eatlah.eatlah.models.Order;
 import com.eatlah.eatlah.models.OrderItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutionException;
@@ -87,7 +92,7 @@ public class CustomerReceiptFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.customer_fragment_receipt, container, false);
+        final View fragmentView = inflater.inflate(R.layout.customer_fragment_receipt, container, false);
         ((TextView) fragmentView.findViewById(R.id.customerId_textView)).setText(order.getUser_id());
         ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText(customerAddress);
         TextView subtotal_textView = fragmentView.findViewById(R.id.amtToCollect_textView);
@@ -101,6 +106,25 @@ public class CustomerReceiptFragment extends Fragment {
         orderItemsRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new CourierBasicOrderItemRecyclerViewAdapter((Activity)mListener, order.getOrders());
         orderItemsRecyclerView.setAdapter(mAdapter);
+
+        //address code
+        String userId = order.getUser_id();
+        FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userId)
+                .child("address")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String address = (String) dataSnapshot.getValue();
+                        ((TextView) fragmentView.findViewById(R.id.customerAddress_textView)).setText(address);
+                        System.out.println("Customer address set");
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+
+
         return fragmentView;
     }
 

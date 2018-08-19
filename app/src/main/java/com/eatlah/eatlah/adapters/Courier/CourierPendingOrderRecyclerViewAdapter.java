@@ -1,5 +1,6 @@
 package com.eatlah.eatlah.adapters.Courier;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,10 @@ import android.widget.TextView;
 import com.eatlah.eatlah.R;
 import com.eatlah.eatlah.fragments.Courier.CourierPendingOrderFragment.OnListFragmentInteractionListener;
 import com.eatlah.eatlah.models.Order;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -51,6 +56,22 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
                 }
             }
         });
+
+        String userId = mValues.get(position).getUser_id();
+        FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userId)
+                .child("address")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String address = (String) dataSnapshot.getValue();
+                        holder.customerAddress_textView.setText(address);
+                        System.out.println("HERERERRERERERR");
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
     }
 
     @Override
@@ -61,9 +82,11 @@ public class CourierPendingOrderRecyclerViewAdapter extends RecyclerView.Adapter
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTimeStampView;
         private TextView mAddressView;
+        private TextView customerAddress_textView;
 
         public ViewHolder(View view) {
             super(view);
+            customerAddress_textView = view.findViewById(R.id.customerAddress_textView);
             mTimeStampView = view.findViewById(R.id.orderName_textView);
             mAddressView = view.findViewById(R.id.orderAddress_textView);
         }

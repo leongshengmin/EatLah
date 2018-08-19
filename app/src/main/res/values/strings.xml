@@ -121,7 +121,7 @@
     <string name="orderFrag">OrderFragment</string>
     <string name="profileFrag">ProfileFragment</string>
     <string name="title_activity_hawker_homepage">HawkerHomepage</string>
-    <string name="title_activity_courier_homepage">CourierHomepage</string>
+    <string name="title_activity_courier_homepage">Courier Homepage</string>
     <string name="title_activity_courier_maps">Map</string>
     <string name="courierOrderItemsDialogFrag">courierOrderItemsDialogFragment</string>
     <string name="courier_receipt_fragment">courierReceiptFragment</string>
